@@ -25,7 +25,10 @@ head {
   position: relative;
   
   clear: both;
-  margin: 0px; 
+  margin: 0px auto;
+
+  display: block;
+  border: 1px solid black;
 }
 .selected {
   stroke: #FF5733 !important;
@@ -80,11 +83,6 @@ text {
   font-family: sans-serif;
   font-size: 10px;
 }
-.container {
-  display: block;
-  border: 1px solid black;
-}
-
 #AContainer {
   float: right;
   border: 1px solid black;
