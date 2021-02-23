@@ -21,10 +21,12 @@
 		flex: 1 1 auto;
 		background-color: #9c9c9c;
 	}
-
+	.cover {
+		margin-right: 0;
+	}
 	* {
 	  padding: 0;
-	  margin: 0;
+	  margin: 0 auto;
 	  box-sizing: border-box;
 	  color:#ffffff;
 	}
@@ -58,13 +60,17 @@
 		<h1>tjh.town</h1>
 	</div>
 	<div class="col-md-4 justify-content-end">
-		<div class="card">
+		<div class="card mx-auto">
+			<h5 class="card-title">What am I listening to?</h5>
 			<div class="card-horizontal">
 				<div class="card-body">
-					<h5 class="card-title">What am I listening to?</h5>
+					
 					<p class="card-text music"></p>
 				</div>
-				<img src="" class="cover float-right" alt="album cover">
+				<img src="" class="cover float-right pull-right" alt="album cover">
+			</div>
+			<div class="card-footer">
+				<small class="text-muted">Last updated</small>
 			</div>
 		</div>
 	</div>
@@ -155,11 +161,11 @@
 	}
 
 	var song;
-	console.log(song);
 	fmArtists("chiefton117").done(function(d) {
-		console.log(d.recenttracks.track[0]);
+		console.log(d);
 		song = d.recenttracks.track[0];
 	});
+	console.log(song);
 	var cover = song.image[1]["#text"];
 	var artist = song.artist["#text"];
 	var album = song.album["#text"];
