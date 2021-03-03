@@ -3,20 +3,32 @@ $(document).ready(function() {
 	const icon = document.getElementById("dvd");
 	const dvd = document.querySelector(".logo");
 	const canvas = document.querySelector(".canvas");
-	const FPS = 60;
+	var FPS = 60;
+	$("#speed-select").val(FPS);
+	//$("#speed-select").attr("value", FPS);
+	var headerHeight = $("#headrow").height(); // Set height accordingly
+	$("#canvas").width("100vw").height($(window).height() - headerHeight);
 
 	const width = window.innerWidth;
-
 	var xPosition = 10;
 	var yPosition = 10;
 	var xSpeed = 4;
 	var ySpeed = 4;
 
+	//var interval = setInterval(animate(), 1000 / FPS);
+	animate();
+
 	function update() {
 		dvd.style.left = xPosition + "px";
 		dvd.style.top = yPosition + "px";
 	}
-	setInterval(()  => {
+	$("#speed-select").change(function(d) {
+		clearInterval(interval);
+		FPS = parseInt($("#speed-select").val());
+		interval = setInterval(animate(), 1000 / FPS);
+	});
+
+	function animate() {
 		if(xPosition <= 0 || xPosition + dvd.clientWidth >= canvas.clientWidth) {
 			xSpeed = -xSpeed;
 			dvd.style.fill = randomColor();
@@ -29,18 +41,11 @@ $(document).ready(function() {
 		xPosition += xSpeed;
 		yPosition += ySpeed;
 		update();
-
-	}, 1000 / FPS);
-	
+	}
 	function randomColor() {
 		return "#" + Math.floor(Math.random() * 1000000);
 	}
-	console.log($("#speed-select").attr("value"));
-	$("#speed-select").change(function(d) {
-		console.log(d);
-		console.log($("#speed-select").attr("value"));
-		console.log($('#speed-select').slider('getValue'));
-	});
+	
 
 });
 
