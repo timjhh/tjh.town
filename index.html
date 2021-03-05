@@ -1,8 +1,8 @@
 <!DOCTYPE html>
+<meta charset="UTF-8">
 <html>
 <head>
 <title>tjh.town</title>
-
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
@@ -11,41 +11,26 @@
 <script src="music.js"></script>
 
 <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$("a").attr("target", "_blank");
+	});
+</script>
 
-<div class="container text-center pt-4">
-	
-
-
-<div class="d-flex row">
-	<div class="col-md-4">
-
-
-	</div>
-	<div class="col-md-4 justify-content-center">
-		
-	</div>
-	<div class="col-md-4 justify-content-end">
-		
-	</div>
-	
-</div>
-
-
-
-</div>
 </head>
 <body>
-<div class="container-fluid">
+<div class="container-fluid pt-5">
 	<div class="row justify-content-center">
 		<div class="col-2 text-muted font-weight-light text-center">
-			<img style="width:100%;height:60%;" src="prof.png"/>
+			<img id="profile" src="prof.png"/>
 			
 			<p><br>My name is Tim Harrold(he/them), and i'm an aspiring programmer / human being. Here are some of my projects, interests and hobbies</p>
 			<hr>
 			<h4> Links </h4>
-			<a href="https://github.com/chiefton117" target="_blank">Github</a> |
-			<a href="https://www.linkedin.com/in/tim-harrold-02b249180/" target="_blank">LinkedIn</a> |
-			<a href="https://soundcloud.com/user-495414438-810084281" target="_blank">Soundcloud</a>
+			<a href="https://github.com/chiefton117">Github</a> |
+			<a href="https://www.linkedin.com/in/tim-harrold-02b249180/">LinkedIn</a> |
+			<a href="https://soundcloud.com/user-495414438-810084281">Soundcloud</a> |
+			<a href="resume.pdf">Resume</a>
 			<p>timjharrold@gmail.com</p>
 			
 		</div>
@@ -118,6 +103,7 @@
 						<p>Coming soon!</p>
 			      </div>
 			    </div>
+<!--LIBRARIES USED ON THIS WEBSITE-->
 			    <div class="accordion-item" id="changelog-accordion">
 					<h1 class="accordion-header">
 					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c2-collapse" aria-expanded="false" aria-controls="c2-collapse">
@@ -127,10 +113,16 @@
 				</div>
 				<div id="c2-collapse" class="accordion-collapse collapse" aria-labelledby="c2-collapse" data-bs-parent="#changelog-accordion">
 				  <div class="accordion-body">
-						<p>Coming soon!</p>
+						<p><a href="https://github.com/zerodevx/zero-md">Zero-MD</a> - A ridiculously simple zero-config markdown displayer</p>
+						<p><a href="https://www.last.fm/api">Last.fm</a> - For updating my current music</p>
+						<p><a href="https://jquery.com/">JQuery</a></p>
+						<p><a href="https://getbootstrap.com/">Bootstrap</a></p>
+
+						
+						
 			      </div>
 			    </div>
-<!--LIBRARIES USED ON THIS WEBSITE-->
+
 
 			</div>
 <!--End Accordion-->
