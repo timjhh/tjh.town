@@ -15,8 +15,8 @@ $(document).ready(function() {
 	//fmTrack(song.mbid, song.artist.mbid).done(function(d) {
 	//	console.log(d);
 	//});
-
-	var cover = song.image[2]["#text"];
+	var cover = Object.entries(song.image).filter(d => d[1].size == "large")[0][1]["#text"];
+	//var cover = song.image[2]["#text"];
 	var artist = song.artist["#text"];
 	var album = song.album["#text"];
 
@@ -25,7 +25,6 @@ $(document).ready(function() {
 	// Time difference in seconds
 	var diff = Math.floor(Date.now()/1000) - parseInt(song.date.uts, 10);
 	
-
 	//const fmBox = document.querySelector(".music");
 	var fmBox = $(".music");
 	$(".cover").attr("src", cover);
