@@ -16,7 +16,7 @@ $(document).ready(function() {
 	//	console.log(d);
 	//});
 
-	var cover = song.image[1]["#text"];
+	var cover = song.image[2]["#text"];
 	var artist = song.artist["#text"];
 	var album = song.album["#text"];
 
@@ -36,7 +36,7 @@ $(document).ready(function() {
 	"Album: " + album + "\n");
 
 	$("#when").text(function() {
-		return "Logged " + getTime(diff) + " ago";
+		return "Logged: " + getTime(diff) + " ago";
 	});
 
 	var d = new Date();
