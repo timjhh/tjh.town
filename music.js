@@ -3,20 +3,17 @@ $(document).ready(function() {
 	var song;
 	fmArtists("chiefton117").done(function(d) {
 		var tracks = d.recenttracks.track;
-		console.log(tracks);
 		if(tracks.length > 1) { // Iterate backwards to find the most recent track
 			for(var i = tracks.length-1; i >= 0; i--) {
 				if(tracks[i].date) song = tracks[i];
 			}
 		} else song = tracks[0];
 	});
-	console.log(song);
 
 	//fmTrack(song.mbid, song.artist.mbid).done(function(d) {
 	//	console.log(d);
 	//});
-	var cover = Object.entries(song.image).filter(d => d[1].size == "large")[0][1]["#text"];
-	//var cover = song.image[2]["#text"];
+	var cover = song.image.find(d => d.size == "large")["#text"];
 	var artist = song.artist["#text"];
 	var album = song.album["#text"];
 
