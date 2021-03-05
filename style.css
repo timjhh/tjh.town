@@ -28,7 +28,7 @@ head {
   margin: 0px auto;
 
   display: block;
-  border: 1px solid black;
+
 }
 .selected {
   stroke: #FF5733 !important;

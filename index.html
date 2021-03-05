@@ -30,8 +30,11 @@
 	    width:100%;
 	}
 	.main-col {
+		
+	}
+	.transparent {
 		background-color: rgba(255, 255, 255, 0.6);
-	}	
+	}
 	.card-horizontal {
 		display: flex;
 		flex: 1 1 auto;
@@ -42,7 +45,7 @@
 	}
 	* {
 	  padding: 0;
-	  margin: 0 auto;
+	
 	  box-sizing: border-box;
 
 	}
@@ -50,16 +53,6 @@
 	section {
 	  background-color: black;
 	  position: relative;
-	}
-	svg {
-	  position: absolute;
-	  width: 200px;
-	  
-	}
-	@media (max-width: 768px) {
-	  svg {
-	    width: 150px;
-	  }
 	}
 </style>
 
@@ -76,21 +69,7 @@
 		<h1>tjh.town</h1>
 	</div>
 	<div class="col-md-4 justify-content-end">
-		<div class="card mx-auto bg-dark">
-			<h5 class="card-title">What am I listening to?</h5>
-			<div class="card-horizontal">
-				<div class="card-body ">
-					
-					<p class="card-text music"></p>
-					<p class="card-text" id="when"></p>
-
-				</div>
-				<img src="" class="img-responsive cover float-right pull-right" alt="album cover">
-			</div>
-			<div class="card-footer">
-				<small class="text-muted date"></small>
-			</div>
-		</div>
+		
 	</div>
 	
 </div>
@@ -105,7 +84,7 @@
 		<div class="col-3">
 
 		</div>
-		<div class="col-6 main-col mx-auto">
+		<div class="col-6 transparent mx-auto">
 			<h1>Projects!</h1>
 			<hr>
 			<div class="accordion accordion-flush">
@@ -134,7 +113,7 @@
 				<div id="p2-collapse" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#project-accordion">
 				  <div class="accordion-body">
 						<h4><a href="WebScraping/index.html">Web Scraping</a></h4>
-			      	<zero-md src="http://73.126.15.185:8080/MusicGraph/README.md"></zero-md>
+			      	<zero-md src="http://73.126.15.185:8080/WebScraping/README.md"></zero-md>
 			      </div>
 			    </div>
 
@@ -149,7 +128,6 @@
 				<div id="p3-collapse" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#project-accordion">
 				  <div class="accordion-body">
 						<h4><a href="dvd.html">Bouncing DVD Logo(very cool!)</a></h4>
-			      		<zero-md src="http://73.126.15.185:8080/MusicGraph/README.md"></zero-md>
 			      </div>
 			    </div>
 
@@ -165,12 +143,41 @@
 
 		</div>
 	</div>
-	<div class="row justify-content-center">
-		
-	</div>
-</body>
-<script>
+</div>
 
-	
-</script>
+</body>
+		<div class="mb-0 pb-0 navbar fixed-bottom justify-content-center">
+<div class="container">
+	<div class="col-2">
+
+	</div>
+	<div class="col-8">
+
+			<footer style="width:100%">
+				<div class="text-center">
+					<div class="transparent">
+						<h4 class="card-title">What am I listening to?</h4>
+						<div class="card-horizontal">
+							<div class="card-body ">
+								
+								<p class="card-text music"></p>
+								<p class="card-text" id="when"></p>
+
+							</div>
+							<img src="" class="img-responsive cover float-right pull-right" alt="album cover">
+						</div>
+						<div class="card-footer">
+							<small class="date"></small>
+						</div>
+					</div>
+				</div>
+			</footer>
+
+	</div>
+	<div class="col-2">
+
+	</div>
+</div>
+		</div>
+
 </html>
