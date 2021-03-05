@@ -1,20 +1,42 @@
-html {
-  height: 100%;
-}
-body {
-  min-height: 100%;
-  margin: 0px !important;
-}
-.nodes circle {
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
+  * {
+    font-family: 'Roboto', sans-serif;
+    text-decoration: none !important;
+  }
+  body {
+    background-size: cover;
+      height:100vh;
+      width:100%;
+  }
+  .main-col {
+    
+  }
+  .transparent {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  .card-horizontal {
+    display: flex;
+    flex: 1 1 auto;
+
+  }
+  .cover {
+    margin-right: 0;
+  }
+  * {
+    padding: 0;
+  
+    box-sizing: border-box;
+
+  }
+
+  section {
+    background-color: black;
+    position: relative;
+  }
+
+
 p {
   white-space: pre-line;
   margin: 0px;
-}
-* {
-  font-family: 'Roboto', sans-serif;
 }
 head {
   background-color: #EAD7D7;
@@ -29,65 +51,4 @@ head {
 
   display: block;
 
-}
-.selected {
-  stroke: #FF5733 !important;
-  color: #FF5733;
-  fill: #FF5733;
-  stroke-width: 3;
-}
-label {
-  overflow: hidden;
-  white-space: nowrap;
-}
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.6;
-}
-#chart {
-  float: left;
-  border: 1px solid black;
-  width: 50%;
-  min-height: 800px;
-  vertical-align: middle;
-}
-#sidelist {
-  float: right;
-  width: 25%;
-  text-align: center;
-  font-weight: 400;
-}
-#statlist {
-  float: left;
-  width: 25%;
-  text-align: center;
-  font-weight: 100;
-}
-label {
-  align-items: center;
-}
-
-.select {
-  max-width: 100%;
-  position:absolute;
-}
-
-#genrepicker {
-  min-height: 50vh !important;
-  height: 100%;
-}
-.form-control-lg {
-  height: 50vh;
-}
-text {
-  font-family: sans-serif;
-  font-size: 10px;
-}
-#AContainer {
-  float: right;
-  border: 1px solid black;
-}
-#TContainer {
-  float: left;
-  border: 1px solid black;
 }
