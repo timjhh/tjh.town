@@ -15,17 +15,17 @@ $(document).ready(function() {
 	var xSpeed = 4;
 	var ySpeed = 4;
 
-	//var interval = setInterval(animate(), 1000 / FPS);
-	animate();
+	var interval = setInterval(animate, 1000 / FPS);
 
 	function update() {
 		dvd.style.left = xPosition + "px";
 		dvd.style.top = yPosition + "px";
 	}
-	$("#speed-select").change(function(d) {
-		clearInterval(interval);
+
+	$("#speed-select").change(function() {
 		FPS = parseInt($("#speed-select").val());
-		interval = setInterval(animate(), 1000 / FPS);
+		clearInterval(interval);
+		interval = setInterval(animate, 1000 / FPS);
 	});
 
 	function animate() {
@@ -40,7 +40,10 @@ $(document).ready(function() {
 
 		xPosition += xSpeed;
 		yPosition += ySpeed;
+
 		update();
+
+
 	}
 	function randomColor() {
 		return "#" + Math.floor(Math.random() * 1000000);
