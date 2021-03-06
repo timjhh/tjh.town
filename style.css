@@ -53,6 +53,6 @@ head {
 
 }
 #profile {
-  overflow: hidden;
   width: 100%;
+  overflow: hidden;
 }
