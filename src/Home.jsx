@@ -3,7 +3,7 @@ import {Container, Row, Col, Button, Image} from 'react-bootstrap';
 import { Github, Linkedin } from 'react-bootstrap-icons';
 import './App.css';
 import { Link } from 'react-router-dom';
-import Footer from "./Footer.jsx";
+// import Footer from "./Footer.jsx";
 import Dvd from "./Dvd.jsx";
 import Snow from "./Snow.jsx"
 
@@ -29,13 +29,14 @@ function Home() {
 			<hr/>
 		</Row>
 		<Row className="d-inline-block">		
-			<Footer />
+{/*			<Footer />*/}
 		</Row>
 		</Col>
 
 
 		<Col xs={12} md={10}>
 
+			<Snow />
 
 		</Col>
 

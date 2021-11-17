@@ -5,47 +5,43 @@ import './App.css';
 import { Link } from 'react-router-dom';
 import Footer from "./Footer.jsx";
 import Dvd from "./Dvd.jsx";
+import * as d3 from "d3";
 
+const margin = {top: 20, right: 20, bottom: 20, left: 180},
+width = 1024 - (margin.right+margin.left),
+height = 600 - margin.top - margin.bottom;
 
-
+const numSnow = 100;
+let snow = [];
 
 function Snow() {
+
+
+	const svg = d3.select("#snow")
+	.append("svg")
+	.attr("width", width)
+	.attr("height", height)
+	.append("g")
+	.attr("transform",
+	"translate(" + margin.left + "," + margin.top + ")");
+
+
+	for(var i=0;i<numSnow;i++) {
+		let sn = svg.append("rect")
+		.attr('x', 100)
+		.attr('y', 100)
+		.attr('width', 3)
+		.attr('height', 3)
+		.attr('stroke', 'black');
+		snow.push(sn);
+	}
+
+
   return (
 
-<Container style={{'height': '100vh'}} fluid className="d-flex">
-	<Row>
-		<Col xs={12} md={2} className="ml-0 pl-0 text-muted font-weight-light text-center">
-			<Image className="d-flex w-100" id="profile" src="prof.png"/>
-			
-			<p><br/>My name is Tim Harrold(he/them), and i'm an aspiring programmer / human being. Here are some of my projects, interests and hobbies</p>
-			<hr/>
+<div id="snow">
 
-			<a href="https://github.com/timjhh" target="_blank" rel="noreferrer"><Github className="mx-2 xs"/></a>|
-			<a href="resume.pdf" className="mx-2">Resume</a>|
-			<a href="https://www.linkedin.com/in/tim-harrold-02b249180/" target="_blank" rel="noreferrer"><Linkedin className="mx-2"/></a>
-
-			<p>timjharrold@gmail.com</p>
-			<hr/>		
-			<Footer/>
-
-		</Col>
-
-
-		<Col xs={12} md={10}>
-
-
-		</Col>
-
-
-
-</Row>
-
-
-
-
-
-
-</Container>
+</div>
 
   );
 }
