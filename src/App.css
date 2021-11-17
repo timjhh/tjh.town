@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+
+}
+
+
+  @media (max-width: 768px) {
+    svg {
+      width: 1em;
+    }
+  }
