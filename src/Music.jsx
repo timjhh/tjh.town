@@ -37,7 +37,7 @@ function Music() {
 
 	return (
 			<>
-			<Card className="card-horizontal">
+			<Card className="card-horizontal w-100">
 				<Image src="" className="img-responsive mr-0"/>
 				<div className="card-body">
 				{song ? (

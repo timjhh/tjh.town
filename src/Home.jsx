@@ -15,6 +15,7 @@ function Home() {
 <Container style={{'height': '100vh'}} fluid className="d-flex">
 	<Row>
 		<Col xs={12} md={2} className="ml-0 pl-0 text-muted font-weight-light text-center">
+		<Row className="d-inline-block">
 			<Image className="d-flex w-100" id="profile" src="prof.png"/>
 			
 			<p><br/>My name is Tim Harrold(he/them), and i'm an aspiring programmer / human being. Here are some of my projects, interests and hobbies</p>
@@ -25,9 +26,11 @@ function Home() {
 			<a href="https://www.linkedin.com/in/tim-harrold-02b249180/" target="_blank" rel="noreferrer"><Linkedin className="mx-2"/></a>
 
 			<p>timjharrold@gmail.com</p>
-			<hr/>		
-			<Footer/>
-
+			<hr/>
+		</Row>
+		<Row className="d-inline-block">		
+			<Footer />
+		</Row>
 		</Col>
 
 
