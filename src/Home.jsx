@@ -19,7 +19,7 @@ const usedWidth = useRef(null);
 	<Row ref={usedWidth}>
 		<Col xs={12} md={2} className="transparent text-muted font-weight-light text-center">
 		<Row className="d-block">
-			<Image rounded className="mt-2 w-75 align-items-center" id="profile" src="prof.png"/>
+			<Image rounded className="mt-3 w-75 align-items-center" id="profile" src="prof.png"/>
 			
 			<div className="px-3">
 			<p><br/>My name is Tim Harrold(he/them), and i'm an aspiring programmer / human being. Here are some of my projects, interests and hobbies</p>
@@ -34,7 +34,7 @@ const usedWidth = useRef(null);
 
 		</div>
 		</Row>
-		<Row className="d-inline-block">		
+		<Row className="align-items-end justify-content-center">		
 			<Footer />
 		</Row>
 
