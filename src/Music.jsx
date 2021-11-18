@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
 import {Image, Placeholder, Card} from 'react-bootstrap';
 import axios from 'axios';
@@ -6,7 +6,9 @@ import axios from 'axios';
 function Music() {
 
 	const date = new Date().toLocaleString();
-	var song;
+	const [reRender, setReRender] = useState(0);
+	const [song, setSong] = useState(null);
+
 	var timestamp;
 	var artist;
 	var album;
@@ -15,28 +17,41 @@ function Music() {
 	var fmBox;
 	var diff;
 
+	function forceUpdate() {
+
+		return setReRender(d => d+1);
+	}
+
 	useEffect(() => {
 		fmArtists("chiefton117").then(d => {
 
 		if(d) {
 
 
-		song = d.recenttracks.track[0];
-		timestamp = d.recenttracks.track.find(e => e.date != null).date.uts;
-		artist = song.artist["#text"];
-		album = song.album["#text"];
+		let curr = d.recenttracks.track[0];
+		let timestamp = d.recenttracks.track.find(e => e.date != null).date.uts;
+
+		let currSong = {
+			title: curr.name,
+			artist: curr.artist["#text"],
+			album: curr.album["#text"],
+			diff: getTime(Math.floor(((Date.now()/1000) - parseInt(timestamp))))
+		}
+		setSong(currSong);
+
+
+
 
 
 		// Time difference in seconds
-		diff = getTime(Math.floor(((Date.now()/1000) - parseInt(timestamp))));
+		
 
 		fmBox = $(".music");
 		$(".cover").attr("src", cover);
 
 		cover = song.image.find(d => d.size === "large")["#text"];
 
-
-
+		forceUpdate();
 		}
 
 
@@ -44,14 +59,9 @@ function Music() {
 
 
 
-
-	});
+	}, []);
 
 	
-	console.log({artist});
-
-
-
 
 	return (
 			<>
@@ -60,8 +70,8 @@ function Music() {
 				<Card.Body>
 				{song ? (
 					<>
-					<p>Song: {song.name}<br/>Artist: {artist}<br/>Album: {album}</p>
-					<p className="card-text" id="when">Logged {diff} ago</p>
+					<p>Song: {song.title}<br/>Artist: {song.artist}<br/>Album: {song.album}</p>
+					<p className="card-text" id="when">Logged {song.diff} ago</p>
 					</>
 					) : (
 					<>
@@ -116,6 +126,7 @@ function Music() {
 	async function fmArtists(username) {
 
 		const response = await axios("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=" + username + "&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json");
+
 		return await response.data;
 
 	}
