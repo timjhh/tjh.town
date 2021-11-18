@@ -1,21 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import {Container, Row, Col, Button, Image} from 'react-bootstrap';
-import { Github, Linkedin } from 'react-bootstrap-icons';
 import './App.css';
-import { Link } from 'react-router-dom';
-import Footer from "./Footer.jsx";
-import Dvd from "./Dvd.jsx";
+//import { Link } from 'react-router-dom';
 import * as d3 from "d3";
 
 var margin = {top: 20, right: 20, bottom: 20, left: 180},
 width = window.innerWidth*11/12,
 height = window.innerHeight;
 
-
-const numSnow = 100;
-
 let snow = [];
-let horizon;
 let hData = [{cX: 0, cY: 70}]; // Horizontal front-facing line
 let mData = []; // Background mountain
 

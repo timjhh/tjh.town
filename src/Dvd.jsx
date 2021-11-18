@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import {Container, Button, Image} from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import './App.css';
 import { Link } from 'react-router-dom';
 import $ from 'jquery';

@@ -8,7 +8,7 @@ function Footer() {
 //	<Row  style={{position: "absolute", bottom: "0px", top: "100%", flexWrap: "nowrap"}}>
 //className="position-absolute bottom-0"
 // className="d-flex flex-column  flex-nowrap" 
-	<Row style={{marginTop: "100%"}}>
+	<Row className="mx-1">
 			<div>
 					<div className="transparent">
 						<h4 className="card-title text-center">What am I listening to?</h4>

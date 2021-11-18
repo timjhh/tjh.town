@@ -1,6 +1,7 @@
+import React, { useEffect } from 'react';
 import $ from 'jquery';
-import React from 'react';
 import {Image, Placeholder, Card} from 'react-bootstrap';
+import axios from 'axios';
 
 function Music() {
 
@@ -11,30 +12,50 @@ function Music() {
 	var album;
 	var diff;
 	var cover;
+	var fmBox;
+	var diff;
 
+	useEffect(() => {
+		const fmData = fmArtists("chiefton117").then(d => {
 
-	fmArtists("chiefton117").done(function(d) {
+		if(d) {
 
 
 		song = d.recenttracks.track[0];
 		timestamp = d.recenttracks.track.find(e => e.date != null).date.uts;
+		artist = song.artist["#text"];
+		album = song.album["#text"];
+
+
+		// Time difference in seconds
+		diff = getTime(Math.floor(((Date.now()/1000) - parseInt(timestamp))));
+
+		fmBox = $(".music");
+		$(".cover").attr("src", cover);
+
+		cover = song.image.find(d => d.size === "large")["#text"];
+
+
+
+		}
+
+
+		});
+
+
+
 
 	});
 
+	
 
 
 
-	artist = song.artist["#text"];
-	album = song.album["#text"];
 
 
-	// Time difference in seconds
-	var diff = getTime(Math.floor(((Date.now()/1000) - parseInt(timestamp))));
 
-	var fmBox = $(".music");
-	$(".cover").attr("src", cover);
 
-	var cover = song.image.find(d => d.size === "large")["#text"];
+
 
 	return (
 			<>
@@ -96,22 +117,23 @@ function Music() {
 		return time;
 
 	}
-	function fmArtists(username) {
+	async function fmArtists(username) {
 
 		axios
-		.get("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=' + username + '&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json")
+		.get("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=" + username + "&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json")
 		.then(response => {
-		    return response;
+			console.log(response.data);
+		    return response.data;
 		})
 		.catch(function(error) {
 		    console.log(error);
 		});
 
-	  	return $.ajax({
-	        dataType: 'json',
-	        async: false,
-	        url: 'http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=' + username + '&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json'
-	      });
+	  	// return $.ajax({
+	   //      dataType: 'json',
+	   //      async: false,
+	   //      url: 'http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=' + username + '&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json'
+	   //    });
 	}
 	function fmTrack(tmbid, ambid) {
 		return $.ajax({

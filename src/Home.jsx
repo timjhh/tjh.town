@@ -3,7 +3,7 @@ import {Container, Row, Col, Button, Image} from 'react-bootstrap';
 import { Github, Linkedin } from 'react-bootstrap-icons';
 import './App.css';
 import { Link } from 'react-router-dom';
-// import Footer from "./Footer.jsx";
+import Footer from "./Footer.jsx";
 import Dvd from "./Dvd.jsx";
 import Snow from "./Snow.jsx"
 
@@ -35,7 +35,7 @@ const usedWidth = useRef(null);
 		</div>
 		</Row>
 		<Row className="d-inline-block">		
-{/*			<Footer />*/}
+			<Footer />
 		</Row>
 
 		</Col>
