@@ -15,10 +15,10 @@ const numSnow = 100;
 
 let snow = [];
 let horizon;
-let hData = [{cX: 0, cY: 0}]; // Horizontal front-facing line
+let hData = [{cX: 0, cY: 70}]; // Horizontal front-facing line
 let mData = []; // Background mountain
 
-for(var i=20;i<window.innerWidth;i+=10) {
+for(var i=80;i<window.innerWidth;i+=10) {
 	let randY = (Math.random()*10)+(i/4);
 	hData.push({cX:i, cY:randY});
 
@@ -39,7 +39,7 @@ let y = d3.scaleLinear()
 
 let mX = d3.scaleLinear()
 .range([0,width])
-.domain([0,window.innerWidth]);
+.domain([0,window.innerWidth/2]);
 
 let mY = d3.scaleLinear()
 .range([height/2,height])
@@ -66,8 +66,7 @@ function Snow() {
 		.attr("x2", "1")
 		.attr("y1", "0")
 		.attr("y2", "1.5")
-		//#EE3F6B
-//#4F2168 
+
 	// Define gradient starts and stops
 	gradient.append("stop")
 		.attr("stop-color", "#9ebcda")
@@ -96,55 +95,16 @@ function Snow() {
 		.attr("stop-color", "#EE3F6B")
 		.attr("offset", "1")
 
-
-
-
 	svg.append("rect")
 	    .attr("width", "100%")
 	    .attr("height", "100%")
-	    .attr("fill", "url(#pGrad)");
+	    .attr("fill", "url(#bg-gradient)");
 
 
-	for(var i=0;i<numSnow;i++) {
-
-		let rX = Math.random()*width;
-		let rY = Math.random()*height;
-		let sn = svg.append("rect")
-		.attr('x', rX)
-		.attr('y', -margin.top)
-		.attr('width', 3)
-		.attr('height', 5)
-		.attr("stroke", 5)
-		.attr("fill", "url(#bg-gradient)");
-		snow.push(sn);
-
-	}
-
-	// Black overlay in forefront
-	svg.append("path")
-	.datum(hData)
-	.attr("d", d3.area()
-		.x(d => x(d.cX))
-		.y1(d => x(d.cY))
-		.y0(height+margin.top+margin.bottom)
-		)
-	//.attr("transform", "translate(" + -margin.left + ",0)")
-	.attr("stroke", "black")
-	.attr("fill", "black")
-	.attr("opacity", 0.7);
-
-
-	// Background hill area
-	svg.append("path")
-	.datum(mData)
-	.attr("d", d3.area()
-		.x(d => mX(d.cX))
-		.y1(d => mY(d.cY))
-		.y0(height+margin.top+margin.bottom)
-		)
-	.attr("opacity", 0.9)
-	.attr("fill", "#967bb6");
-
+	// Rain animation container
+	svg.append("g")
+	.attr("id", "anim")
+	
 
 
 	// Forefront hill area
@@ -155,7 +115,25 @@ function Snow() {
 		.y1(d => y(d.cY))
 		.y0(height+margin.top+margin.bottom)
 		)
-	.attr("fill", "url(#pGrad)");
+	.attr("fill", "#357360");
+
+
+
+	// Black overlay on front left hill
+	svg.append("path")
+	.datum(mData)
+	.attr("d", d3.area()
+		.x(d => mX(d.cX))
+		.y1(d => mY(d.cY))
+		.y0(height+margin.top+margin.bottom)
+		)
+	.attr("opacity", 0.9)
+	.attr("fill", "#CABDAF");
+
+
+
+
+
 
 	// Forefront line topo
 	// svg.append("path")
@@ -178,8 +156,20 @@ function Snow() {
 		.y0(height+margin.top+margin.bottom)
 		)
 	.attr("fill", "black")
-	.attr("opacity", 0.7);
+	.attr("opacity", 0.8);
 
+
+	// Black overlay in forefront
+	svg.append("path")
+	.datum(hData)
+	.attr("d", d3.area()
+		.x(d => x(d.cX))
+		.y1(d => x(d.cY))
+		.y0(height+margin.top+margin.bottom)
+		)
+	.attr("stroke", "black")
+	.attr("fill", "black")
+	.attr("opacity", 0.4);
 
 
 
@@ -189,38 +179,41 @@ function Snow() {
 
 	function animate() {
 
-		let svg = d3.select("#snow").select("svg").select(".main");
-
-		let center = [width/2, height/2];
-		//let rX = Math.random()*width;
-		//let rY = Math.random()*height;
-
-		let e = 0;
-		//console.log(time);
-		//let theta = parseInt(time.toString().replace('.','')); 
-		//console.log((parseFloat(timer)/3600).toString());
-		//let theta = time % 180
-
-		// let rds = (100*((1-e**2)/(1+e*Math.cos(theta*Math.PI/180))));
-		// svg.selectAll("rect").transition().duration(100).attr('x', (d,idx) => (rds*Math.cos(theta*Math.PI/180))+center[0]);
-		// svg.selectAll("rect").transition().duration(100).attr('y', (d,idx) => (rds*Math.sin(theta*Math.PI/180))+center[1]);
-		//d3.transform(d3.selectAll("rect").attr("transform")).translate
-		// if(parseInt(time) % 100 == 0) {
-
-		// 	svg.selectAll("rect").transition().duration(1).attr('width', 0);
-
-		// }
-
-			// let x = rct.attr('x');
-			// let y = rct.attr('y')+1;
-			//rct.transition().duration(100).attr('y', y);
-
-			snow.forEach((d,i) => {
-				d.transition().duration(100).attr('height', height+margin.top+margin.bottom);
+		let svg = d3.select("#snow").select("svg").select(".main").select("#anim");
+		let rX = Math.random()*width;
+		let rY = Math.random()*height;
+		let sn = svg.append("rect")
+		.attr('x', rX)
+		.attr('y', -margin.top-rY)
+		.attr("zIndex", 1)
+		.attr('width', 2)
+		.attr('height', 5)
+		.attr("stroke", 5)
+		.attr("fill", "darkblue");
 
 
-			})
-		//svg.selectAll("rect").transition().duration(100).attr('width', width);
+				sn.transition()
+				.duration(5000)
+				.attr('y', height)
+				.remove();		
+		// .attr("fill", "url(#bg-gradient)");
+		snow.push(sn);
+	for(var i=0;i<2;i++) {
+
+
+
+	}
+
+			// snow.forEach((d,i) => {
+			// 	//d.transition().duration(100).attr('y', height+margin.top+margin.bottom);
+
+			// 	d.transition()
+			// 	.duration(1000)
+			// 	.attr('y', height)
+			// 	.remove();
+
+			// })
+
 
 
 
