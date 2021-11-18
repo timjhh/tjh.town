@@ -16,7 +16,7 @@ function Music() {
 	var diff;
 
 	useEffect(() => {
-		const fmData = fmArtists("chiefton117").then(d => {
+		fmArtists("chiefton117").then(d => {
 
 		if(d) {
 
@@ -40,7 +40,7 @@ function Music() {
 		}
 
 
-		});
+		}).catch(err => console.log(err));
 
 
 
@@ -48,11 +48,7 @@ function Music() {
 	});
 
 	
-
-
-
-
-
+	console.log({artist});
 
 
 
@@ -119,21 +115,9 @@ function Music() {
 	}
 	async function fmArtists(username) {
 
-		axios
-		.get("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=" + username + "&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json")
-		.then(response => {
-			console.log(response.data);
-		    return response.data;
-		})
-		.catch(function(error) {
-		    console.log(error);
-		});
+		const response = await axios("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=" + username + "&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json");
+		return await response.data;
 
-	  	// return $.ajax({
-	   //      dataType: 'json',
-	   //      async: false,
-	   //      url: 'http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=' + username + '&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json'
-	   //    });
 	}
 	function fmTrack(tmbid, ambid) {
 		return $.ajax({

@@ -31,7 +31,7 @@ const usedWidth = useRef(null);
 
 			<p>timjharrold@gmail.com</p>
 			<hr/>
-			<a href="./MusicGraph/MusicGraph.html">Music Graph</a>
+			
 		</div>
 		</Row>
 		<Row className="d-inline-block">		

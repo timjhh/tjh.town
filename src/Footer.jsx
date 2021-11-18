@@ -11,7 +11,7 @@ function Footer() {
 	<Row className="mx-1">
 			<div>
 					<div className="transparent">
-						<h4 className="card-title text-center">What am I listening to?</h4>
+						<h6 className="card-title text-center">What am I listening to?</h6>
 							<Music />
 					</div>
 			</div>

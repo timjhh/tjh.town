@@ -4,7 +4,7 @@ import './App.css';
 import * as d3 from "d3";
 
 var margin = {top: 20, right: 20, bottom: 20, left: 180},
-width = window.innerWidth*11/12,
+width = window.innerWidth*10/12,
 height = window.innerHeight;
 
 let snow = [];
