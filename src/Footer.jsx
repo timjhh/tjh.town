@@ -8,17 +8,11 @@ function Footer() {
 //	<Row  style={{position: "absolute", bottom: "0px", top: "100%", flexWrap: "nowrap"}}>
 //className="position-absolute bottom-0"
 // className="d-flex flex-column  flex-nowrap" 
-	<Row className="mx-1">
-			<div>
-					<div className="transparent">
-						<h6 className="card-title text-center">What am I listening to?</h6>
-							<Music />
-					</div>
-			</div>
 
-
-	</Row>
-
+		<div className="transparent mx-auto">
+			<h6 className="card-title text-center">What am I listening to?</h6>
+				<Music />
+		</div>
 
   );
 }

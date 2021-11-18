@@ -15,10 +15,10 @@ const usedWidth = useRef(null);
 
   return (
 
-<Container style={{'height': '100vh'}} fluid className="d-flex">
+<Container fluid>
 	<Row ref={usedWidth}>
-		<Col xs={12} md={2} className="transparent text-muted font-weight-light text-center">
-		<Row className="d-block">
+		<Col xs={12} md={2} className="d-flex transparent text-muted font-weight-light text-center flex-column">
+		<Row className="justify-content-center">
 			<Image rounded className="mt-3 w-75 align-items-center" id="profile" src="prof.png"/>
 			
 			<div className="px-3">
@@ -34,7 +34,8 @@ const usedWidth = useRef(null);
 
 		</div>
 		</Row>
-		<Row className="align-items-end justify-content-center">		
+
+		<Row className="justify-content-center mt-auto mb-3">		
 			<Footer />
 		</Row>
 

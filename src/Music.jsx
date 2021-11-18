@@ -55,9 +55,9 @@ function Music() {
 
 	return (
 			<>
-			<Card className="card-horizontal w-100">
+			<Card>
 				<Image src="" className="img-responsive mr-0"/>
-				<div className="card-body">
+				<Card.Body>
 				{song ? (
 					<>
 					<p>Song: {song.name}<br/>Artist: {artist}<br/>Album: {album}</p>
@@ -80,11 +80,11 @@ function Music() {
 			}
 
 
-				</div>
+				</Card.Body>
 			</Card>
-			<div className="card-footer text-center">
+			<Card className="card-footer text-center">
 				<small className="date">Last Updated {date}</small>
-			</div>
+			</Card>
 
 			</>
 
