@@ -3,7 +3,7 @@ import './App.css';
 //import { Link } from 'react-router-dom';
 import * as d3 from "d3";
 
-var margin = {top: 20, right: 20, bottom: 20, left: 180},
+var margin = {top: 20, right: 20, bottom: 20, left: 20},
 width = window.innerWidth*10/12,
 height = window.innerHeight;
 
