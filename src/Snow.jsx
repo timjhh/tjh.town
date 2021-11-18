@@ -18,32 +18,32 @@ let horizon;
 let hData = [{cX: 0, cY: 70}]; // Horizontal front-facing line
 let mData = []; // Background mountain
 
-for(var i=80;i<window.innerWidth;i+=10) {
+for(var i=80;i<width;i+=10) {
 	let randY = (Math.random()*10)+(i/4);
 	hData.push({cX:i, cY:randY});
 
 }
-for(var i=0;i<window.innerWidth/2;i+=10) {
+for(var i=0;i<width/2;i+=10) {
 	let randY = (Math.random()*60);
-	mData.push({cX: i, cY: randY+i+(window.innerWidth/2)})
+	mData.push({cX: i, cY: randY+i+(width/2)})
 }
 
 
 let x = d3.scaleLinear()
 .range([0,width])
-.domain([0,window.innerWidth]);
+.domain([0,width]);
 
 let y = d3.scaleLinear()
 .range([height,0])
-.domain([0,window.innerHeight]);
+.domain([0,height]);
 
 let mX = d3.scaleLinear()
 .range([0,width])
-.domain([0,window.innerWidth/2]);
+.domain([0,width/2]);
 
 let mY = d3.scaleLinear()
 .range([height/2,height])
-.domain([0,window.innerWidth]);
+.domain([0,width]);
 
 function Snow() {
 
@@ -203,17 +203,6 @@ function Snow() {
 
 
 	}
-
-			// snow.forEach((d,i) => {
-			// 	//d.transition().duration(100).attr('y', height+margin.top+margin.bottom);
-
-			// 	d.transition()
-			// 	.duration(1000)
-			// 	.attr('y', height)
-			// 	.remove();
-
-			// })
-
 
 
 

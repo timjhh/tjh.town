@@ -37,7 +37,7 @@ function Home() {
 		</Col>
 
 
-		<Col xs={12} md={10}  className="mx-0 px-0">
+		<Col xs={12} md={10}  className="mx-0 px-0 d-none d-sm-block">
 
 			<Snow />
 
