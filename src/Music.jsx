@@ -33,7 +33,7 @@ function Music() {
 	var fmBox = $(".music");
 	$(".cover").attr("src", cover);
 
-	var cover = song.image.find(d => d.size == "large")["#text"];
+	var cover = song.image.find(d => d.size === "large")["#text"];
 
 	return (
 			<>
