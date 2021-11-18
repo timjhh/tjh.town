@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {Container, Row, Col, Button, Image} from 'react-bootstrap';
 import { Github, Linkedin } from 'react-bootstrap-icons';
 import './App.css';
@@ -7,9 +7,10 @@ import Footer from "./Footer.jsx";
 import Dvd from "./Dvd.jsx";
 import * as d3 from "d3";
 
-const margin = {top: 20, right: 20, bottom: 20, left: 180},
-width = window.innerWidth,
+var margin = {top: 20, right: 20, bottom: 20, left: 180},
+width = window.innerWidth*11/12,
 height = window.innerHeight;
+
 
 const numSnow = 100;
 
@@ -18,39 +19,46 @@ let horizon;
 let hData = [{cX: 0, cY: 70}]; // Horizontal front-facing line
 let mData = []; // Background mountain
 
-for(var i=80;i<width;i+=10) {
-	let randY = (Math.random()*10)+(i/4);
-	hData.push({cX:i, cY:randY});
 
-}
-for(var i=0;i<width/2;i+=10) {
-	let randY = (Math.random()*60);
-	mData.push({cX: i, cY: randY+i+(width/2)})
-}
+function Snow(props) {
 
 
-let x = d3.scaleLinear()
-.range([0,width])
-.domain([0,width]);
-
-let y = d3.scaleLinear()
-.range([height,0])
-.domain([0,height]);
-
-let mX = d3.scaleLinear()
-.range([0,width])
-.domain([0,width/2]);
-
-let mY = d3.scaleLinear()
-.range([height/2,height])
-.domain([0,width]);
-
-function Snow() {
-
+	const sizeRef = useRef(null);
 
 	useEffect(() => {
 
-	var interval = setInterval(animate, 500);
+	//width = sizeRef.current ? sizeRef.current.offsetWidth : window.offsetWidth;
+
+
+	for(var i=80;i<width;i+=10) {
+		let randY = (Math.random()*10)+(i/4);
+		hData.push({cX:i, cY:randY});
+
+	}
+	for(var i=0;i<width/2;i+=10) {
+		let randY = (Math.random()*60);
+		mData.push({cX: i, cY: randY+i+(width/2)})
+	}
+
+
+	let x = d3.scaleLinear()
+	.range([0,width])
+	.domain([0,width]);
+
+	let y = d3.scaleLinear()
+	.range([height,0])
+	.domain([0,height]);
+
+	let mX = d3.scaleLinear()
+	.range([0,width])
+	.domain([0,width/2]);
+
+	let mY = d3.scaleLinear()
+	.range([height/2,height])
+	.domain([0,width]);
+
+
+
 	const svg = d3.select("#snow")
 	.append("svg")
 	.attr("position", "absolute")
@@ -134,7 +142,6 @@ function Snow() {
 
 
 
-
 	// Forefront line topo
 	// svg.append("path")
 	// .datum(hData)
@@ -172,12 +179,26 @@ function Snow() {
 	.attr("opacity", 0.4);
 
 
+	// Attempt at circle via areaRadial
+	svg.append("path")
+	.datum(mData)
+	.attr("d", d3.areaRadial()
+		.curve(d3.curveLinearClosed)
+		.angle(d => mX(d.cX)%360)
+		.radius(d => mY(Math.sqrt(d.cY)))
+		)
+	.attr("transform", "translate("+ width/2 + "," + height/2 + ")")
+	.attr("opacity", 0.9)
+	.attr("fill", "#CABDAF");
 
 
-	}, []);
+	}, [sizeRef.current]);
 
 
 	function animate() {
+
+
+		if(props.usedwidth) console.log(props.usedwidth.current.offsetWidth);
 
 		let svg = d3.select("#snow").select("svg").select(".main").select("#anim");
 		let rX = Math.random()*width;
@@ -198,22 +219,18 @@ function Snow() {
 				.remove();		
 		// .attr("fill", "url(#bg-gradient)");
 		snow.push(sn);
-	for(var i=0;i<2;i++) {
 
 
-
-	}
 
 
 
 	}
-	//var timer = d3.interval(animate);
+
 	var timer = d3.timer(animate);
-	//const interval = setInterval(() => {animate()}, 500);
  
   return (
 
-<div id="snow">
+<div id="snow" ref={sizeRef} style={{"width": "100%"}}>
 
 </div>
 

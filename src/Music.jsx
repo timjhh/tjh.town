@@ -23,6 +23,7 @@ function Music() {
 
 
 
+
 	artist = song.artist["#text"];
 	album = song.album["#text"];
 
@@ -96,6 +97,16 @@ function Music() {
 
 	}
 	function fmArtists(username) {
+
+		axios
+		.get("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=' + username + '&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json")
+		.then(response => {
+		    return response;
+		})
+		.catch(function(error) {
+		    console.log(error);
+		});
+
 	  	return $.ajax({
 	        dataType: 'json',
 	        async: false,
