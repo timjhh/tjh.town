@@ -4,15 +4,15 @@ import './App.css';
 import * as d3 from "d3";
 
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
-width = window.innerWidth*10/12,
-height = window.innerHeight*19/20;
+// width = window.innerWidth*10/12,
+// height = window.innerHeight*19/20;
 
-// width = 5,
-// height = 5;
+width = 50,
+height = 50;
 
 let snow = [];
 let particles = [];
-let field = [];
+const field = [];
 let startCount = 100;
 let size = 4; // Size of each particle
 
@@ -22,7 +22,7 @@ let aHeight = Math.floor(height/size);
 
 // console.log(aWidth + " aW");
 // console.log(aHeight + " aH");
-function Snow(props) {
+function Conway(props) {
 
 
 	const sizeRef = useRef(null);
@@ -49,7 +49,7 @@ function Snow(props) {
 
 	}
 
-
+	console.log(field);
 
 
 	let x = d3.scaleLinear()
@@ -167,19 +167,20 @@ function Snow(props) {
 		try {
 
 			if(y > 0 && field[y-1][x] === 1) count++;
-			if(y < aHeight && field[y+1][x] === 1) count++;
+			if(y < aHeight-1 && field[y+1][x] === 1) count++;
 			if(y > 0 && x > 0 && field[y-1][x-1] === 1) count++;
-			if(y > 0 && x < aWidth && field[y-1][x+1] === 1) count++;
+			if(y > 0 && x < aWidth-1 && field[y-1][x+1] === 1) count++;
 			if(x > 0 && field[y][x-1] === 1) count++;
-			if(x < aWidth && field[y][x+1] === 1) count++;
-			if(y < aHeight && x > 0 && field[y+1][x-1] === 1) count++;
-			if(x < aWidth && y < aHeight && field[y+1][x+1] === 1) count++;			
+			if(x < aWidth-1 && field[y][x+1] === 1) count++;
+			if(y < aHeight-1 && x > 0 && field[y+1][x-1] === 1) count++;
+			if(x < aWidth-1 && y < aHeight-1 && field[y+1][x+1] === 1) count++;			
 		} catch(e) {
 			console.log(e);
-			// console.log( "aWidth " + x + " aW " + aWidth  );
-			// console.log( "aHeight " + y + " aH " + aHeight  );
+			console.log( "x " + x + " aW " + aWidth + " y " + y + " aH " + aHeight  );
+			console.log( field[y][x] );
+
 		}
-		return count;
+		return parseInt(count);
 	}
 
 	function animate() {
@@ -200,9 +201,13 @@ function Snow(props) {
 
 		for(var i=0;i<aHeight;i++) {
 		for(var j=0;j<aWidth;j++) {
-			let p = field[i][j];
-			let count = nCount(p);
+			let count = nCount({x:j, y:i});
 			if(count > 3 || count < 2) {
+					try {
+						field[i][j] = 0;
+					} catch {
+						console.log(field[i][j] + " i,j " + i + " " + j);
+					}
 					field[i][j] = 0;
 					let particle = {x:j, y:i};
 					removed.push(particle);
@@ -239,7 +244,6 @@ function Snow(props) {
 		game.selectAll("rect")
 		.data(removed)
 		.exit()
-		.append("rect")
 		.remove();
 
 		// let sn = svg.append("rect")
@@ -276,4 +280,4 @@ function Snow(props) {
   );
 }
 
-export default Snow;
+export default Conway;
