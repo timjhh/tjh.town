@@ -162,24 +162,23 @@ function Snow(props) {
 	}
 	function nCount(d) {
 		let count = 0;
-		let x = d.x;
-		let y = d.y;
+		let x = parseInt(d.x);
+		let y = parseInt(d.y);
 		try {
 
-			if(y > 0 && field[y-1][x] == 1) count++;
-			if(y < aHeight && field[y+1][x] == 1) count++;
-			if(y > 0 && x > 0 && field[y-1][x-1] == 1) count++;
-			if(y > 0 && x < aWidth && field[y-1][x+1] == 1) count++;
-			if(x > 0 && field[y][x-1] == 1) count++;
-			if(x < aWidth && field[y][x+1] == 1) count++;
-			if(y < aHeight && x > 0 && field[y+1][x-1] == 1) count++;
-			if(x < aWidth && y < aHeight && field[y+1][x+1] == 1) count++;			
+			if(y > 0 && field[y-1][x] === 1) count++;
+			if(y < aHeight && field[y+1][x] === 1) count++;
+			if(y > 0 && x > 0 && field[y-1][x-1] === 1) count++;
+			if(y > 0 && x < aWidth && field[y-1][x+1] === 1) count++;
+			if(x > 0 && field[y][x-1] === 1) count++;
+			if(x < aWidth && field[y][x+1] === 1) count++;
+			if(y < aHeight && x > 0 && field[y+1][x-1] === 1) count++;
+			if(x < aWidth && y < aHeight && field[y+1][x+1] === 1) count++;			
 		} catch(e) {
 			console.log(e);
-			console.log( "aWidth " + x + " aW " + aWidth  );
-			console.log( "aHeight " + y + " aH " + aHeight  );
+			// console.log( "aWidth " + x + " aW " + aWidth  );
+			// console.log( "aHeight " + y + " aH " + aHeight  );
 		}
-
 		return count;
 	}
 
@@ -189,7 +188,7 @@ function Snow(props) {
 
 
 		// Get all particles which have a neighbor
-		let data = particles.filter(d => getNeighbors(d).length == 2);
+		let data = particles.filter(d => getNeighbors(d).length === 2);
 		let added = [];
 		let removed = [];
 
@@ -199,32 +198,49 @@ function Snow(props) {
 		// More than 3 neighbords dies
 		// Exactly 3 neighbors becomes alive
 
-		// Instantiate empty field of values
-		// for(var i=0;i<aHeight;i++) {
-		// 	for(var j=0;j<aWidth;j++) {
-		// 		if(nCount(f) == 2) {
+		for(var i=0;i<aHeight;i++) {
+		for(var j=0;j<aWidth;j++) {
+			let p = field[i][j];
+			let count = nCount(p);
+			if(count > 3 || count < 2) {
+					field[i][j] = 0;
+					let particle = {x:j, y:i};
+					removed.push(particle);
+			} else if(count === 3) {
+				field[i][j] = 1;
+				added.push({x:j, y:i});
+			}
+		}
+	}
+
+		// particles.forEach(d => {
+		// 		let count = nCount(d);
+		// 		if(count === 2) {
 		// 			console.log("b");
+		// 		} else if(count === 3) {
+
+		// 		} else {
+		// 			removed.push(d);
 		// 		}
-		// 	}
-		// }
-		particles.forEach(d => {
 
-				if(nCount(d) == 2) {
-					console.log("b");
-				}
-
-		});
+		// });
 
 
-		// game.selectAll("rect")
-		// .data(data)
-		// .enter()
-		// .append("rect")
-		// .attr("x", d => d.x)
-		// .attr("y", d => d.y)
-		// .attr("width", size)
-		// .attr("height", size)
-		// .attr("fill", "white");
+		game.selectAll("rect")
+		.data(added)
+		.enter()
+		.append("rect")
+		.attr("x", d => d.x)
+		.attr("y", d => d.y)
+		.attr("width", size)
+		.attr("height", size)
+		.attr("fill", "white");
+
+		game.selectAll("rect")
+		.data(removed)
+		.exit()
+		.append("rect")
+		.remove();
 
 		// let sn = svg.append("rect")
 		// .attr('x', rX)
