@@ -6,6 +6,7 @@ import * as d3 from "d3";
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
 width = window.innerWidth*10/12,
 height = window.innerHeight*19/20;
+
 // width = 5,
 // height = 5;
 
@@ -15,6 +16,12 @@ let field = [];
 let startCount = 100;
 let size = 4; // Size of each particle
 
+// Effective grid height/width for 2d array
+let aWidth = Math.floor(width/size);
+let aHeight = Math.floor(height/size);
+
+// console.log(aWidth + " aW");
+// console.log(aHeight + " aH");
 function Snow(props) {
 
 
@@ -25,16 +32,16 @@ function Snow(props) {
 	//width = sizeRef.current ? sizeRef.current.offsetWidth : window.offsetWidth;
 
 	// Instantiate empty field of values
-	for(var i=0;i<height;i++) {
+	for(var i=0;i<aHeight;i++) {
 		field.push([]);
-		for(var j=0;j<width;j++) {
+		for(var j=0;j<aWidth;j++) {
 			field[i].push(0);
 		}
 	}
 
 	for(var i=0;i<startCount;i++) {
-		let randX = Math.floor((Math.random()*width));
-		let randY = Math.floor((Math.random()*height));
+		let randX = Math.floor((Math.random()*aWidth));
+		let randY = Math.floor((Math.random()*aHeight));
 		let particle = {x:randX, y:randY};
 		particles.push(particle);
 
@@ -122,8 +129,8 @@ function Snow(props) {
 	.data(particles)
 	.enter()
 	.append("rect")
-	.attr("x", d => (d.x)-size/2)
-	.attr("y", d => (d.y)-size/2)
+	.attr("x", d => (d.x))
+	.attr("y", d => (d.y))
 	.attr("width", size)
 	.attr("height", size)
 	.attr("fill", "white");
@@ -157,14 +164,22 @@ function Snow(props) {
 		let count = 0;
 		let x = d.x;
 		let y = d.y;
-		if(field[y-1][x]) count++;
-		if(field[y+1][x]) count++;
-		if(field[y-1][x-1]) count++;
-		if(field[y-1][x+1]) count++;
-		if(field[y][x-1]) count++;
-		if(field[y][x+1]) count++;
-		if(field[y+1][x-1]) count++;
-		if(field[y+1][x+1]) count++;
+		try {
+
+			if(y > 0 && field[y-1][x] == 1) count++;
+			if(y < aHeight && field[y+1][x] == 1) count++;
+			if(y > 0 && x > 0 && field[y-1][x-1] == 1) count++;
+			if(y > 0 && x < aWidth && field[y-1][x+1] == 1) count++;
+			if(x > 0 && field[y][x-1] == 1) count++;
+			if(x < aWidth && field[y][x+1] == 1) count++;
+			if(y < aHeight && x > 0 && field[y+1][x-1] == 1) count++;
+			if(x < aWidth && y < aHeight && field[y+1][x+1] == 1) count++;			
+		} catch(e) {
+			console.log(e);
+			console.log( "aWidth " + x + " aW " + aWidth  );
+			console.log( "aHeight " + y + " aH " + aHeight  );
+		}
+
 		return count;
 	}
 
@@ -178,15 +193,27 @@ function Snow(props) {
 		let added = [];
 		let removed = [];
 
+		// DA RULEZ
+		// Fewer than 2 neighbors dies
+		// 2 or 3 neighbors lives
+		// More than 3 neighbords dies
+		// Exactly 3 neighbors becomes alive
 
 		// Instantiate empty field of values
-		for(var i=0;i<height;i++) {
-			for(var j=0;j<width;j++) {
-				if(nCount(field[i][j]) == 2) {
+		// for(var i=0;i<aHeight;i++) {
+		// 	for(var j=0;j<aWidth;j++) {
+		// 		if(nCount(f) == 2) {
+		// 			console.log("b");
+		// 		}
+		// 	}
+		// }
+		particles.forEach(d => {
+
+				if(nCount(d) == 2) {
 					console.log("b");
 				}
-			}
-		}
+
+		});
 
 
 		// game.selectAll("rect")
