@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Footer from "./Footer.jsx";
 import Dvd from "./Dvd.jsx";
 import Snow from "./Snow.jsx"
+import Conway from "./Conway.jsx"
 
 
 
@@ -44,7 +45,8 @@ const usedWidth = useRef(null);
 
 		<Col xs={12} md={10} usedwidth={usedWidth.current ? usedWidth.current.offsetWidth : 0} className="mx-0 px-0 d-none d-sm-block">
 
-			<Snow />
+{/*			<Snow />*/}
+			<Conway />
 
 		</Col>
 
