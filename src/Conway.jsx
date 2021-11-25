@@ -7,18 +7,25 @@ var margin = {top: 20, right: 20, bottom: 20, left: 20},
 // width = window.innerWidth*10/12,
 // height = window.innerHeight*19/20;
 
-width = 50,
-height = 50;
+width = 250,
+height = 250;
 
 let snow = [];
 let particles = [];
-const field = [];
+
 let startCount = 100;
 let size = 4; // Size of each particle
 
 // Effective grid height/width for 2d array
 let aWidth = Math.floor(width/size);
 let aHeight = Math.floor(height/size);
+
+// Instantiate empty field of values
+const field = new Array(aHeight);
+	for(var i=0;i<aHeight;i++) {
+		field[i] = new Array(aWidth).fill(0);
+	}
+
 
 // console.log(aWidth + " aW");
 // console.log(aHeight + " aH");
@@ -31,13 +38,8 @@ function Conway(props) {
 
 	//width = sizeRef.current ? sizeRef.current.offsetWidth : window.offsetWidth;
 
-	// Instantiate empty field of values
-	for(var i=0;i<aHeight;i++) {
-		field.push([]);
-		for(var j=0;j<aWidth;j++) {
-			field[i].push(0);
-		}
-	}
+
+
 
 	for(var i=0;i<startCount;i++) {
 		let randX = Math.floor((Math.random()*aWidth));
@@ -48,9 +50,6 @@ function Conway(props) {
 		field[randY][randX] = 1;
 
 	}
-
-	console.log(field);
-
 
 	let x = d3.scaleLinear()
 	.range([0,width])
@@ -173,11 +172,11 @@ function Conway(props) {
 			if(x > 0 && field[y][x-1] === 1) count++;
 			if(x < aWidth-1 && field[y][x+1] === 1) count++;
 			if(y < aHeight-1 && x > 0 && field[y+1][x-1] === 1) count++;
-			if(x < aWidth-1 && y < aHeight-1 && field[y+1][x+1] === 1) count++;			
+			if(x < aWidth-1 && y < aHeight-1 && field[y+1][x+1] === 1) count++;		
+
 		} catch(e) {
+
 			console.log(e);
-			console.log( "x " + x + " aW " + aWidth + " y " + y + " aH " + aHeight  );
-			console.log( field[y][x] );
 
 		}
 		return parseInt(count);
@@ -200,21 +199,21 @@ function Conway(props) {
 		// Exactly 3 neighbors becomes alive
 
 		for(var i=0;i<aHeight;i++) {
-		for(var j=0;j<aWidth;j++) {
-			let count = nCount({x:j, y:i});
-			if(count > 3 || count < 2) {
-					try {
+			for(var j=0;j<aWidth;j++) {
+				let count = nCount({x:j, y:i});
+				if(count > 3 || count < 2) {
+						try {
+							field[i][j] = 0;
+						} catch {
+							console.log(field[i][j] + " i,j " + i + " " + j);
+						}
 						field[i][j] = 0;
-					} catch {
-						console.log(field[i][j] + " i,j " + i + " " + j);
-					}
-					field[i][j] = 0;
-					let particle = {x:j, y:i};
-					removed.push(particle);
-			} else if(count === 3) {
-				field[i][j] = 1;
-				added.push({x:j, y:i});
-			}
+						let particle = {x:j, y:i};
+						removed.push(particle);
+				} else if(count === 3) {
+					field[i][j] = 1;
+					added.push({x:j, y:i});
+				}
 		}
 	}
 
@@ -235,8 +234,8 @@ function Conway(props) {
 		.data(added)
 		.enter()
 		.append("rect")
-		.attr("x", d => d.x)
-		.attr("y", d => d.y)
+		.attr("x", d => d.x*size)
+		.attr("y", d => d.y*size)
 		.attr("width", size)
 		.attr("height", size)
 		.attr("fill", "white");
