@@ -6,11 +6,14 @@ import * as d3 from "d3";
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
 width = window.innerWidth*10/12,
 height = window.innerHeight*19/20;
+// width = 5,
+// height = 5;
 
 let snow = [];
 let particles = [];
+let field = [];
 let startCount = 100;
-let size = 2; // Size of each particle
+let size = 4; // Size of each particle
 
 function Snow(props) {
 
@@ -21,11 +24,22 @@ function Snow(props) {
 
 	//width = sizeRef.current ? sizeRef.current.offsetWidth : window.offsetWidth;
 
+	// Instantiate empty field of values
+	for(var i=0;i<height;i++) {
+		field.push([]);
+		for(var j=0;j<width;j++) {
+			field[i].push(0);
+		}
+	}
 
 	for(var i=0;i<startCount;i++) {
-		let randX = (Math.random()*width);
-		let randY = (Math.random()*height);
-		particles.push({x:randX, y:randY});
+		let randX = Math.floor((Math.random()*width));
+		let randY = Math.floor((Math.random()*height));
+		let particle = {x:randX, y:randY};
+		particles.push(particle);
+
+		field[randY][randX] = 1;
+
 	}
 
 
@@ -108,27 +122,16 @@ function Snow(props) {
 	.data(particles)
 	.enter()
 	.append("rect")
-	.attr("x", d => d.x)
-	.attr("y", d => d.y)
+	.attr("x", d => (d.x)-size/2)
+	.attr("y", d => (d.y)-size/2)
 	.attr("width", size)
 	.attr("height", size)
 	.attr("fill", "white");
 
 
-	game.selectAll("rect")
-	.data(particles)
-	.enter()
-	.append(d => particles.filter(e => isNeighbor(d,e)) ? "rect" : null)
-	.attr("x", d => d.x)
-	.attr("y", d => d.y)
-	.attr("width", size)
-	.attr("height", size)
-	.attr("fill", "white");
 
-	// is e one of the 8 neighbors of d?
-	function isNeighbor(d,e) {
-		return Math.abs(d.x-e.x) < 1 && Math.abs(d.y-e.y) < 1 ? true : false;
-	}
+
+
 
 	// while(particles.length != 1) {
 
@@ -143,37 +146,83 @@ function Snow(props) {
 
 	}, [sizeRef.current]);
 
+	// is e one of the 8 neighbors of d?
+	function isNeighbor(d,e) {
+		return Math.abs(d.x-e.x) < 1 && Math.abs(d.y-e.y) < 1 ? true : false;
+	}
+	function getNeighbors(d) {
+		return particles.filter(e => isNeighbor(d,e) ? e : null);
+	}
+	function nCount(d) {
+		let count = 0;
+		let x = d.x;
+		let y = d.y;
+		if(field[y-1][x]) count++;
+		if(field[y+1][x]) count++;
+		if(field[y-1][x-1]) count++;
+		if(field[y-1][x+1]) count++;
+		if(field[y][x-1]) count++;
+		if(field[y][x+1]) count++;
+		if(field[y+1][x-1]) count++;
+		if(field[y+1][x+1]) count++;
+		return count;
+	}
 
-	// function animate() {
+	function animate() {
 
-	// 	let svg = d3.select("#cgl").select("svg").select(".main").select("#anim");
-	// 	let rX = Math.random()*width;
-	// 	let rY = Math.random()*height;
-
-	// 	// let sn = svg.append("rect")
-	// 	// .attr('x', rX)
-	// 	// .attr('y', -margin.top-rY)
-	// 	// .attr("zIndex", 1)
-	// 	// .attr('width', 2)
-	// 	// .attr('height', 5)
-	// 	// .attr("stroke", 5)
-	// 	// .attr("fill", "white");
+		let game = d3.select("#cgl").select("svg").select(".main").select("#anim");
 
 
-	// 			// sn.transition()
-	// 			// .duration(5000)
-	// 			// .attr('y', height)
-	// 			// .remove();		
-	// 	// .attr("fill", "url(#bg-gradient)");
-	// 	snow.push(sn);
+		// Get all particles which have a neighbor
+		let data = particles.filter(d => getNeighbors(d).length == 2);
+		let added = [];
+		let removed = [];
+
+
+		// Instantiate empty field of values
+		for(var i=0;i<height;i++) {
+			for(var j=0;j<width;j++) {
+				if(nCount(field[i][j]) == 2) {
+					console.log("b");
+				}
+			}
+		}
+
+
+		// game.selectAll("rect")
+		// .data(data)
+		// .enter()
+		// .append("rect")
+		// .attr("x", d => d.x)
+		// .attr("y", d => d.y)
+		// .attr("width", size)
+		// .attr("height", size)
+		// .attr("fill", "white");
+
+		// let sn = svg.append("rect")
+		// .attr('x', rX)
+		// .attr('y', -margin.top-rY)
+		// .attr("zIndex", 1)
+		// .attr('width', 2)
+		// .attr('height', 5)
+		// .attr("stroke", 5)
+		// .attr("fill", "white");
+
+
+				// sn.transition()
+				// .duration(5000)
+				// .attr('y', height)
+				// .remove();		
+		// .attr("fill", "url(#bg-gradient)");
+		//snow.push(sn);
 
 
 
 
 
-	// }
+	}
 
-	//var timer = d3.timer(animate);
+	var timer = d3.timer(animate);
  
   return (
 
