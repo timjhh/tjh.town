@@ -128,8 +128,11 @@ function Conway(props) {
 	.data(particles)
 	.enter()
 	.append("rect")
-	.attr("x", d => (d.x))
-	.attr("y", d => (d.y))
+	.attr("x", d => (d.x*size))
+	.attr("y", d => (d.y*size))
+	.attr("pos", d => ({x:d.x, y:d.y}))
+	.attr("pX", d => d.x)
+	.attr("pY", d => d.y)
 	.attr("width", size)
 	.attr("height", size)
 	.attr("fill", "white");
@@ -188,7 +191,7 @@ function Conway(props) {
 
 
 		// Get all particles which have a neighbor
-		let data = particles.filter(d => getNeighbors(d).length === 2);
+		//let data = particles.filter(d => getNeighbors(d).length === 2);
 		let added = [];
 		let removed = [];
 
@@ -198,61 +201,60 @@ function Conway(props) {
 		// More than 3 neighbords dies
 		// Exactly 3 neighbors becomes alive
 
-		for(var i=0;i<aHeight;i++) {
-			for(var j=0;j<aWidth;j++) {
-				let count = nCount({x:j, y:i});
-				if(count > 3 || count < 2) {
-						try {
-							field[i][j] = 0;
-						} catch {
-							console.log(field[i][j] + " i,j " + i + " " + j);
-						}
-						field[i][j] = 0;
-						let particle = {x:j, y:i};
-						removed.push(particle);
-				} else if(count === 3) {
-					field[i][j] = 1;
-					added.push({x:j, y:i});
-				}
-		}
-	}
+		// 1. Any live cell with two or three live neighbours survives.
+		// 2. Any dead cell with three live neighbours becomes a live cell.
+		// 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
-		// particles.forEach(d => {
-		// 		let count = nCount(d);
-		// 		if(count === 2) {
-		// 			console.log("b");
-		// 		} else if(count === 3) {
-
-		// 		} else {
-		// 			removed.push(d);
-		// 		}
-
-		// });
+		particles = particles.filter(d => {
+			let count = nCount(d);
+			return count === 2 || count === 3;
+		});
 
 
-		game.selectAll("rect")
-		.data(added)
-		.enter()
-		.append("rect")
-		.attr("x", d => d.x*size)
-		.attr("y", d => d.y*size)
-		.attr("width", size)
-		.attr("height", size)
-		.attr("fill", "white");
-
-		game.selectAll("rect")
-		.data(removed)
-		.exit()
-		.remove();
-
-		// let sn = svg.append("rect")
-		// .attr('x', rX)
-		// .attr('y', -margin.top-rY)
-		// .attr("zIndex", 1)
-		// .attr('width', 2)
-		// .attr('height', 5)
-		// .attr("stroke", 5)
+		// game.selectAll("rect")
+		// .select(d => nCount(d.pos) < 2 || nCount(d.pos) > 3)
+		// .enter()
+		// .append("rect")
+		// .attr("x", d => d.x*size)
+		// .attr("y", d => d.y*size)
+		// .attr("pos", d => ({x:d.x, y:d.y}))
+	// .attr("pX", d => d.x)
+	// .attr("pY", d => d.y)
+		// .attr("width", size)
+		// .attr("height", size)
 		// .attr("fill", "white");
+
+
+		//console.log(game.selectAll("rect").attr("pX"));
+		//console.log(d3.select("#anim").selectAll("rect").attr("pos"));
+
+		// console.log(game.selectAll("rect")
+		// .data(particles.select(d => nCount(d.pos) < 2 || nCount(d.pos) > 3));
+
+		// game.selectAll("rect")
+		// .select(d => nCount(d.pos) < 2 || nCount(d.pos) > 3)
+		// .exit()
+		// .remove();
+
+	// 	for(var i=0;i<aHeight;i++) {
+	// 		for(var j=0;j<aWidth;j++) {
+	// 			let count = nCount({x:j, y:i});
+	// 			if(count > 3 || count < 2) {
+	// 					try {
+	// 						field[i][j] = 0;
+	// 					} catch {
+	// 						console.log(field[i][j] + " i,j " + i + " " + j);
+	// 					}
+	// 					field[i][j] = 0;
+	// 					let particle = {x:j, y:i};
+	// 					removed.push(particle);
+	// 			} else if(count === 3) {
+	// 				field[i][j] = 1;
+	// 				added.push({x:j, y:i});
+	// 			}
+	// 	}
+	// }
+
 
 
 				// sn.transition()
