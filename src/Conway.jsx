@@ -51,21 +51,21 @@ function Conway(props) {
 
 	}
 
-	let x = d3.scaleLinear()
-	.range([0,width])
-	.domain([0,width]);
+	// let x = d3.scaleLinear()
+	// .range([0,width])
+	// .domain([0,width]);
 
-	let y = d3.scaleLinear()
-	.range([height,0])
-	.domain([0,height]);
+	// let y = d3.scaleLinear()
+	// .range([height,0])
+	// .domain([0,height]);
 
-	let mX = d3.scaleLinear()
-	.range([0,width])
-	.domain([0,width/2]);
+	// let mX = d3.scaleLinear()
+	// .range([0,width])
+	// .domain([0,width/2]);
 
-	let mY = d3.scaleLinear()
-	.range([height/2,height])
-	.domain([0,width]);
+	// let mY = d3.scaleLinear()
+	// .range([height/2,height])
+	// .domain([0,width]);
 
 
 
@@ -192,8 +192,8 @@ function Conway(props) {
 
 		// Get all particles which have a neighbor
 		//let data = particles.filter(d => getNeighbors(d).length === 2);
-		let added = [];
-		let removed = [];
+		// let added = [];
+		// let removed = [];
 
 		// DA RULEZ
 		// Fewer than 2 neighbors dies
@@ -207,8 +207,44 @@ function Conway(props) {
 
 		particles = particles.filter(d => {
 			let count = nCount(d);
-			return count === 2 || count === 3;
+			return count === 2 || count === 3 ? d : null;
 		});
+
+		// field.forEach((d,idy) => {
+		// 	d.forEach((e,idx) => {
+
+		// 	particles.push(() => {
+		// 		let p = ({x:d.idx, y:d.idy});
+		// 		console.log(nCount(p) === 3 ? p : null);
+		// 		return nCount(p) === 3 ? p : null;
+
+		// 	})
+
+		// 	});
+		// 	// particles.push(() => {
+		// 	// 	d.filter((e,idy) => nCount(({x:d.idy, y:d.idx})) === 3);
+		// 	// 	console.log(d.filter(e => nCount(({x:d.idy, y:d.idx})) === 3));
+		// 	// })
+		// });
+
+		// Life Particles Container
+		game
+		.selectAll("rect")
+		.remove();
+
+
+		game.selectAll("rect")
+		.data(particles)
+		.enter()
+		.append("rect")
+		.attr("x", d => (d.x*size))
+		.attr("y", d => (d.y*size))
+		.attr("pos", d => ({x:d.x, y:d.y}))
+		.attr("pX", d => d.x)
+		.attr("pY", d => d.y)
+		.attr("width", size)
+		.attr("height", size)
+		.attr("fill", "white");
 
 
 		// game.selectAll("rect")
