@@ -7,25 +7,26 @@ var margin = {top: 20, right: 20, bottom: 20, left: 20},
 // width = window.innerWidth*10/12,
 // height = window.innerHeight*19/20;
 
-width = 250,
-height = 250;
+// width = 250,
+// height = 250;
+
+width = 16,
+height = 16;
 
 let snow = [];
 let particles = [];
 
-let startCount = 200;
+let startCount = 3;
 let size = 4; // Size of each particle
 
 // Effective grid height/width for 2d array
 let aWidth = Math.floor(width/size);
 let aHeight = Math.floor(height/size);
 
-// Instantiate empty field of values
-const field = new Array(aHeight);
-	for(var i=0;i<aHeight;i++) {
-		field[i] = new Array(aWidth).fill(0);
-	}
-
+var field = new Array(aHeight);
+for(let i=0;i<aHeight;i++) {
+	field[i] = new Array(aWidth).fill(0);
+}
 
 // console.log(aWidth + " aW");
 // console.log(aHeight + " aH");
@@ -37,6 +38,8 @@ function Conway(props) {
 	useEffect(() => {
 
 	//width = sizeRef.current ? sizeRef.current.offsetWidth : window.offsetWidth;
+
+// Instantiate empty field of values
 
 
 
@@ -50,7 +53,6 @@ function Conway(props) {
 		field[randY][randX] = 1;
 
 	}
-
 	// let x = d3.scaleLinear()
 	// .range([0,width])
 	// .domain([0,width]);
@@ -117,8 +119,13 @@ function Conway(props) {
 	    .attr("width", "100%")
 	    .attr("height", "100%")
 	    // .attr("fill", "url(#bg-gradient)");
-	    .attr("fill", "black");
+	    .attr("fill", "red");
 
+	svg.append("rect")
+	    .attr("width", width)
+	    .attr("height", height)
+	    // .attr("fill", "url(#bg-gradient)");
+	    .attr("fill", "black");
 
 	// Life Particles Container
 	let game = svg.append("g")
@@ -138,22 +145,7 @@ function Conway(props) {
 	.attr("fill", "white");
 
 
-
-
-
-
-	// while(particles.length != 1) {
-
-
-
-
-
-	// }
-
-
-
-
-	}, [sizeRef.current]);
+	}, []);
 
 	function sleep(ms) {
 	  return new Promise(resolve => setTimeout(resolve, ms));
@@ -167,12 +159,18 @@ function Conway(props) {
 	function getNeighbors(d) {
 		return particles.filter(e => isNeighbor(d,e) ? e : null);
 	}
-	function nCount(d) {
+	async function nCount(d) {
+		if(!field) return;
 		let count = 0;
 		let x = parseInt(d.x);
 		let y = parseInt(d.y);
+		// console.log(field);
+		// console.log(field.at(0));
+		// console.log(field.at(1));
+		// console.log(field.at(2));
+		// console.log(field.at(3));
 		try {
-
+			// console.log(x + " " + y + " " + count + " " + field[y][x]);
 			if(y > 0 && field[y-1][x] === 1) count++;
 			if(y < aHeight-1 && field[y+1][x] === 1) count++;
 			if(y > 0 && x > 0 && field[y-1][x-1] === 1) count++;
@@ -187,6 +185,8 @@ function Conway(props) {
 			console.log(e);
 
 		}
+
+		//console.log(x + " " + y + " " + count + " " + field[y][x]);
 		return parseInt(count);
 	}
 
@@ -206,28 +206,48 @@ function Conway(props) {
 		// 2. Any dead cell with three live neighbours becomes a live cell.
 		// 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
+
+		particles = [];
+
 		// Get all particles which have a neighbor
-		field.forEach((d,idy) => {
-			d.forEach((e,idx) => {
+		// field.forEach((d,idy) => {
+		// 	d.forEach((e,idx) => {
 
 
-				let p = ({x:d.idx, y:d.idy});
+		// 	});
+		// });
+
+		for(var idy=0;idy<aHeight;idy++) {
+			for(var idx=0;idx<aWidth;idx++) {
+
+				//console.log(x + " " + y + " " + count + " " + field[y][x]);
+				let p = ({x:idx, y:idy});
 				let count = nCount(p);
+				//console.log("x y " + p.x + " " + p.y + " " + count);
 
-				if(count === 3 && field[idy][idx] === 0) {
+				if(count === 3 || count === 2) {
 					particles.push(p);
 					field[idy][idx] = 1;
 				}
-			});
-		});
 
 
-		particles = particles.filter(d => {
-			let count = nCount(d);
-			return count === 2 || count === 3 ? d : null;
-		});
+			}
+		}
+		console.log("\n\n END");
+
+		// particles = particles.filter(d => {
+		// 	let count = nCount(d);
+		// 	return count === 2 || count === 3 ? d : null;
+		// });
+
+		// particles.forEach(d => {
+		// 	if(field[d.y][d.x] === 0) {
+		// 		field[d.y][d.x] = 1;
+		// 	} else field[d.y][d.x] = 0;
+		// });
 
 
+		//console.log(field);
 
 		// Life Particles Container
 		game
@@ -286,7 +306,39 @@ function Conway(props) {
 
 	}
 
-	var timer = d3.timer(animate, 2000);
+		console.log(field[0]);
+		console.log(field[1]);
+		console.log(field[2]);
+		console.log(field[3]);
+	console.log(field);
+
+async function iterate() {
+
+		for(var idy=0;idy<aHeight;idy++) {
+			for(var idx=0;idx<aWidth;idx++) {
+
+
+				let p = ({x:idx, y:idy});
+				let count = nCount(p);
+				// console.log(idx + " " + idy + " " + count + " " + field[idy][idx]);
+
+				// if(count === 3 || count === 2) {
+				// 	particles.push(p);
+				// 	field[idy][idx] = 1;
+				// } else {
+				// 	field[idy][idx] = 0;
+				// }	
+
+
+			}
+		}
+		console.log("\n\n END");
+
+}
+
+iterate();
+
+	//var timer = d3.interval(animate, 4000);
 
   return (
 
