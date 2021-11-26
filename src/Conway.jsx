@@ -13,7 +13,7 @@ height = 250;
 let snow = [];
 let particles = [];
 
-let startCount = 100;
+let startCount = 200;
 let size = 4; // Size of each particle
 
 // Effective grid height/width for 2d array
@@ -155,6 +155,11 @@ function Conway(props) {
 
 	}, [sizeRef.current]);
 
+	function sleep(ms) {
+	  return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+
 	// is e one of the 8 neighbors of d?
 	function isNeighbor(d,e) {
 		return Math.abs(d.x-e.x) < 1 && Math.abs(d.y-e.y) < 1 ? true : false;
@@ -185,15 +190,11 @@ function Conway(props) {
 		return parseInt(count);
 	}
 
-	function animate() {
+	async function animate() {
 
 		let game = d3.select("#cgl").select("svg").select(".main").select("#anim");
 
 
-		// Get all particles which have a neighbor
-		//let data = particles.filter(d => getNeighbors(d).length === 2);
-		// let added = [];
-		// let removed = [];
 
 		// DA RULEZ
 		// Fewer than 2 neighbors dies
@@ -205,27 +206,28 @@ function Conway(props) {
 		// 2. Any dead cell with three live neighbours becomes a live cell.
 		// 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
+		// Get all particles which have a neighbor
+		field.forEach((d,idy) => {
+			d.forEach((e,idx) => {
+
+
+				let p = ({x:d.idx, y:d.idy});
+				let count = nCount(p);
+
+				if(count === 3 && field[idy][idx] === 0) {
+					particles.push(p);
+					field[idy][idx] = 1;
+				}
+			});
+		});
+
+
 		particles = particles.filter(d => {
 			let count = nCount(d);
 			return count === 2 || count === 3 ? d : null;
 		});
 
-		// field.forEach((d,idy) => {
-		// 	d.forEach((e,idx) => {
 
-		// 	particles.push(() => {
-		// 		let p = ({x:d.idx, y:d.idy});
-		// 		console.log(nCount(p) === 3 ? p : null);
-		// 		return nCount(p) === 3 ? p : null;
-
-		// 	})
-
-		// 	});
-		// 	// particles.push(() => {
-		// 	// 	d.filter((e,idy) => nCount(({x:d.idy, y:d.idx})) === 3);
-		// 	// 	console.log(d.filter(e => nCount(({x:d.idy, y:d.idx})) === 3));
-		// 	// })
-		// });
 
 		// Life Particles Container
 		game
@@ -247,30 +249,8 @@ function Conway(props) {
 		.attr("fill", "white");
 
 
-		// game.selectAll("rect")
-		// .select(d => nCount(d.pos) < 2 || nCount(d.pos) > 3)
-		// .enter()
-		// .append("rect")
-		// .attr("x", d => d.x*size)
-		// .attr("y", d => d.y*size)
-		// .attr("pos", d => ({x:d.x, y:d.y}))
-	// .attr("pX", d => d.x)
-	// .attr("pY", d => d.y)
-		// .attr("width", size)
-		// .attr("height", size)
-		// .attr("fill", "white");
 
 
-		//console.log(game.selectAll("rect").attr("pX"));
-		//console.log(d3.select("#anim").selectAll("rect").attr("pos"));
-
-		// console.log(game.selectAll("rect")
-		// .data(particles.select(d => nCount(d.pos) < 2 || nCount(d.pos) > 3));
-
-		// game.selectAll("rect")
-		// .select(d => nCount(d.pos) < 2 || nCount(d.pos) > 3)
-		// .exit()
-		// .remove();
 
 	// 	for(var i=0;i<aHeight;i++) {
 	// 		for(var j=0;j<aWidth;j++) {
@@ -306,8 +286,8 @@ function Conway(props) {
 
 	}
 
-	var timer = d3.timer(animate);
- 
+	var timer = d3.timer(animate, 2000);
+
   return (
 
 <div id="cgl" ref={sizeRef} style={{"width": "100%"}}>
