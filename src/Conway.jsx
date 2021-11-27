@@ -10,14 +10,14 @@ var margin = {top: 20, right: 20, bottom: 20, left: 20},
 // width = 250,
 // height = 250;
 
-width = 16,
-height = 16;
+width = 1000,
+height = 1000;
 
 let snow = [];
 let particles = [];
 
-let startCount = 3;
-let size = 4; // Size of each particle
+let startCount = 500;
+let size = 10; // Size of each particle
 
 // Effective grid height/width for 2d array
 let aWidth = Math.floor(width/size);
@@ -145,8 +145,8 @@ function Conway(props) {
 	.attr("fill", "white");
 
 
-	iterate();
-	//var timer = d3.interval(animate, 4000);
+	//iterate();
+	var timer = d3.interval(animate, 100);
 
 	}, []);
 
@@ -167,13 +167,9 @@ function Conway(props) {
 		let count = 0;
 		let x = parseInt(d.x);
 		let y = parseInt(d.y);
-		// console.log(field);
-		// console.log(field.at(0));
-		// console.log(field.at(1));
-		// console.log(field.at(2));
-		// console.log(field.at(3));
+
 		try {
-			// console.log(x + " " + y + " " + count + " " + field[y][x]);
+
 			if(y > 0 && field[y-1][x] === 1) count++;
 			if(y < aHeight-1 && field[y+1][x] === 1) count++;
 			if(y > 0 && x > 0 && field[y-1][x-1] === 1) count++;
@@ -189,7 +185,7 @@ function Conway(props) {
 
 		}
 
-		//console.log(x + " " + y + " " + count + " " + field[y][x]);
+
 		return parseInt(count);
 	}
 
@@ -220,23 +216,28 @@ function Conway(props) {
 		// 	});
 		// });
 
-		for(var idy=0;idy<aHeight;idy++) {
-			for(var idx=0;idx<aWidth;idx++) {
+		for(var y=0;y<aHeight;y++) {
+			for(var x=0;x<aWidth;x++) {
 
 				
-				let p = ({x:idx, y:idy});
+				let p = ({x:x, y:y});
+				let val = field[y][x];
 				let count = nCount(p);
-				console.log("x y " + p.x + " " + p.y + " " + count);
 
-				if(count === 3 || count === 2) {
+				if((count === 3  || count === 2) && val === 1) {
 					particles.push(p);
-					field[idy][idx] = 1;
+				}
+				else if(count === 3 && val === 0) {
+					particles.push(p);
+					field[y][x] = 1;
+				} else {
+					field[y][x] = 0;
 				}
 
 
 			}
 		}
-		console.log("\n\n END");
+		//console.log("\n\n END");
 
 		// particles = particles.filter(d => {
 		// 	let count = nCount(d);
@@ -291,29 +292,29 @@ function Conway(props) {
 
 
 
-async function iterate() {
+// async function iterate() {
 
-		for(var idy=0;idy<aHeight;idy++) {
-			for(var idx=0;idx<aWidth;idx++) {
-
-
-				let p = ({x:idx, y:idy});
-				let count = nCount(p);
-				console.log(idx + " " + idy + " " + count + " " + field[idy][idx]);
-
-				// if(count === 3 || count === 2) {
-				// 	particles.push(p);
-				// 	field[idy][idx] = 1;
-				// } else {
-				// 	field[idy][idx] = 0;
-				// }	
+// 		for(var idy=0;idy<aHeight;idy++) {
+// 			for(var idx=0;idx<aWidth;idx++) {
 
 
-			}
-		}
-		console.log("\n\n END");
+// 				let p = ({x:idx, y:idy});
+// 				let count = nCount(p);
+// 				console.log(idx + " " + idy + " " + count + " " + field[idy][idx]);
 
-}
+// 				// if(count === 3 || count === 2) {
+// 				// 	particles.push(p);
+// 				// 	field[idy][idx] = 1;
+// 				// } else {
+// 				// 	field[idy][idx] = 0;
+// 				// }	
+
+
+// 			}
+// 		}
+// 		console.log("\n\n END");
+
+// }
 
 
 
