@@ -145,6 +145,9 @@ function Conway(props) {
 	.attr("fill", "white");
 
 
+	iterate();
+	//var timer = d3.interval(animate, 4000);
+
 	}, []);
 
 	function sleep(ms) {
@@ -159,7 +162,7 @@ function Conway(props) {
 	function getNeighbors(d) {
 		return particles.filter(e => isNeighbor(d,e) ? e : null);
 	}
-	async function nCount(d) {
+	function nCount(d) {
 		if(!field) return;
 		let count = 0;
 		let x = parseInt(d.x);
@@ -220,10 +223,10 @@ function Conway(props) {
 		for(var idy=0;idy<aHeight;idy++) {
 			for(var idx=0;idx<aWidth;idx++) {
 
-				//console.log(x + " " + y + " " + count + " " + field[y][x]);
+				
 				let p = ({x:idx, y:idy});
 				let count = nCount(p);
-				//console.log("x y " + p.x + " " + p.y + " " + count);
+				console.log("x y " + p.x + " " + p.y + " " + count);
 
 				if(count === 3 || count === 2) {
 					particles.push(p);
@@ -272,26 +275,6 @@ function Conway(props) {
 
 
 
-	// 	for(var i=0;i<aHeight;i++) {
-	// 		for(var j=0;j<aWidth;j++) {
-	// 			let count = nCount({x:j, y:i});
-	// 			if(count > 3 || count < 2) {
-	// 					try {
-	// 						field[i][j] = 0;
-	// 					} catch {
-	// 						console.log(field[i][j] + " i,j " + i + " " + j);
-	// 					}
-	// 					field[i][j] = 0;
-	// 					let particle = {x:j, y:i};
-	// 					removed.push(particle);
-	// 			} else if(count === 3) {
-	// 				field[i][j] = 1;
-	// 				added.push({x:j, y:i});
-	// 			}
-	// 	}
-	// }
-
-
 
 				// sn.transition()
 				// .duration(5000)
@@ -306,11 +289,7 @@ function Conway(props) {
 
 	}
 
-		console.log(field[0]);
-		console.log(field[1]);
-		console.log(field[2]);
-		console.log(field[3]);
-	console.log(field);
+
 
 async function iterate() {
 
@@ -320,7 +299,7 @@ async function iterate() {
 
 				let p = ({x:idx, y:idy});
 				let count = nCount(p);
-				// console.log(idx + " " + idy + " " + count + " " + field[idy][idx]);
+				console.log(idx + " " + idy + " " + count + " " + field[idy][idx]);
 
 				// if(count === 3 || count === 2) {
 				// 	particles.push(p);
@@ -336,9 +315,9 @@ async function iterate() {
 
 }
 
-iterate();
 
-	//var timer = d3.interval(animate, 4000);
+
+
 
   return (
 
