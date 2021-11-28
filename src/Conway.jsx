@@ -20,16 +20,33 @@ let startCount = 500;
 let size = 10; // Size of each particle
 
 // Effective grid height/width for 2d array
-let aWidth = Math.floor(width/size);
-let aHeight = Math.floor(height/size);
+// let aWidth = Math.floor(width/size);
+// let aHeight = Math.floor(height/size);
 
-var field = new Array(aHeight);
-for(let i=0;i<aHeight;i++) {
-	field[i] = new Array(aWidth).fill(0);
-}
+// var field = new Array(aHeight);
+// for(let i=0;i<aHeight;i++) {
+// 	field[i] = new Array(aWidth).fill(0);
+// }
+var field = [
+	
+	[0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0],
+	[0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0],
+	[0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0],
+	[1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1],
+	[1,1,0,1,0,1,0,0,1,1,0,0,1,0,1,0,1,1],
+	[0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0],
+	[0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0],
+	[1,1,0,1,0,1,0,0,1,1,0,0,1,0,1,0,1,1],
+	[1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1],
+	[0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0],
+	[0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0],
+	[0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0]
 
-// console.log(aWidth + " aW");
-// console.log(aHeight + " aH");
+
+];
+let aWidth = field.length;
+let aHeight = field[0].length;
+
 function Conway(props) {
 
 
@@ -41,16 +58,36 @@ function Conway(props) {
 
 // Instantiate empty field of values
 
+		let test1 = [
+			[0,1,0],
+			[1,0,1],
+			[0,1,0]
+		];
 
+		let test2 = [
+			[0,1,1],
+			[1,0,1],
+			[0,1,0]
+		];
+
+		let test3 = [
+			[0,1,0,0],
+			[0,0,1,0],
+			[1,1,1,0],
+			[0,0,0,0]
+		];
+
+	// OPTIONAL UNIT TESTING
+	//nTesting(test3);
 
 
 	for(var i=0;i<startCount;i++) {
 		let randX = Math.floor((Math.random()*aWidth));
 		let randY = Math.floor((Math.random()*aHeight));
 		let particle = {x:randX, y:randY};
-		particles.push(particle);
+		//particles.push(particle);
 
-		field[randY][randX] = 1;
+		//field[randY][randX] = 1;
 
 	}
 	// let x = d3.scaleLinear()
@@ -145,6 +182,7 @@ function Conway(props) {
 	.attr("fill", "white");
 
 
+
 	//iterate();
 	var timer = d3.interval(animate, 100);
 
@@ -189,6 +227,111 @@ function Conway(props) {
 		return parseInt(count);
 	}
 
+
+	function nCountCustom(d,arr) {
+
+		if(!arr) return;
+		let count = 0;
+		let x = parseInt(d.x);
+		let y = parseInt(d.y);
+
+		let height = arr.length
+		let width = arr[0].length
+
+		try {
+
+			if(y > 0 && arr[y-1][x] === 1) count++;
+			if(y < height-1 && arr[y+1][x] === 1) count++;
+			if(y > 0 && x > 0 && arr[y-1][x-1] === 1) count++;
+			if(y > 0 && x < width-1 && arr[y-1][x+1] === 1) count++;
+			if(x > 0 && arr[y][x-1] === 1) count++;
+			if(x < width-1 && arr[y][x+1] === 1) count++;
+			if(y < height-1 && x > 0 && arr[y+1][x-1] === 1) count++;
+			if(x < width-1 && y < height-1 && arr[y+1][x+1] === 1) count++;		
+
+		} catch(e) {
+
+			console.log(e);
+
+		}
+
+
+		return parseInt(count);
+	}
+
+
+	function nTesting(arr) {
+		
+		// DA RULEZ
+		// Fewer than 2 neighbors dies
+		// 2 or 3 neighbors lives
+		// More than 3 neighbords dies
+		// Exactly 3 neighbors becomes alive
+
+		// 1. Any live cell with two or three live neighbours survives.
+		// 2. Any dead cell with three live neighbours becomes a live cell.
+		// 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
+
+		console.log(arr);
+
+		let res = new Array(arr.length);
+		for(let i=0;i<arr.length;i++) {
+			res[i] = new Array(arr[0].length).fill(0);
+		}
+		let ab = res;
+		ab[0][0] = 3;
+		for(var y=0;y<arr.length;y++) {
+
+			for(var x=0;x<arr[0].length;x++) {
+
+				// arr[y][x] = 0;
+
+				let p = ({x:x, y:y});
+				let count = nCountCustom(p, arr);
+				console.log("xyc " + x + " " + y
+				 + " " + count + " " + arr[y][x]);
+				
+
+				let val = arr[y][x];
+
+				if((count === 3  || count === 2) && val === 1) {
+					particles.push(p);
+					//arr[y][x] = 1;
+					res[y][x] = 1;
+				}
+				else if(count === 3 && val === 0) {
+					particles.push(p);
+					//arr[y][x] = 1;
+					res[y][x] = 1;
+				} else {
+					//arr[y][x] = 0;
+				}
+
+			}
+		}
+		console.log("abcd")
+		console.log(res)
+		console.log("abcd")
+		console.log("END \n")
+		console.log(arr);
+
+	// 	for(var y=0;y<arr.length;y++) {
+	// 		for(var x=0;x<arr[0].length;x++) {
+
+
+
+	// 			let p = ({x:x, y:y});
+	// 			let count = nCountCustom(p, arr);
+	// 			console.log("xyc " + x + " " + y
+	// 			 + " " + count + " " + arr[y][x]);
+
+
+
+	// 		}
+	// 	}
+
+	 }
+
 	async function animate() {
 
 		let game = d3.select("#cgl").select("svg").select(".main").select("#anim");
@@ -205,38 +348,40 @@ function Conway(props) {
 		// 2. Any dead cell with three live neighbours becomes a live cell.
 		// 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
-
 		particles = [];
+		let tmpCopy = field.slice();
+		let res = new Array(aHeight);
+		for(let i=0;i<aHeight;i++) {
+			res[i] = new Array(aWidth).fill(0);
+		}
 
-		// Get all particles which have a neighbor
-		// field.forEach((d,idy) => {
-		// 	d.forEach((e,idx) => {
-
-
-		// 	});
-		// });
 
 		for(var y=0;y<aHeight;y++) {
 			for(var x=0;x<aWidth;x++) {
 
 				
 				let p = ({x:x, y:y});
-				let val = field[y][x];
+				let val = tmpCopy[y][x];
 				let count = nCount(p);
 
 				if((count === 3  || count === 2) && val === 1) {
 					particles.push(p);
+					res[y][x] = 1;
 				}
 				else if(count === 3 && val === 0) {
 					particles.push(p);
-					field[y][x] = 1;
+					tmpCopy[y][x] = 1;
+					res[y][x] = 1;
 				} else {
-					field[y][x] = 0;
+					tmpCopy[y][x] = 0;
 				}
 
 
 			}
 		}
+
+		// field = tmpCopy.slice();
+		field = res.slice();
 		//console.log("\n\n END");
 
 		// particles = particles.filter(d => {

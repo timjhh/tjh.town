@@ -31,7 +31,7 @@ const usedWidth = useRef(null);
 			<a href="https://www.linkedin.com/in/tim-harrold-02b249180/" target="_blank" rel="noreferrer"><Linkedin className="mx-2"/></a>
 
 			<p>timjharrold@gmail.com</p>
-			<hr/>
+			<hr/> 
 
 		</div>
 		</Row>
