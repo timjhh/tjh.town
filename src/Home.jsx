@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { Container, Row, Col, Button, Image, Offcanvas } from 'react-bootstrap';
+import React, { useRef, useState, useEffect } from 'react';
+import { Container, Row, Col, Button, Image, ListGroup } from 'react-bootstrap';
 import { Github, Linkedin } from 'react-bootstrap-icons';
 import './App.css';
 import { Link } from 'react-router-dom';
@@ -7,28 +7,44 @@ import Footer from "./Footer.jsx";
 import Dvd from "./Dvd.jsx";
 import Snow from "./Snow.jsx"
 import Conway from "./Conway.jsx"
-
+import * as d3 from "d3";
 
 
 
 function Home() {
 
 const [show, setShow] = useState(false);
+const [active, setActive] = useState(0);
 
 const handleClose = () => setShow(false);
 const handleShow = () => setShow(true);
 
-const style = {
-	overlay: {
-		background: "none"
-	},
-	content: {
-		//background: "rgba(255, 255, 4, 1)",
-		background: "rgba(220, 220, 220, 1)",
-		//background: "#FFFFFF",
-		minWidth: "25%"
-	}
-}
+useEffect(() => {
+
+	const width = 500;
+	const height = 500;
+
+	/*
+		GENERATE CONTROLS TO SWITCH ELEMENTS
+	*/
+	const svg = d3.select("#switcher")
+	.append("svg")
+	.attr("zIndex", 5)
+	.attr("position", "absolute")
+	.attr("width", width)
+	.attr("height", height)
+	.append("g")
+	.attr("class", "sMain");
+
+	const btns = svg.append("button")
+	.attr("x", 0)
+	.attr("y", window.innerHeight / 3)
+	.attr("transform", "translate(0," + window.innerHeight/3 + ")" )
+	.attr("width", 200)
+	.attr("height", 100)
+	.text("ABCD")
+
+}, [])
 
 const usedWidth = useRef(null);
 
@@ -51,6 +67,17 @@ const usedWidth = useRef(null);
 			<p>timjharrold@gmail.com</p>
 			<hr/> 
 
+
+		<ListGroup defaultActiveKey="#link1">
+	    <ListGroup.Item action onClick={() => setActive(0)}>
+	      Mountains
+	    </ListGroup.Item>
+	    <ListGroup.Item action onClick={() => setActive(1)}>
+	      Conway's Game of Life
+	    </ListGroup.Item>
+	  </ListGroup>
+
+
 		</div>
 		</Row>
 
@@ -64,8 +91,16 @@ const usedWidth = useRef(null);
 
 		<Col xs={12} md={10} usedwidth={usedWidth.current ? usedWidth.current.offsetWidth : 0} className="mx-0 px-0 d-none d-sm-block">
 
-{/*			<Snow />*/}
+			<div id="switcher" className="position-absolute">
+			</div>
+
+			{active === 0 &&
+			<Snow />
+			}
+			{active === 1 &&
 			<Conway />
+			}
+
 
 		</Col>
 

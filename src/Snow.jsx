@@ -7,11 +7,14 @@ var margin = {top: 20, right: 20, bottom: 20, left: 20},
 width = window.innerWidth*(10/12),
 height = window.innerHeight;
 
-let snow = [];
+
 let hData = [{cX: 0, cY: 70}]; // Horizontal front-facing line
 let mData = []; // Background mountain
 
 
+	d3.select("#cgl")
+	.selectAll("svg")
+	.remove();
 function Snow(props) {
 
 
@@ -19,8 +22,9 @@ function Snow(props) {
 
 	useEffect(() => {
 
-	//width = sizeRef.current ? sizeRef.current.offsetWidth : window.offsetWidth;
-
+	d3.select("#cgl")
+	.selectAll("svg")
+	.remove();
 
 	for(var i=80;i<width;i+=10) {
 		let randY = (Math.random()*10)+(i/4);
@@ -205,15 +209,10 @@ function Snow(props) {
 		.attr("fill", "darkblue");
 
 
-				sn.transition()
-				.duration(5000)
-				.attr('y', height)
-				.remove();		
-		// .attr("fill", "url(#bg-gradient)");
-		snow.push(sn);
-
-
-
+		sn.transition()
+		.duration(5000)
+		.attr('y', height)
+		.remove();		
 
 
 	}

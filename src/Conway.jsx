@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import './App.css';
-//import { Link } from 'react-router-dom';
 import * as d3 from "d3";
 
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
@@ -21,6 +20,11 @@ var field = new Array(aHeight);
 for(let i=0;i<aHeight;i++) {
 	field[i] = new Array(aWidth).fill(0);
 }
+
+d3.select("#cgl")
+.selectAll("svg")
+.remove();
+
 
 // Optional cool seed
 // var field = [
@@ -54,11 +58,11 @@ function Conway(props) {
 
 	useEffect(() => {
 
-	//width = sizeRef.current ? sizeRef.current.offsetWidth : window.offsetWidth;
+		var time = 400;
 
-// Instantiate empty field of values
-
-
+		d3.select("#cgl")
+		.selectAll("svg")
+		.remove();
 
 
 		// let test1 = [
@@ -106,26 +110,6 @@ function Conway(props) {
 
 	}
 
-
-
-	// let x = d3.scaleLinear()
-	// .range([0,width])
-	// .domain([0,width]);
-
-	// let y = d3.scaleLinear()
-	// .range([height,0])
-	// .domain([0,height]);
-
-	// let mX = d3.scaleLinear()
-	// .range([0,width])
-	// .domain([0,width/2]);
-
-	// let mY = d3.scaleLinear()
-	// .range([height/2,height])
-	// .domain([0,width]);
-
-
-
 	const svg = d3.select("#cgl")
 	.append("svg")
 	.attr("position", "absolute")
@@ -171,14 +155,8 @@ function Conway(props) {
 		.attr("offset", "1")
 
 	svg.append("rect")
-	    .attr("width", "100%")
-	    .attr("height", "100%")
-	    // .attr("fill", "url(#bg-gradient)");
-	    .attr("fill", "red");
-
-	svg.append("rect")
 	    .attr("width", width)
-	    .attr("height", height)
+	    .attr("height", "100%")
 	    // .attr("fill", "url(#bg-gradient)");
 	    .attr("fill", "black");
 
@@ -200,9 +178,8 @@ function Conway(props) {
 	.attr("fill", "white");
 
 
-
 	//iterate();
-	var timer = d3.interval(animate, 200);
+	const timer = d3.interval(animate, time);
 
 	}, []);
 
@@ -237,7 +214,6 @@ function Conway(props) {
 		} catch(e) {
 
 			console.log(e);
-			//console.log("x y " + x + " " + y);
 
 		}
 
@@ -246,39 +222,38 @@ function Conway(props) {
 	}
 
 
-	// Given custom array, return # of neighbors
-	function nCountCustom(d,arr) {
+	// // Given custom array, return # of neighbors
+	// function nCountCustom(d,arr) {
 
-		if(!arr) return;
-		let count = 0;
-		let x = parseInt(d.x);
-		let y = parseInt(d.y);
+	// 	if(!arr) return;
+	// 	let count = 0;
+	// 	let x = parseInt(d.x);
+	// 	let y = parseInt(d.y);
 
-		let height = arr.length
-		let width = arr[0].length
+	// 	let height = arr.length
+	// 	let width = arr[0].length
 
-		try {
+	// 	try {
 
-			if(y > 0 && arr[y-1][x] === 1) count++;
-			if(y < height-1 && arr[y+1][x] === 1) count++;
-			if(y > 0 && x > 0 && arr[y-1][x-1] === 1) count++;
-			if(y > 0 && x < width-1 && arr[y-1][x+1] === 1) count++;
-			if(x > 0 && arr[y][x-1] === 1) count++;
-			if(x < width-1 && arr[y][x+1] === 1) count++;
-			if(y < height-1 && x > 0 && arr[y+1][x-1] === 1) count++;
-			if(x < width-1 && y < height-1 && arr[y+1][x+1] === 1) count++;		
+	// 		if(y > 0 && arr[y-1][x] === 1) count++;
+	// 		if(y < height-1 && arr[y+1][x] === 1) count++;
+	// 		if(y > 0 && x > 0 && arr[y-1][x-1] === 1) count++;
+	// 		if(y > 0 && x < width-1 && arr[y-1][x+1] === 1) count++;
+	// 		if(x > 0 && arr[y][x-1] === 1) count++;
+	// 		if(x < width-1 && arr[y][x+1] === 1) count++;
+	// 		if(y < height-1 && x > 0 && arr[y+1][x-1] === 1) count++;
+	// 		if(x < width-1 && y < height-1 && arr[y+1][x+1] === 1) count++;		
 
-		} catch(e) {
+	// 	} catch(e) {
 
-			console.log(e);
+	// 		console.log(e);
 
-		}
-		return parseInt(count);
-	}
+	// 	}
+	// 	return parseInt(count);
+	// }
 
 
-	function nTesting(arr) {
-		
+
 		// DA RULEZ
 		// Fewer than 2 neighbors dies
 		// 2 or 3 neighbors lives
@@ -288,73 +263,12 @@ function Conway(props) {
 		// 1. Any live cell with two or three live neighbours survives.
 		// 2. Any dead cell with three live neighbours becomes a live cell.
 		// 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
-
-		// console.log(arr);
-
-		let res = new Array(arr.length);
-		for(let i=0;i<arr.length;i++) {
-			res[i] = new Array(arr[0].length).fill(0);
-		}
-		let ab = res;
-		ab[0][0] = 3;
-		for(var y=0;y<arr.length;y++) {
-
-			for(var x=0;x<arr[0].length;x++) {
-
-				// arr[y][x] = 0;
-
-				let p = ({x:x, y:y});
-				let count = nCountCustom(p, arr);
-				console.log("xyc " + x + " " + y
-				 + " " + count + " " + arr[y][x]);
-				
-
-				let val = arr[y][x];
-
-				if((count === 3  || count === 2) && val === 1) {
-					particles.push(p);
-					//arr[y][x] = 1;
-					res[y][x] = 1;
-				}
-				else if(count === 3 && val === 0) {
-					particles.push(p);
-					//arr[y][x] = 1;
-					res[y][x] = 1;
-				} else {
-					//arr[y][x] = 0;
-				}
-
-			}
-		}
-		// console.log("abcd")
-		// console.log(res)
-		// console.log("abcd")
-		// console.log("END \n")
-		// console.log(arr);
-
-
-	 }
-
 	async function animate() {
 
 		let game = d3.select("#cgl").select("svg").select(".main").select("#anim");
 
-
-
-		// DA RULEZ
-		// Fewer than 2 neighbors dies
-		// 2 or 3 neighbors lives
-		// More than 3 neighbords dies
-		// Exactly 3 neighbors becomes alive
-
-		// 1. Any live cell with two or three live neighbours survives.
-		// 2. Any dead cell with three live neighbours becomes a live cell.
-		// 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
-
 		particles = [];
 
-
-		//let tmpCopy = field.slice();
 		let tmpCopy = new Array(aHeight);
 
 		for(let i=0;i<aHeight;i++) {
@@ -393,9 +307,6 @@ function Conway(props) {
 		});
 
 
-
-
-
 		// Life Particles Container
 		game
 		.selectAll("rect")
@@ -418,37 +329,6 @@ function Conway(props) {
 
 
 	}
-
-
-
-// async function iterate() {
-
-// 	console.log(field);
-// 		let tmpCopy = field.slice();
-// 		console.log(tmpCopy);
-// 		for(var y=0;y<aHeight;y++) {
-// 			for(var x=0;x<aWidth;x++) {
-				
-// 				let p = ({x:x, y:y});
-// 				let val = field[y][x];
-// 				let count = nCount(p);
-
-// 				if((count === 3  || count === 2) && val === 1) {
-// 					particles.push(p);
-// 				}
-// 				else if(count === 3 && val === 0) {
-// 					particles.push(p);
-// 					tmpCopy[y][x] = 1;
-// 				} else {
-// 					tmpCopy[y][x] = 0;
-// 				}
-
-
-// 			}
-// 		}
-// 		field = tmpCopy.slice();
-
-// }
 
 
   return (
