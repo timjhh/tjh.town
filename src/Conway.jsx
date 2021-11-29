@@ -3,54 +3,49 @@ import './App.css';
 //import { Link } from 'react-router-dom';
 import * as d3 from "d3";
 
-var margin = {top: 20, right: 20, bottom: 20, left: 20}
-// width = window.innerWidth*10/12,
-// height = window.innerHeight*19/20;
+var margin = {top: 20, right: 20, bottom: 20, left: 20},
+width = window.innerWidth*(10/12),
+height = window.innerHeight;
 
-// width = 250,
-// height = 250;
-
-// width = 1000,
-// height = 1000;
-
-let snow = [];
 let particles = [];
 
-let startCount = 500;
-// let size = 10; // Size of each particle
+//let startCount = 1000;
+let startCount = d3.min([height,width]);
+let size = 10; // Size of each particle
 
 // Effective grid height/width for 2d array
-// let aWidth = Math.floor(width/size);
-// let aHeight = Math.floor(height/size);
+let aWidth = Math.floor(width/size);
+let aHeight = Math.floor(height/size);
 
-// var field = new Array(aHeight);
-// for(let i=0;i<aHeight;i++) {
-// 	field[i] = new Array(aWidth).fill(0);
-// }
+var field = new Array(aHeight);
+for(let i=0;i<aHeight;i++) {
+	field[i] = new Array(aWidth).fill(0);
+}
 
-var field = [
+// Optional cool seed
+// var field = [
 	
-	[0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0],
-	[0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0],
-	[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
-	[0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0],
-	[0,0,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1,0,1,0,1,1,0,0,0,0],
-	[0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0],
-	[0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0],
-	[0,0,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1,0,1,0,1,1,0,0,0,0],
-	[0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0],
-	[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
-	[0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0],
-	[0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0]
+// 	[0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0],
+// 	[0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0],
+// 	[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+// 	[0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0],
+// 	[0,0,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1,0,1,0,1,1,0,0,0,0],
+// 	[0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0],
+// 	[0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0],
+// 	[0,0,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1,0,1,0,1,1,0,0,0,0],
+// 	[0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0],
+// 	[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+// 	[0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0],
+// 	[0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0]
 
-];
+// ];
 
 
-var size = 10; // Size of each particle
-var width = field[0].length*size, height = field.length*size
+//var size = 10; // Size of each particle
+//var width = field[0].length*size, height = field.length*size
 
-var aWidth = field[0].length;
-var aHeight = field.length;
+// var aWidth = field[0].length;
+// var aHeight = field.length;
 
 function Conway(props) {
 
@@ -66,24 +61,24 @@ function Conway(props) {
 
 
 
-		let test1 = [
-			[0,1,0],
-			[1,0,1],
-			[0,1,0]
-		];
+		// let test1 = [
+		// 	[0,1,0],
+		// 	[1,0,1],
+		// 	[0,1,0]
+		// ];
 
-		let test2 = [
-			[0,1,1],
-			[1,0,1],
-			[0,1,0]
-		];
+		// let test2 = [
+		// 	[0,1,1],
+		// 	[1,0,1],
+		// 	[0,1,0]
+		// ];
 
-		let test3 = [
-			[0,1,0,0],
-			[0,0,1,0],
-			[1,1,1,0],
-			[0,0,0,0]
-		];
+		// let test3 = [
+		// 	[0,1,0,0],
+		// 	[0,0,1,0],
+		// 	[1,1,1,0],
+		// 	[0,0,0,0]
+		// ];
 
 	// OPTIONAL UNIT TESTING
 	//nTesting(test3);
@@ -98,16 +93,6 @@ function Conway(props) {
 						particles.push(p);					
 					}
 			
-
-
-				// if(count === 3 || count === 2) {
-				// 	particles.push(p);
-				// 	field[idy][idx] = 1;
-				// } else {
-				// 	field[idy][idx] = 0;
-				// }	
-
-
 			}
 		}
 
@@ -115,9 +100,9 @@ function Conway(props) {
 		let randX = Math.floor((Math.random()*aWidth));
 		let randY = Math.floor((Math.random()*aHeight));
 		let particle = {x:randX, y:randY};
-		//particles.push(particle);
+		particles.push(particle);
 
-		//field[randY][randX] = 1;
+		field[randY][randX] = 1;
 
 	}
 
@@ -217,13 +202,11 @@ function Conway(props) {
 
 
 	//iterate();
-	var timer = d3.interval(animate, 1000);
+	var timer = d3.interval(animate, 200);
 
 	}, []);
 
-	function sleep(ms) {
-	  return new Promise(resolve => setTimeout(resolve, ms));
-	}
+
 
 
 	// is e one of the 8 neighbors of d?
@@ -370,13 +353,6 @@ function Conway(props) {
 
 		particles = [];
 
-		// for(var y=0;y<aHeight;y++) {
-		// 	for(var x=0;x<aWidth;x++) {
-		// 		if(field[y][x] === 1) {
-		// 			particles.push(({x:x, y:y}));
-		// 		}
-		// 	}
-		// }
 
 		//let tmpCopy = field.slice();
 		let tmpCopy = new Array(aHeight);
@@ -416,22 +392,9 @@ function Conway(props) {
 			field[idz] = z.slice();
 		});
 
-		//field = res.slice();
-		//console.log("\n\n END");
-
-		// particles = particles.filter(d => {
-		// 	let count = nCount(d);
-		// 	return count === 2 || count === 3 ? d : null;
-		// });
-
-		// particles.forEach(d => {
-		// 	if(field[d.y][d.x] === 0) {
-		// 		field[d.y][d.x] = 1;
-		// 	} else field[d.y][d.x] = 0;
-		// });
 
 
-		//console.log(field);
+
 
 		// Life Particles Container
 		game
@@ -454,80 +417,43 @@ function Conway(props) {
 
 
 
-
-
-
-				// sn.transition()
-				// .duration(5000)
-				// .attr('y', height)
-				// .remove();		
-		// .attr("fill", "url(#bg-gradient)");
-		//snow.push(sn);
-
-
-
-
-
 	}
 
 
 
-async function iterate() {
+// async function iterate() {
 
-// 		for(var idy=0;idy<aHeight;idy++) {
-// 			for(var idx=0;idx<aWidth;idx++) {
-
-
-// 				let p = ({x:idx, y:idy});
-// 				let count = nCount(p);
-// 				console.log(idx + " " + idy + " " + count + " " + field[idy][idx]);
-
-
-	// let res = new Array(arr.length);
-	// for(let i=0;i<arr.length;i++) {
-	// 		res[i] = new Array(arr[0].length).fill(0);
-	// 	}
-	console.log(field);
-		let tmpCopy = field.slice();
-		console.log(tmpCopy);
-		for(var y=0;y<aHeight;y++) {
-			for(var x=0;x<aWidth;x++) {
-
+// 	console.log(field);
+// 		let tmpCopy = field.slice();
+// 		console.log(tmpCopy);
+// 		for(var y=0;y<aHeight;y++) {
+// 			for(var x=0;x<aWidth;x++) {
 				
-				let p = ({x:x, y:y});
-				let val = field[y][x];
-				let count = nCount(p);
+// 				let p = ({x:x, y:y});
+// 				let val = field[y][x];
+// 				let count = nCount(p);
 
-				if((count === 3  || count === 2) && val === 1) {
-					particles.push(p);
-				}
-				else if(count === 3 && val === 0) {
-					particles.push(p);
-					tmpCopy[y][x] = 1;
-				} else {
-					tmpCopy[y][x] = 0;
-				}
-
-
-			}
-		}
-		field = tmpCopy.slice();
-
+// 				if((count === 3  || count === 2) && val === 1) {
+// 					particles.push(p);
+// 				}
+// 				else if(count === 3 && val === 0) {
+// 					particles.push(p);
+// 					tmpCopy[y][x] = 1;
+// 				} else {
+// 					tmpCopy[y][x] = 0;
+// 				}
 
 
 // 			}
 // 		}
-// 		console.log("\n\n END");
+// 		field = tmpCopy.slice();
 
-}
-
-
-
+// }
 
 
   return (
 
-<div id="cgl" ref={sizeRef} style={{"width": "100%"}}>
+<div id="cgl" ref={sizeRef} className="overflow-hidden">
 
 </div>
 

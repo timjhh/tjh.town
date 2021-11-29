@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import {Container, Row, Col, Button, Image} from 'react-bootstrap';
+import React, { useRef, useState } from 'react';
+import { Container, Row, Col, Button, Image, Offcanvas } from 'react-bootstrap';
 import { Github, Linkedin } from 'react-bootstrap-icons';
 import './App.css';
 import { Link } from 'react-router-dom';
@@ -10,7 +10,25 @@ import Conway from "./Conway.jsx"
 
 
 
+
 function Home() {
+
+const [show, setShow] = useState(false);
+
+const handleClose = () => setShow(false);
+const handleShow = () => setShow(true);
+
+const style = {
+	overlay: {
+		background: "none"
+	},
+	content: {
+		//background: "rgba(255, 255, 4, 1)",
+		background: "rgba(220, 220, 220, 1)",
+		//background: "#FFFFFF",
+		minWidth: "25%"
+	}
+}
 
 const usedWidth = useRef(null);
 
@@ -38,6 +56,7 @@ const usedWidth = useRef(null);
 
 		<Row className="justify-content-center mt-auto mb-3">		
 			<Footer />
+
 		</Row>
 
 		</Col>

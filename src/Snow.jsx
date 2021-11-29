@@ -4,7 +4,7 @@ import './App.css';
 import * as d3 from "d3";
 
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
-width = window.innerWidth*10/12,
+width = window.innerWidth*(10/12),
 height = window.innerHeight;
 
 let snow = [];
@@ -34,7 +34,7 @@ function Snow(props) {
 
 
 	let x = d3.scaleLinear()
-	.range([0,width])
+	.range([0,width+margin.left+margin.right])
 	.domain([0,width]);
 
 	let y = d3.scaleLinear()
@@ -42,7 +42,7 @@ function Snow(props) {
 	.domain([0,height]);
 
 	let mX = d3.scaleLinear()
-	.range([0,width])
+	.range([0,width+margin.left+margin.right])
 	.domain([0,width/2]);
 
 	let mY = d3.scaleLinear()
@@ -222,7 +222,7 @@ function Snow(props) {
  
   return (
 
-<div id="snow" ref={sizeRef} style={{"width": "100%"}}>
+<div id="snow" className="overflow-hidden" ref={sizeRef}>
 
 </div>
 
