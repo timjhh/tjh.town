@@ -14,7 +14,7 @@ import * as d3 from "d3";
 function Home() {
 
 const [show, setShow] = useState(false);
-const [active, setActive] = useState(0);
+const [active, setActive] = useState(1);
 
 const handleClose = () => setShow(false);
 const handleShow = () => setShow(true);

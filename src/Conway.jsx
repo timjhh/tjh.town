@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Dropdown } from 'react-bootstrap';
 import './App.css';
 import * as d3 from "d3";
 
@@ -58,7 +59,9 @@ function Conway(props) {
 
 	useEffect(() => {
 
-		var time = 400;
+		var time = 200;
+
+		var options = ["Default", "Box", "Etc"];
 
 		d3.select("#cgl")
 		.selectAll("svg")
@@ -160,6 +163,35 @@ function Conway(props) {
 	    // .attr("fill", "url(#bg-gradient)");
 	    .attr("fill", "black");
 
+
+  const controls = svg
+  	.append("g")
+  	.attr("id", "controls")
+  	.attr("height", 150)
+  	.attr("width", 100)
+		.attr("transform", "translate(" + margin.left + "," + (margin.top+margin.bottom) + ")");
+
+
+  controls
+  	.append("rect")
+  	.attr("z-index", 10)
+  	.attr("height", 150)
+  	.attr("width", 100)
+   	.style("fill", "rgba(255, 0, 0, 0.4)");
+
+
+
+  controls.append("ul")
+  .selectAll("li")
+  .data(options)
+  .enter()
+  .append("li")
+  .append("a")
+  .attr("color", "white")
+  .attr("fill", "white")
+  .text(d => d);
+
+
 	// Life Particles Container
 	let game = svg.append("g")
 	.attr("id", "anim")
@@ -179,7 +211,7 @@ function Conway(props) {
 
 
 	//iterate();
-	const timer = d3.interval(animate, time);
+	const timer = d3.interval(() => animate(), time);
 
 	}, []);
 
