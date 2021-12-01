@@ -94,6 +94,29 @@ if(val === "none") {
 
 }
 else if(val === "pulsar") {
+	pt =  [
+
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		[0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0],
+		[0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0],
+		[0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0],
+		[0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0],
+		[0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0],
+		[0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0],
+		[0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+	];
+}
+else if(val === "beacon") {
 
 pt =  [
 
@@ -501,13 +524,14 @@ function Conway(props) {
 <>
   <div className="position-absolute bg-light p-2" id="panel">
       <Form.Label>Patterns</Form.Label>
-      <Form.Select onChange={(e) => pattern(e.target.value)} id="cptrns" size="sm" className="mx-3">
+      <Form.Select onChange={(e) => pattern(e.target.value)} id="cptrns" size="sm" className="mx-2">
           <option value="none">None</option>
           <option value="gosper">Gosper Glider Gun</option>
           <option value="pulsar">Pulsar</option>
+          <option value="beacon">Beacon</option>
       </Form.Select>
-      <Button onClick={() => randomize()} variant="dark">Randomize</Button>
-      <Button onClick={() => reset()} variant="dark">Reset</Button>
+      <Button className="mr-2" onClick={() => randomize()} variant="dark">Randomize</Button>
+      <Button onClick={() => pattern("none")} variant="dark">Reset</Button>
   </div>
 <div id="cgl" ref={sizeRef} className="overflow-hidden">
 

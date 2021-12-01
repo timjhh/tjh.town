@@ -75,7 +75,7 @@ const usedWidth = useRef(null);
 
 
 		<ListGroup defaultActiveKey="#link1">
-	    <ListGroup.Item action href="/snow">
+	    <ListGroup.Item action href="/">
 	      Mountains
 	    </ListGroup.Item>
 	    <ListGroup.Item action href="/conway">
@@ -105,7 +105,7 @@ const usedWidth = useRef(null);
 
 		<Routes>
 		    <Route path='/conway' element={<Conway/>}/>
-				<Route path='/snow' element={<Snow/>}/>
+				<Route path='/' element={<Snow/>}/>
 		</Routes>
 
 
