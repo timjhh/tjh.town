@@ -1,12 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Image, ListGroup } from 'react-bootstrap';
+import { Container, Row, Col, Image, ListGroup } from 'react-bootstrap';
 import { Github, Linkedin } from 'react-bootstrap-icons';
 import './App.css';
-import { Link } from 'react-router-dom';
+
+import { Switch, Route, Routes, Router, Link, BrowserRouter } from 'react-router-dom';
 import Footer from "./Footer.jsx";
-import Dvd from "./Dvd.jsx";
-import Snow from "./Snow.jsx"
-import Conway from "./Conway.jsx"
+// import Dvd from "./Dvd.jsx";
+import Snow from "./Snow.jsx";
+import Conway from "./Conway.jsx";
+// import MusicGraph from "./MusicGraph.jsx";
 import * as d3 from "d3";
 
 
@@ -14,7 +16,7 @@ import * as d3 from "d3";
 function Home() {
 
 const [show, setShow] = useState(false);
-const [active, setActive] = useState(1);
+const [active, setActive] = useState(0);
 
 const handleClose = () => setShow(false);
 const handleShow = () => setShow(true);
@@ -51,6 +53,10 @@ const usedWidth = useRef(null);
   return (
 
 <Container fluid>
+
+{/*  <Routes>
+		<Route exact path="/MusicGraph" render={() => {window.location.href="/projects/MusicGraph.html"}} />
+	</Routes>*/}
 	<Row ref={usedWidth}>
 		<Col xs={12} md={2} className="d-flex transparent text-muted font-weight-light text-center flex-column">
 		<Row className="justify-content-center">
@@ -69,13 +75,16 @@ const usedWidth = useRef(null);
 
 
 		<ListGroup defaultActiveKey="#link1">
-	    <ListGroup.Item action onClick={() => setActive(0)}>
+	    <ListGroup.Item action href="/snow">
 	      Mountains
 	    </ListGroup.Item>
-	    <ListGroup.Item action onClick={() => setActive(1)}>
+	    <ListGroup.Item action href="/conway">
 	      Conway's Game of Life
 	    </ListGroup.Item>
+
 	  </ListGroup>
+
+
 
 
 		</div>
@@ -94,13 +103,28 @@ const usedWidth = useRef(null);
 			<div id="switcher" className="position-absolute">
 			</div>
 
-			{active === 0 &&
+		<Routes>
+		    <Route path='/conway' element={<Conway/>}/>
+				<Route path='/snow' element={<Snow/>}/>
+		</Routes>
+{/*<Routes>
+	<Route path="/snow">
+		<Snow />
+	</Route>
+	<Route path="/conway">
+		<Conway />
+	</Route>
+</Routes>*/}
+{/*			{active === 0 &&
 			<Snow />
 			}
 			{active === 1 &&
 			<Conway />
-			}
+			}*/}
 
+{/*			{active === 2 &&
+			<MusicGraph />
+			}*/}
 
 		</Col>
 

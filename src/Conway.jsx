@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, Button, Form } from 'react-bootstrap';
 import './App.css';
 import * as d3 from "d3";
 
@@ -92,16 +92,16 @@ function Conway(props) {
 
 
 
-		for(var idy=0;idy<aHeight;idy++) {
-			for(var idx=0;idx<aWidth;idx++) {
+		// for(var idy=0;idy<aHeight;idy++) {
+		// 	for(var idx=0;idx<aWidth;idx++) {
 
-					if(field[idy][idx] === 1) {
-						let p = ({x:idx, y:idy});
-						particles.push(p);					
-					}
+		// 			if(field[idy][idx] === 1) {
+		// 				let p = ({x:idx, y:idy});
+		// 				particles.push(p);					
+		// 			}
 			
-			}
-		}
+		// 	}
+		// }
 
 	for(var i=0;i<startCount;i++) {
 		let randX = Math.floor((Math.random()*aWidth));
@@ -164,21 +164,38 @@ function Conway(props) {
 	    .attr("fill", "black");
 
 
+  // const controls = svg
+  // 	.append("g")
+  // 	.attr("id", "controls")
+  // 	.attr("height", 150)
+  // 	.attr("width", 100)
+		// .attr("transform", "translate(" + margin.left + "," + (margin.top+margin.bottom) + ")");
+
+
+  // controls
+  // 	.append("rect")
+  // 	.attr("z-index", 10)
+  // 	.attr("height", 150)
+  // 	.attr("width", 100)
+  //  	.style("fill", "rgba(255, 0, 0, 0.4)");
+
   const controls = svg
-  	.append("g")
+  	.append("select")
   	.attr("id", "controls")
+  	.attr("className", "position-absolute")
   	.attr("height", 150)
   	.attr("width", 100)
 		.attr("transform", "translate(" + margin.left + "," + (margin.top+margin.bottom) + ")");
 
 
   controls
-  	.append("rect")
+  	.append("option")
+  	.attr("value", "abcd")
   	.attr("z-index", 10)
   	.attr("height", 150)
   	.attr("width", 100)
-   	.style("fill", "rgba(255, 0, 0, 0.4)");
-
+  	.text("abcd");
+   	//.style("fill", "rgba(255, 0, 0, 0.4)");
 
 
   controls.append("ul")
@@ -365,9 +382,21 @@ function Conway(props) {
 
   return (
 
+<>
+  <div className="position-absolute bg-light p-2" id="panel">
+      <Form.Label>Patterns</Form.Label>
+      <Form.Select size="sm" className="mx-3">
+          <option>Gosper</option>
+          <option value="beacon">Beacon</option>
+          <option value="pulsar">Pulsar</option>
+      </Form.Select>
+      <Button variant="dark">Randomize</Button>
+  </div>
 <div id="cgl" ref={sizeRef} className="overflow-hidden">
 
 </div>
+
+</>
 
   );
 }
