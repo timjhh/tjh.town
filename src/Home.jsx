@@ -98,7 +98,7 @@ const usedWidth = useRef(null);
 		</Col>
 
 
-		<Col xs={12} md={10} usedwidth={usedWidth.current ? usedWidth.current.offsetWidth : 0} className="mx-0 px-0 d-none d-sm-block">
+		<Col xs={0} md={10} usedwidth={usedWidth.current ? usedWidth.current.offsetWidth : 0} className="mx-0 px-0 d-none d-sm-block">
 
 			<div id="switcher" className="position-absolute">
 			</div>
@@ -107,24 +107,7 @@ const usedWidth = useRef(null);
 		    <Route path='/conway' element={<Conway/>}/>
 				<Route path='/snow' element={<Snow/>}/>
 		</Routes>
-{/*<Routes>
-	<Route path="/snow">
-		<Snow />
-	</Route>
-	<Route path="/conway">
-		<Conway />
-	</Route>
-</Routes>*/}
-{/*			{active === 0 &&
-			<Snow />
-			}
-			{active === 1 &&
-			<Conway />
-			}*/}
 
-{/*			{active === 2 &&
-			<MusicGraph />
-			}*/}
 
 		</Col>
 

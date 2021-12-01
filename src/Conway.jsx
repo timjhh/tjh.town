@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dropdown, Button, Form } from 'react-bootstrap';
 import './App.css';
 import * as d3 from "d3";
@@ -9,8 +9,7 @@ height = window.innerHeight;
 
 let particles = [];
 
-//let startCount = 1000;
-let startCount = d3.min([height,width]);
+let startCount = (3*d3.min([height,width]))/2;
 let size = 10; // Size of each particle
 
 // Effective grid height/width for 2d array
@@ -22,9 +21,9 @@ for(let i=0;i<aHeight;i++) {
 	field[i] = new Array(aWidth).fill(0);
 }
 
-d3.select("#cgl")
-.selectAll("svg")
-.remove();
+
+
+
 
 
 // Optional cool seed
@@ -51,15 +50,133 @@ d3.select("#cgl")
 
 // var aWidth = field[0].length;
 // var aHeight = field.length;
+function randomize() {
+		for(var i=0;i<startCount/2;i++) {
+		let randX = Math.floor((Math.random()*aWidth));
+		let randY = Math.floor((Math.random()*aHeight));
+
+		field[randY][randX] = 1;
+	}
+
+}
+
+
+
+function reset() {
+
+		field.forEach((d,idx) => {
+			field[idx] = new Array(aWidth);
+		});
+		for(var i=0;i<startCount;i++) {
+			let randX = Math.floor((Math.random()*aWidth));
+			let randY = Math.floor((Math.random()*aHeight));
+			field[randY][randX] = 1;
+		}
+}
+
+
+function pattern(val) {
+
+let pX = parseInt(aWidth/3);// x-coordinate padding
+let pY = parseInt(aHeight/3);// y-coordinate padding
+var pt = [];
+field.forEach((d,idx) => {
+			field[idx] = new Array(aWidth);
+		});
+
+if(val === "none") {
+
+	for(var i=0;i<startCount;i++) {
+		let randX = Math.floor((Math.random()*aWidth));
+		let randY = Math.floor((Math.random()*aHeight));
+		field[randY][randX] = 1;
+	}
+
+}
+else if(val === "pulsar") {
+
+pt =  [
+
+		[0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+		[0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0],
+		[0,0,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1,0,1,0,1,1,0,0,0,0],
+		[0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0],
+		[0,0,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1,0,1,0,1,1,0,0,0,0],
+		[0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0],
+		[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0]
+
+	];
+
+
+} else if(val === "beacon") {
+
+
+
+}
+
+
+pt.forEach((row,y) => {
+	row.forEach((cell,x) => {
+		field[y+pY][x+pX] = cell;
+	})
+})
+
+		// field.forEach((d,idx) => {
+		// 	field[idx] = new Array(aWidth);
+		// });
+		// if(val === "none") {
+		// 	for(var i=0;i<startCount;i++) {
+		// 		let randX = Math.floor((Math.random()*aWidth));
+		// 		let randY = Math.floor((Math.random()*aHeight));
+		// 		field[randY][randX] = 1;
+		// 				}
+		// } else if(val === "pulsar") {
+
+		// 	field = [];
+		// 	for(var i=0;i<5;i++) {
+		// 		field.push(new Array(aWidth).fill(0));
+		// 	}
+
+			// field = [
+				
+			// 	[0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0],
+			// 	[0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0],
+			// 	[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+			// 	[0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0],
+			// 	[0,0,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1,0,1,0,1,1,0,0,0,0],
+			// 	[0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0],
+			// 	[0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0],
+			// 	[0,0,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1,0,1,0,1,1,0,0,0,0],
+			// 	[0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0],
+			// 	[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+			// 	[0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0],
+			// 	[0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0]
+
+			// ];
+
+		// 	for(var i=0;i<aHeight;i++) {
+		// 		if(i<field.length) field[i].concat(new Array(aWidth-field[i].length).fill(0));
+		// 		else field.push(new Array(aWidth).fill(0));
+		// 	}
+
+		// }
+
+}
+
+
 
 function Conway(props) {
-
 
 	const sizeRef = useRef(null);
 
 	useEffect(() => {
 
-		var time = 200;
+		var time = 100;
 
 		var options = ["Default", "Box", "Etc"];
 
@@ -90,27 +207,12 @@ function Conway(props) {
 	// OPTIONAL UNIT TESTING
 	//nTesting(test3);
 
-
-
-		// for(var idy=0;idy<aHeight;idy++) {
-		// 	for(var idx=0;idx<aWidth;idx++) {
-
-		// 			if(field[idy][idx] === 1) {
-		// 				let p = ({x:idx, y:idy});
-		// 				particles.push(p);					
-		// 			}
-			
-		// 	}
-		// }
-
 	for(var i=0;i<startCount;i++) {
 		let randX = Math.floor((Math.random()*aWidth));
 		let randY = Math.floor((Math.random()*aHeight));
 		let particle = {x:randX, y:randY};
 		particles.push(particle);
-
 		field[randY][randX] = 1;
-
 	}
 
 	const svg = d3.select("#cgl")
@@ -385,12 +487,13 @@ function Conway(props) {
 <>
   <div className="position-absolute bg-light p-2" id="panel">
       <Form.Label>Patterns</Form.Label>
-      <Form.Select size="sm" className="mx-3">
-          <option>Gosper</option>
+      <Form.Select onChange={(e) => pattern(e.target.value)} id="cptrns" size="sm" className="mx-3">
+          <option value="none">None</option>
           <option value="beacon">Beacon</option>
           <option value="pulsar">Pulsar</option>
       </Form.Select>
-      <Button variant="dark">Randomize</Button>
+      <Button onClick={() => randomize()} variant="dark">Randomize</Button>
+      <Button onClick={() => reset()} variant="dark">Reset</Button>
   </div>
 <div id="cgl" ref={sizeRef} className="overflow-hidden">
 
