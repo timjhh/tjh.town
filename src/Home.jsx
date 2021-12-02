@@ -74,7 +74,7 @@ const usedWidth = useRef(null);
 			<hr/> 
 
 
-		<ListGroup defaultActiveKey="#link1">
+		<ListGroup className="d-none d-sm-block" defaultActiveKey="#link1">
 	    <ListGroup.Item action href="/">
 	      Mountains
 	    </ListGroup.Item>

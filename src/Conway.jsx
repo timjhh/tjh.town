@@ -116,6 +116,15 @@ else if(val === "pulsar") {
 
 	];
 }
+else if(val === "butterfly") {
+		pt =  [
+		[0,1,1,0,1,1,0],
+		[1,1,0,1,0,1,1],
+		[0,1,0,0,0,1,0],
+		[0,0,1,0,1,0,0],
+		[0,0,0,1,0,0,0]
+	];
+}
 else if(val === "beacon") {
 
 pt =  [
@@ -529,6 +538,7 @@ function Conway(props) {
           <option value="gosper">Gosper Glider Gun</option>
           <option value="pulsar">Pulsar</option>
           <option value="beacon">Beacon</option>
+          <option value="butterfly">Butterfly</option>
       </Form.Select>
       <Button className="mr-2" onClick={() => randomize()} variant="dark">Randomize</Button>
       <Button onClick={() => pattern("none")} variant="dark">Reset</Button>
