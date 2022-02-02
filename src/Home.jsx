@@ -3,7 +3,7 @@ import { Container, Row, Col, Image, ListGroup } from 'react-bootstrap';
 import { Github, Linkedin } from 'react-bootstrap-icons';
 import './App.css';
 
-import { Switch, Route, Routes, Router, Link, BrowserRouter } from 'react-router-dom';
+import { Route, Routes, Link } from 'react-router-dom';
 import Footer from "./Footer.jsx";
 // import Dvd from "./Dvd.jsx";
 import Snow from "./Snow.jsx";
@@ -11,6 +11,7 @@ import Conway from "./Conway.jsx";
 // import MusicGraph from "./MusicGraph.jsx";
 import * as d3 from "d3";
 
+import MapController from "./visuals/map/MapController.jsx";
 
 
 function Home() {
@@ -21,32 +22,32 @@ const [active, setActive] = useState(0);
 const handleClose = () => setShow(false);
 const handleShow = () => setShow(true);
 
-useEffect(() => {
+// useEffect(() => {
 
-	const width = 500;
-	const height = 500;
+// 	const width = 500;
+// 	const height = 500;
 
-	/*
-		GENERATE CONTROLS TO SWITCH ELEMENTS
-	*/
-	const svg = d3.select("#switcher")
-	.append("svg")
-	.attr("zIndex", 5)
-	.attr("position", "absolute")
-	.attr("width", width)
-	.attr("height", height)
-	.append("g")
-	.attr("class", "sMain");
+// 	/*
+// 		GENERATE CONTROLS TO SWITCH ELEMENTS
+// 	*/
+// 	const svg = d3.select("#switcher")
+// 	.append("svg")
+// 	.attr("zIndex", 5)
+// 	.attr("position", "absolute")
+// 	.attr("width", width)
+// 	.attr("height", height)
+// 	.append("g")
+// 	.attr("class", "sMain");
 
-	const btns = svg.append("button")
-	.attr("x", 0)
-	.attr("y", window.innerHeight / 3)
-	.attr("transform", "translate(0," + window.innerHeight/3 + ")" )
-	.attr("width", 200)
-	.attr("height", 100)
-	.text("ABCD")
+// 	const btns = svg.append("button")
+// 	.attr("x", 0)
+// 	.attr("y", window.innerHeight / 3)
+// 	.attr("transform", "translate(0," + window.innerHeight/3 + ")" )
+// 	.attr("width", 200)
+// 	.attr("height", 100)
+// 	.text("ABCD")
 
-}, [])
+// }, [])
 
 const usedWidth = useRef(null);
 
@@ -81,7 +82,9 @@ const usedWidth = useRef(null);
 	    <ListGroup.Item action href="/conway">
 	      Conway's Game of Life
 	    </ListGroup.Item>
-
+	    <ListGroup.Item action href="/maps">
+	      Neat Visuals
+	    </ListGroup.Item>
 	  </ListGroup>
 
 
@@ -104,8 +107,9 @@ const usedWidth = useRef(null);
 			</div>
 
 		<Routes>
+			<Route path='/' element={<Snow/>}/>
 		    <Route path='/conway' element={<Conway/>}/>
-				<Route path='/' element={<Snow/>}/>
+			<Route path='/maps' element={<MapController/>}/>
 		</Routes>
 
 

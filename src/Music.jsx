@@ -9,13 +9,13 @@ function Music() {
 	const [reRender, setReRender] = useState(0);
 	const [song, setSong] = useState(null);
 
-	var timestamp;
-	var artist;
-	var album;
-	var diff;
+	// var timestamp;
+	// var artist;
+	// var album;
+	// var diff;
 	var cover;
 	var fmBox;
-	var diff;
+
 
 	function forceUpdate() {
 
