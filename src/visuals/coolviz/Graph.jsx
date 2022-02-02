@@ -17,6 +17,8 @@ const margin = {top: 50, right: 20, bottom: 30, left: 30},
 width = 700 - margin.right - margin.left,
 height = 400 - (margin.top+margin.bottom);
 
+const minRad = 5;
+const maxRad = 50;
 
 
 
@@ -33,17 +35,9 @@ const [parsedData, setParsedData] = useState([]);
 
   }, [props.current])
 
-  // useEffect(() => {
-
-
-  //   //console.log(props.switch);
-  //   let svg = d3.select("graph").select("svg");
-
-
-  // }, [props.current]);
-
 
     // Consider adding async back
+    // haha wait
     async function genGraph(data) {
 
 
@@ -83,33 +77,10 @@ const [parsedData, setParsedData] = useState([]);
     
     svg.call(zoom);
 
-  var forceX = d3.forceX(function(d) {
+  var forceX = d3.forceX().strength(1);
 
+  var forceY = d3.forceY().strength(1);
 
-    var bip = d3.select("#bipSwitch").attr("checked");
-
-    if(!bip) {
-
-      return d.group === 2 ? width/5 : (4*width)/5;
-
-    }
-      return 0.01;
-    }).strength(() => {
-      return 0.9;
-      //return d3.select("#bipSwitch").attr("checked") ? 0.01 : 0.5;
-    });
-
-  var forceY = d3.forceY().strength(0);
-  // var forceY = d3.forceY(d => {
-
-  //     return d
-  //     // if(nutrients.includes(d)) {
-
-  //     // }
-  //     // return nodes.indexOf(node.sort(e => e.id)) * radius; 
-
-
-  // }).strength(0);
 
     const simulation = d3.forceSimulation()
     .force("charge", d3.forceManyBody())
@@ -128,8 +99,7 @@ const [parsedData, setParsedData] = useState([]);
 
     var labels = node.append("text")
     .text((d) => d.ndc_description)
-        //.attr('x', -radius) // Optional styling for large circles
-        //.style("font-size", "10px")
+
         .attr('x', 4)
         .style("cursor", "pointer")
         .style("font-weight", "bold")
@@ -144,7 +114,7 @@ const [parsedData, setParsedData] = useState([]);
     .attr("r", radius)
     // .on("click", (e, d) => {
     // })
-    .attr("fill", d => (d.group === 2 ? "steelblue" : "red"))
+    .attr("fill", d => (d.otc === "N" ? "steelblue" : "red"))
     .call(d3.drag()
       .on("start", dragstarted)
       .on("drag", dragged)
@@ -206,9 +176,12 @@ const [parsedData, setParsedData] = useState([]);
 
 
   return (
+    <>
+    <button onClick={() => {console.log("poop")}}>poop</button>
     <div id={"graph"}>
       
     </div>
+    </>
   );
 }
 
