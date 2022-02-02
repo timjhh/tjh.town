@@ -42,8 +42,7 @@ useEffect(() => {
 useEffect(() => {
 
 
-    let otcmax = d3.max(props.current, d => d.otc === "Y" && parseFloat(d.nadac_per_unit));
-    let notcmax = d3.max(props.current, d => d.otc === "N" && parseFloat(d.nadac_per_unit));
+
 
 
     //let svg = d3.select("#graph").select("svg").select("g");
@@ -52,7 +51,14 @@ useEffect(() => {
       if(props.sameScale) {
         let max = d3.max(props.current, d => parseFloat(d.nadac_per_unit));
         return ((d.nadac_per_unit / max) * MAX_RADIUS) + MIN_RADIUS;
-      } else return 3;
+      } else {
+
+        let otcmax = d3.max(props.current, d => d.otc === "Y" && parseFloat(d.nadac_per_unit));
+        let notcmax = d3.max(props.current, d => d.otc === "N" && parseFloat(d.nadac_per_unit));
+
+        return MIN_RADIUS + (MAX_RADIUS*(d.otc === "Y" ? (parseFloat(d.nadac_per_unit)/otcmax) : d.nadac_per_unit/notcmax));
+
+      }
     });
 
 
@@ -137,7 +143,19 @@ useEffect(() => {
 
 
     var circles = node.append("circle")
-    .attr("r", d =>  ((d.nadac_per_unit / max) * MAX_RADIUS) + MIN_RADIUS)
+    .attr("r", function(d) {
+        if(props.sameScale) {
+        let max = d3.max(props.current, d => parseFloat(d.nadac_per_unit));
+        return ((d.nadac_per_unit / max) * MAX_RADIUS) + MIN_RADIUS;
+      } else {
+
+        let otcmax = d3.max(props.current, d => d.otc === "Y" && parseFloat(d.nadac_per_unit));
+        let notcmax = d3.max(props.current, d => d.otc === "N" && parseFloat(d.nadac_per_unit));
+
+        return MIN_RADIUS + (MAX_RADIUS*(d.otc === "Y" ? (parseFloat(d.nadac_per_unit)/otcmax) : d.nadac_per_unit/notcmax));
+
+      }
+    })
     .attr("fill", d => (d.otc === "N" ? "rgba(70,130,180,0.8)" : "red")) // rgba is steelblue at 80% opacity
     .on("click", (d,e) => {
       console.log(e)
