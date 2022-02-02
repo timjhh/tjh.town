@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Dropdown, Button, Form } from 'react-bootstrap';
 import './App.css';
 import * as d3 from "d3";

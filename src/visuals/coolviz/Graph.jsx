@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as d3 from "d3";
+import { Table } from 'react-bootstrap';
 
 
 
@@ -17,8 +18,8 @@ const margin = {top: 50, right: 20, bottom: 30, left: 30},
 width = 700 - margin.right - margin.left,
 height = 400 - (margin.top+margin.bottom);
 
-const minRad = 5;
-const maxRad = 10;
+const MIN_RADIUS = 2;
+const MAX_RADIUS = 30;
 
 
 
@@ -77,7 +78,16 @@ const [parsedData, setParsedData] = useState([]);
     
     svg.call(zoom);
 
-  var forceX = d3.forceX().strength(0.5);
+  // var forceX = d3.forceX().strength(0.5);
+  var forceX = d3.forceX((d,idx) => {
+
+    let otcmax = d3.max(props.current, d => d.otc === "Y" && parseFloat(d.nadac_per_unit));
+    let notcmax = d3.max(props.current, d => d.otc === "N" && parseFloat(d.nadac_per_unit));
+    
+    return d.otc === "N" ? width-((parseFloat(d.nadac_per_unit)/notcmax)*width/2) : 
+      (parseFloat(d.nadac_per_unit)/otcmax)*width/2;
+
+  }).strength(0.6);
 
   var forceY = d3.forceY().strength(0.5);
 
@@ -98,7 +108,7 @@ const [parsedData, setParsedData] = useState([]);
     .enter().append("g");
 
 
-
+    console.log(props.current);
 
         // setExtent(d3.extent(filtered, d => d.nadac_per_unit));
         // setMax();
@@ -106,8 +116,12 @@ const [parsedData, setParsedData] = useState([]);
     console.log(max);
 
     var circles = node.append("circle")
-    .attr("r", d =>  ((d.nadac_per_unit / max) * 30))
+    .attr("r", d =>  ((d.nadac_per_unit / max) * MAX_RADIUS) + MIN_RADIUS)
     .attr("fill", d => (d.otc === "N" ? "steelblue" : "red"))
+    .on("click", (d,e) => {
+      console.log(e)
+      props.setLabel((e.ndc_description) + " | $" + e.nadac_per_unit);
+    })
     .call(d3.drag()
       .on("start", dragstarted)
       .on("drag", dragged)
@@ -122,7 +136,7 @@ const [parsedData, setParsedData] = useState([]);
 
     var labels = node.append("text")
     .text((d) => d.ndc_description)
-        .attr('x', 4)
+        .attr('x', 2)
         .style("cursor", "pointer")
         .style("font-weight", "bold")
         .style("font-size", "0.2em")
@@ -177,9 +191,36 @@ const [parsedData, setParsedData] = useState([]);
 
   return (
 
+    <>
     <div id={"graph"}>
       
     </div>
+    <Table className="mt-5" striped bordered hover>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Description</th>
+          <th>Price Per Unit</th>
+          <th>Unit</th>
+          <th>OTC?</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      {props.current.map((d,idx) => (
+
+        <tr>
+          <td>{idx}</td>
+          <td>{d.ndc_description}</td>
+          <td>{d.nadac_per_unit}</td>
+          <td>{d.pricing_unit}</td>
+          <td>{d.otc}</td>
+        </tr>
+
+        ))}
+      </tbody>
+    </Table>
+    </>
 
   );
 }

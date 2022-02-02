@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { Container, Row, Col, Image, ListGroup } from 'react-bootstrap';
 import { Github, Linkedin } from 'react-bootstrap-icons';
 import './App.css';
@@ -9,18 +9,18 @@ import Footer from "./Footer.jsx";
 import Snow from "./Snow.jsx";
 import Conway from "./Conway.jsx";
 // import MusicGraph from "./MusicGraph.jsx";
-import * as d3 from "d3";
+//import * as d3 from "d3";
 
-import MapController from "./visuals/coolviz/MapController.jsx";
+//import MapController from "./visuals/coolviz/MapController.jsx";
 import GraphController from "./visuals/coolviz/GraphController.jsx";
 
 function Home() {
 
-const [show, setShow] = useState(false);
-const [active, setActive] = useState(0);
+// const [show, setShow] = useState(false);
+// const [active, setActive] = useState(0);
 
-const handleClose = () => setShow(false);
-const handleShow = () => setShow(true);
+// const handleClose = () => setShow(false);
+// const handleShow = () => setShow(true);
 
 // useEffect(() => {
 
@@ -67,9 +67,9 @@ const usedWidth = useRef(null);
 			<p><br/>My name is Tim Harrold(he/them), and i'm an aspiring programmer / human being. Here are some of my projects, interests and hobbies</p>
 			<hr/>
 
-			<a href="https://github.com/timjhh" target="_blank" rel="noreferrer"><Github className="mx-2 xs"/></a>|
+			<a href="https://github.com/timjhh" target="_blank" rel="noopener noreferrer"><Github className="mx-2 xs"/></a>|
 			<Link className="mx-2 xs" to={{pathname: "/Resume.pdf"}} target="_blank">Resume</Link>|
-			<a href="https://www.linkedin.com/in/tim-harrold-02b249180/" target="_blank" rel="noreferrer"><Linkedin className="mx-2"/></a>
+			<a href="https://www.linkedin.com/in/tim-harrold-02b249180/" target="_blank" rel="noopener noreferrer"><Linkedin className="mx-2"/></a>
 
 			<p>timjharrold@gmail.com</p>
 			<hr/> 

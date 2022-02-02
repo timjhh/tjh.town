@@ -17,7 +17,7 @@ function GraphController(props) {
   const [current, setCurrent] = useState([]);
 
   const [range, setRange] = useState([0,0]);
-  const [label, setLabel] = useState("Click a Country To See Nutrient Data");
+  const [label, setLabel] = useState("Click on a node for more information");
 
   //const [method, setMethod] = useState(props.methods[0]);
 
@@ -29,10 +29,15 @@ function GraphController(props) {
 
       data.sort((a,b) => parseFloat(b.nadac_per_unit) - parseFloat(a.nadac_per_unit));
       
-      // let otc = data.filter(d => d.otc === "Y");
-      // let notc = data.filter(d => d.otc === "N");
+      // Get highest otc / non-otc nodes
+      let otc = data.filter(d => d.otc === "Y").filter((d,idx) => idx < 50);
+      let notc = data.filter(d => d.otc === "N").filter((d,idx) => idx < 50);
 
-      let filtered = data.filter((d,idx) => idx < 100)
+      // merge highest together
+      let filtered = d3.merge([otc,notc]);
+
+      // Simply get 100 highest nodes
+      //let filtered = data.filter((d,idx) => idx < 100)
 
       filtered.forEach(d => d.nadac_per_unit = parseFloat(d.nadac_per_unit));
 
@@ -74,7 +79,7 @@ function GraphController(props) {
       <h4 className='display-4'>Top 100 Drugs Purchased by Pharmacy - NADAC (National Average Drug Acquisition Cost) 2022</h4>
       <p>{label}</p>
 
-      <Graph current={current} switch={bipartite} />
+      <Graph current={current} setLabel={setLabel} switch={bipartite} />
 
 
 
