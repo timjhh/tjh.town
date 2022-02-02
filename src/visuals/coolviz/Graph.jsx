@@ -48,7 +48,12 @@ useEffect(() => {
 
     //let svg = d3.select("#graph").select("svg").select("g");
     let svg = d3.selectAll(".nodes").selectAll("circle")
-    .attr("r", 3);
+    .attr("r", function(d) {
+      if(props.sameScale) {
+        let max = d3.max(props.current, d => parseFloat(d.nadac_per_unit));
+        return ((d.nadac_per_unit / max) * MAX_RADIUS) + MIN_RADIUS;
+      } else return 3;
+    });
 
 
 //.attr("r", d =>  ((d.nadac_per_unit / max) * MAX_RADIUS) + MIN_RADIUS)
