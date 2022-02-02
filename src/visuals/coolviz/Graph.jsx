@@ -18,7 +18,7 @@ width = 700 - margin.right - margin.left,
 height = 400 - (margin.top+margin.bottom);
 
 const minRad = 5;
-const maxRad = 50;
+const maxRad = 10;
 
 
 
@@ -77,14 +77,14 @@ const [parsedData, setParsedData] = useState([]);
     
     svg.call(zoom);
 
-  var forceX = d3.forceX().strength(1);
+  var forceX = d3.forceX().strength(0.5);
 
-  var forceY = d3.forceY().strength(1);
+  var forceY = d3.forceY().strength(0.5);
 
 
     const simulation = d3.forceSimulation()
     .force("charge", d3.forceManyBody())
-    .force("repel", d3.forceManyBody().strength(-50))
+    .force("repel", d3.forceManyBody().strength(-80))
     .force("center", d3.forceCenter(width / 2, height / 2))
     .force("collision", d3.forceCollide(4))
     .force("x", forceX)
@@ -97,23 +97,16 @@ const [parsedData, setParsedData] = useState([]);
     .data(nodes)
     .enter().append("g");
 
-    var labels = node.append("text")
-    .text((d) => d.ndc_description)
-
-        .attr('x', 4)
-        .style("cursor", "pointer")
-        .style("font-weight", "bold")
-        .style("font-size", "0.2em")
-        .attr('y', 0);
 
 
 
-
+        // setExtent(d3.extent(filtered, d => d.nadac_per_unit));
+        // setMax();
+    let max = d3.max(props.current, d => parseFloat(d.nadac_per_unit));
+    console.log(max);
 
     var circles = node.append("circle")
-    .attr("r", radius)
-    // .on("click", (e, d) => {
-    // })
+    .attr("r", d =>  ((d.nadac_per_unit / max) * 30))
     .attr("fill", d => (d.otc === "N" ? "steelblue" : "red"))
     .call(d3.drag()
       .on("start", dragstarted)
@@ -127,6 +120,13 @@ const [parsedData, setParsedData] = useState([]);
 
 
 
+    var labels = node.append("text")
+    .text((d) => d.ndc_description)
+        .attr('x', 4)
+        .style("cursor", "pointer")
+        .style("font-weight", "bold")
+        .style("font-size", "0.2em")
+        .attr('y', 0);
 
   function dragstarted(d) {
     if (!d.active) simulation.alphaTarget(0.3).restart();
@@ -176,12 +176,11 @@ const [parsedData, setParsedData] = useState([]);
 
 
   return (
-    <>
-    <button onClick={() => {console.log("poop")}}>poop</button>
+
     <div id={"graph"}>
       
     </div>
-    </>
+
   );
 }
 
