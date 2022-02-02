@@ -11,8 +11,8 @@ import Conway from "./Conway.jsx";
 // import MusicGraph from "./MusicGraph.jsx";
 import * as d3 from "d3";
 
-import MapController from "./visuals/map/MapController.jsx";
-
+import MapController from "./visuals/coolviz/MapController.jsx";
+import GraphController from "./visuals/coolviz/GraphController.jsx";
 
 function Home() {
 
@@ -109,7 +109,7 @@ const usedWidth = useRef(null);
 		<Routes>
 			<Route path='/' element={<Snow/>}/>
 		    <Route path='/conway' element={<Conway/>}/>
-			<Route path='/maps' element={<MapController/>}/>
+			<Route path='/maps' element={<GraphController/>}/>
 		</Routes>
 
 

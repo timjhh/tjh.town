@@ -1,143 +1,158 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
 import Graph from './Graph.jsx';
-import FileSelect from './FileSelect.jsx';
-import Grid from '@mui/material/Grid';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
+
+import axios from 'axios';
+
 
 import * as d3 from "d3";
 
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-
-import Papa from 'papaparse';
 
 function GraphController(props) {
 
-  const [selected, setSelected] = useState(null);
-  const [bipartite, setBipartite] = useState(false);
+  const [nutrient, setNutrient] = useState("Calories");
+
+  const [nutrientTwo, setNutrientTwo] = useState("Zinc");
+
+  const [bipartite, setBipartite] = useState(true);
   const [current, setCurrent] = useState([]);
+  const [range, setRange] = useState([0,0]);
+  const [label, setLabel] = useState("Click a Country To See Nutrient Data");
 
-  //`${process.env.PUBLIC_URL}`+"/DATA_INPUTS/Tabular_data_inputs/"+d
-
-const nutrients = ["Calories", "Protein", "Fat", "Carbohydrates", "Vitamin.C", "Vitamin.A", "Folate", "Calcium", "Iron", "Zinc", "Potassium", 
-            "Dietary.Fiber", "Copper", "Sodium", "Phosphorus", "Thiamin", "Riboflavin", "Niacin", "B6", "Choline",
-            "Magnesium", "Manganese", "Saturated.FA", "Monounsaturated.FA", "Polyunsaturated.FA", "Omega.3..USDA.only.", "B12..USDA.only."];
-
-const [country, setCountry] = useState(props.countries[0]);
-const [method, setMethod] = useState(props.methods[0]);
-const [year, setYear] = useState(props.years[0]);
-
-useEffect(() => {
-
-  console.log("Country: " + country + "\nMethod: " + method + "\nYear: " + year);
+  //const [method, setMethod] = useState(props.methods[0]);
 
 
-    (async () => {
+  useEffect(() => {
 
 
-      try {
 
-        let regex = new RegExp(`${country}_${method}_${year}`);
+    setCurrent(getData().results);
 
-        var filtered = props.files.filter(f => f.match(regex));
 
-        //const d = await getData('./Afghanistan_ImportsGlobalConstrained_2019.csv');
-        // `${process.env.PUBLIC_URL}`+"/DATA_INPUTS/Tabular_data_inputs/"+filtered[0]
-        const d = await getData("./DATA_INPUTS/Tabular_data_inputs/"+filtered[0]);
 
-        const w = await wrangle(d);
+  }, [])
+
+  useEffect(() => {
+
+    console.log(current);
+
+  }, [current])
+
+  // useEffect(() => {
+
+
+  //   let regex = new RegExp(`_${method}_`);
+
+  //   var filtered = props.files.filter(d => d.match(regex));
+  //   var curr = [];
+  //   var max = Number.MAX_VALUE;
+  //   var min = Number.MIN_VALUE;
+
+  //   setCurrent([]);
+
+
+  //   filtered.forEach(d => {
+
+
+
+  //     d3.csv(`${process.env.PUBLIC_URL}`+"/DATA_INPUTS/Tabular_data_inputs/"+d).then((res, idz) => {
+      
+  //       if(Object.entries(res).length != 1) {
+
+  //       let idx = res.columns.indexOf(nutrient); // Index of selected nutrient
+
+        
+  //       // Subtract one for the entry of column names
+  //       let len = Object.entries(res).length-1;
+       
+  //       var count1 = 0; // How many nutrients did we accurately count
+  //       var sum1 = 0; // What is their summation
+
+  //       var count2 = 0; // How many nutrients did we accurately count
+  //       var sum2 = 0; // What is their summation
+
+
+  //       res.forEach((row,idy) => {
+
           
-        // await setCurrent({nodes: w[0], links: w[1]});
-        //const g = await genGraph(w);
+  //         let num1 = parseFloat(row[nutrient]);
+          
+  //         if(!Number.isNaN(num1)) {
 
-      } catch(err) {
-        console.log(err);
-      }
+  //           sum1 += num1;
+  //           count1++;
+
+  //         }
+
+  //         let num2 = parseFloat(row[nutrientTwo]);
+          
+  //         if(!Number.isNaN(num2)) {
+
+  //           sum2 += num2;
+  //           count2++;
+
+  //         }
+
+  //       })
+
+  //     //Debugging code - may be useful later
+  //     //   try {
+  //     //   if(res[0]["Country"] === "United States of America") {
+  //     //     console.log("-------- Results --------");
+  //     //     console.log(sum);
+  //     //     console.log(sum / count);
+  //     //     console.log(nutrient);
+  //     //     console.log("-------- End --------");
+  //     //   }
+  //     // } catch(e) {
+  //     //   console.log(res)
+  //     //   console.log(e)
+  //     // }
 
 
-    }) ();
+  //       if(res[0]) {
+  //         //curr.push([res[0]["Country"], sum, sum/count]);
+  //         curr.push({
+
+  //           country: res[0]["Country"],
+  //           avg1: (sum1/count1),
+  //           avg2: (sum2/count2)
+
+  //         });
+  //       }
+
+  //     }
+
+  //     });
 
 
-      // yee haw!!
-      async function wrangle(d) {
+  //   })
 
-      let maxes = {};
-
-      let nds = [];
-      let lnks = [];
-
-      nutrients.forEach(e => {
-        //console.log(d.e)
-        nds.push({id: e, group: 2 });
-        // maxes.e = d3.max(d => Object.entries(d).e);
-        maxes[e] = d3.max(d, item => !Number.isNaN(item[e]) && item[e] != "NA" ? parseFloat(item[e]) : 0);
-
-      })
+  //   setCurrent(curr);
 
 
-      d.forEach(e => {
+  // }, [])
 
-        nds.push({id: e.FAO_CropName, group: 1 })
+
+
+
+  // async function getData(link) {
+
+  //   var csvFilePath = require(link);
+
+
+  //     return new Promise(function(resolve, error) {
         
-        Object.entries(e).forEach(f => {
-    
-            if(!Number.isNaN(f[1]) && f[1] > 0) {
-              if(nutrients.includes(f[0])) lnks.push({ source: e.FAO_CropName, target: f[0], value: f[1], width: (f[0]/maxes[f[0]])*5 })
-            }
-            
+  //       Papa.parse(csvFilePath, {
+  //         header: true,
+  //         download: true,
+  //         skipEmptyLines: true,
+  //         dynamicTyping: true,
+  //         complete: (res) => { resolve(res.data) }
+  //       }); 
 
-        })
-        
+  //     });
 
-      })
-
-
-
-
-      //return [nds,lnks];
-      setCurrent([nds,lnks])
-
-      }
-
-
-
-
-      async function getData(link) {
-
-        //var csvFilePath = require('./Afghanistan_ImportsGlobalConstrained_2019.csv');
-        //var csvFilePath = require(link);
-
-
-          return d3.csv(link).then((res, idz) => {
-
-            return res;
-
-          });
-
-          // return new Promise(function(resolve, error) {
-            
-          //   Papa.parse(csvFilePath, {
-          //     header: true,
-          //     download: true,
-          //     skipEmptyLines: true,
-          //     dynamicTyping: true,
-          //     complete: (res) => { resolve(res.data) }
-          //   }); 
-
-          // });
-
-
-
-      }
-
-
-
-
-}, [country, method, year])
-
-
+  // }
 
 
 
@@ -145,32 +160,36 @@ useEffect(() => {
 
     <>
 
-    <FileSelect 
-      country={country} setCountry={setCountry}
-      method={method} setMethod={setMethod}
-      year={year} setYear={setYear}
-     {...props} />
+      {/* <NutriSelect
+        methods={props.methods} 
+        nutrients={props.nutrients}
+        nutrient={nutrient}
+        setNutrient={setNutrient}
+        nutrientTwo={nutrientTwo}
+        setNutrientTwo={setNutrientTwo}  
+        method={method}
+        setMethod={setMethod}
+        {...props} /> */}
 
 
-      <Stack direction="row" spacing={1} alignItems="center">
-        <Typography>Bipartite</Typography>
-          <Switch id="bipSwitch" checked={bipartite} onChange={() => { setBipartite(!bipartite) }} name="bipartite" />
-        <Typography>Force-Directed</Typography>
-      </Stack>
 
+      <p>Note: Consider Including Country Codes in Filename. This will allow all countries to be found</p>
+      <p>{label}</p>
 
       <Graph current={current} switch={bipartite} />
+
+
 
     </>
 
 
   );
 }
+async function getData(username) {
+                              //https://data.medicaid.gov/api/1/metastore/schemas/dataset/items/eec7fbe6-c4c4-5915-b3d0-be5828ef4e9d?show-reference-ids=false
+  const response = await axios("https://data.medicaid.gov/api/1/datastore/query/dfa2ab14-06c2-457a-9e36-5cb6d80f8d93/0");
 
+  return response.status === 200 ? response.data : response.status;
+
+}
 export default GraphController;
-
-
-
-
-
-
