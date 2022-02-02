@@ -18,7 +18,7 @@ const margin = {top: 50, right: 20, bottom: 30, left: 30},
 width = 700 - margin.right - margin.left,
 height = 400 - (margin.top+margin.bottom);
 
-const MIN_RADIUS = 2;
+const MIN_RADIUS = 1;
 const MAX_RADIUS = 30;
 
 
@@ -28,13 +28,31 @@ const [parsedData, setParsedData] = useState([]);
 //const [links, setLinks] = useState([]);
 
 
-  useEffect(() => {
-    console.log(props.current);
+useEffect(() => {
+
     if(props.current && props.current.length > 0) {
       genGraph(props.current);
     }
 
-  }, [props.current])
+
+
+}, [props.current]);
+
+
+useEffect(() => {
+
+
+    let otcmax = d3.max(props.current, d => d.otc === "Y" && parseFloat(d.nadac_per_unit));
+    let notcmax = d3.max(props.current, d => d.otc === "N" && parseFloat(d.nadac_per_unit));
+
+
+    //let svg = d3.select("#graph").select("svg").select("g");
+    let svg = d3.selectAll(".nodes").selectAll("circle")
+    .attr("r", 3);
+
+
+//.attr("r", d =>  ((d.nadac_per_unit / max) * MAX_RADIUS) + MIN_RADIUS)
+}, [props.sameScale]);
 
 
     // Consider adding async back
@@ -94,7 +112,7 @@ const [parsedData, setParsedData] = useState([]);
 
     const simulation = d3.forceSimulation()
     .force("charge", d3.forceManyBody())
-    .force("repel", d3.forceManyBody().strength(-80))
+    .force("repel", d3.forceManyBody().strength(-30))
     .force("center", d3.forceCenter(width / 2, height / 2))
     .force("collision", d3.forceCollide(4))
     .force("x", forceX)
@@ -108,16 +126,14 @@ const [parsedData, setParsedData] = useState([]);
     .enter().append("g");
 
 
-    console.log(props.current);
-
         // setExtent(d3.extent(filtered, d => d.nadac_per_unit));
         // setMax();
     let max = d3.max(props.current, d => parseFloat(d.nadac_per_unit));
-    console.log(max);
+
 
     var circles = node.append("circle")
     .attr("r", d =>  ((d.nadac_per_unit / max) * MAX_RADIUS) + MIN_RADIUS)
-    .attr("fill", d => (d.otc === "N" ? "steelblue" : "red"))
+    .attr("fill", d => (d.otc === "N" ? "rgba(70,130,180,0.8)" : "red")) // rgba is steelblue at 80% opacity
     .on("click", (d,e) => {
       console.log(e)
       props.setLabel((e.ndc_description) + " | $" + e.nadac_per_unit);

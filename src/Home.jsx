@@ -109,7 +109,7 @@ const usedWidth = useRef(null);
 		<Routes>
 			<Route path='/' element={<Snow/>}/>
 		    <Route path='/conway' element={<Conway/>}/>
-			<Route path='/maps' element={<GraphController/>}/>
+			<Route path='/maps' element={<GraphController />}/>
 		</Routes>
 
 

@@ -3,11 +3,17 @@ import Graph from './Graph.jsx';
 
 import axios from 'axios';
 
-
+import { Form } from 'react-bootstrap';
 import * as d3 from "d3";
 
 
 function GraphController(props) {
+
+  // How many nodes will we display from each group
+  const [numNodes, setNumNodes] = useState(50);
+
+  // How to apply sizing scale
+  const [sameScale, setSameScale] = useState(true);
 
   const [nutrient, setNutrient] = useState("Calories");
 
@@ -15,6 +21,8 @@ function GraphController(props) {
 
   const [bipartite, setBipartite] = useState(true);
   const [current, setCurrent] = useState([]);
+  const [data, setData] = useState([]); // Raw data
+
 
   const [range, setRange] = useState([0,0]);
   const [label, setLabel] = useState("Click on a node for more information");
@@ -28,14 +36,18 @@ function GraphController(props) {
       let data = response.data.results;
 
       data.sort((a,b) => parseFloat(b.nadac_per_unit) - parseFloat(a.nadac_per_unit));
-      
+      setData(data);
+
       // Get highest otc / non-otc nodes
-      let otc = data.filter(d => d.otc === "Y").filter((d,idx) => idx < 50);
-      let notc = data.filter(d => d.otc === "N").filter((d,idx) => idx < 50);
+      let otc = data.filter(d => d.otc === "Y").filter((d,idx) => idx < numNodes/2);
+      let notc = data.filter(d => d.otc === "N").filter((d,idx) => idx < numNodes/2);
+
+      console.log(otc);
 
       // merge highest together
       let filtered = d3.merge([otc,notc]);
 
+      console.log(d3.max(filtered, d => d.otc === "Y" && parseFloat(d.nadac_per_unit)))
       // Simply get 100 highest nodes
       //let filtered = data.filter((d,idx) => idx < 100)
 
@@ -52,16 +64,30 @@ function GraphController(props) {
 
 
   }, [])
-
   useEffect(() => {
 
-    console.log(current);
 
-  }, [current]);
+      let bins = numNodes/2;
+
+      // Get highest otc / non-otc nodes
+      let otc = data.filter(d => d.otc === "Y").filter((d,idx) => idx < bins);
+      let notc = data.filter(d => d.otc === "N").filter((d,idx) => idx < bins);
+
+      // merge highest together
+      let filtered = d3.merge([otc,notc]);
+
+      // Simply get 100 highest nodes
+      //let filtered = data.filter((d,idx) => idx < 100)
+
+      filtered.forEach(d => d.nadac_per_unit = parseFloat(d.nadac_per_unit));
+
+      setCurrent(filtered);
+
+  }, [numNodes])
 
   return (
 
-    <>
+    <div className="mx-5">
 
       {/* <NutriSelect
         methods={props.methods} 
@@ -76,14 +102,33 @@ function GraphController(props) {
 
 
 
-      <h4 className='display-4'>Top 100 Drugs Purchased by Pharmacy - NADAC (National Average Drug Acquisition Cost) 2022</h4>
+      <h4 className='display-4' style={{"font-size": "3em"}}>Top 100 Drugs Purchased by Pharmacy - NADAC (National Average Drug Acquisition Cost) 2022</h4>
+      
+      <hr/>
+
       <p>{label}</p>
 
-      <Graph current={current} setLabel={setLabel} switch={bipartite} />
+      <Form>
+        <Form.Check 
+          value={sameScale}
+          onChange={(d) => setSameScale(!sameScale)}
+          type="switch"
+          id="custom-switch"
+          label="Same Sizing Scale Applied?"
+        />
+      </Form>
+      <Form.Select defaultValue={100} value={numNodes} onChange={(d,e) => {setNumNodes(d.target.value)}} className="mb-4" aria-label="Node Count">
+        {[50,100,150,200].map(d => (
+            <option key={d} value={d}>Display top {d} nodes</option>
+          ))}
+
+      </Form.Select>
+
+      <Graph sameScale={sameScale} current={current} setLabel={setLabel} switch={bipartite} />
 
 
 
-    </>
+    </div>
 
 
   );
