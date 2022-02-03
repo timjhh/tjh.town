@@ -248,8 +248,8 @@ useEffect(() => {
 
       {props.current.map((d,idx) => (
 
-        <tr>
-          <td>{idx}</td>
+        <tr className={idx}>
+          <td>{idx+1}</td>
           <td>{d.ndc_description}</td>
           <td>{d.nadac_per_unit}</td>
           <td>{d.pricing_unit}</td>

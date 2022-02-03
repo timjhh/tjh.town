@@ -102,7 +102,7 @@ function GraphController(props) {
 
 
 
-      <h4 className='display-4' style={{"font-size": "3em"}}>Top 100 Drugs Purchased by Pharmacy - NADAC (National Average Drug Acquisition Cost) 2022</h4>
+      <h4 className='display-4' style={{"font-size": "3em"}}>Top Drugs Purchased by National Pharmacies - NADAC (National Average Drug Acquisition Cost) 2022</h4>
       
       <hr/>
 
