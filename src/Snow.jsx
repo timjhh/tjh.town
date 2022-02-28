@@ -187,8 +187,9 @@ function Snow(props) {
 	.attr("opacity", 0.9)
 	.attr("fill", "#CABDAF");
 
+	var timer = d3.timer(animate);
 
-	}, [sizeRef.current]);
+	}, []);
 
 
 	function animate() {
@@ -211,13 +212,13 @@ function Snow(props) {
 
 		sn.transition()
 		.duration(5000)
+		.ease(d3.easeQuadIn)
 		.attr('y', height)
 		.remove();		
 
 
 	}
 
-	var timer = d3.timer(animate);
  
   return (
 
