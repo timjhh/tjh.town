@@ -5,7 +5,7 @@ import * as d3 from "d3";
 
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
 width = window.innerWidth*(10/12),
-height = window.innerHeight;
+height = window.outerHeight;
 
 let particles = [];
 
@@ -218,7 +218,6 @@ pt.forEach((row,y) => {
 
 function Conway(props) {
 
-	const sizeRef = useRef(null);
 
 	useEffect(() => {
 
@@ -264,6 +263,9 @@ function Conway(props) {
 	const svg = d3.select("#cgl")
 	.append("svg")
 	.attr("position", "absolute")
+	.attr("className", "svg-content-responsive svg-container h-100")
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 " + (width) + " " + (height+margin.bottom+margin.top))
 	.attr("width", width)
 	.attr("height", height+margin.top+margin.bottom)
 	.append("g")
@@ -310,22 +312,6 @@ function Conway(props) {
 	    .attr("height", "100%")
 	    // .attr("fill", "url(#bg-gradient)");
 	    .attr("fill", "black");
-
-
-  // const controls = svg
-  // 	.append("g")
-  // 	.attr("id", "controls")
-  // 	.attr("height", 150)
-  // 	.attr("width", 100)
-		// .attr("transform", "translate(" + margin.left + "," + (margin.top+margin.bottom) + ")");
-
-
-  // controls
-  // 	.append("rect")
-  // 	.attr("z-index", 10)
-  // 	.attr("height", 150)
-  // 	.attr("width", 100)
-  //  	.style("fill", "rgba(255, 0, 0, 0.4)");
 
   const controls = svg
   	.append("select")
@@ -462,7 +448,8 @@ function Conway(props) {
 		// 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 	async function animate() {
 
-		let game = d3.select("#cgl").select("svg").select(".main").select("#anim");
+		//let game = d3.select("#cgl").select("svg").select(".main").select("#anim");
+		let game = d3.select("#anim");
 
 		particles = [];
 
@@ -543,7 +530,7 @@ function Conway(props) {
       <Button className="mr-2" onClick={() => randomize()} variant="dark">Randomize</Button>
       <Button onClick={() => pattern("none")} variant="dark">Reset</Button>
   </div>
-<div id="cgl" ref={sizeRef} className="overflow-hidden">
+<div id="cgl" className="overflow-hidden h-100">
 
 </div>
 

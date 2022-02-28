@@ -114,7 +114,7 @@ function GraphController(props) {
           onChange={(d) => setSameScale(!sameScale)}
           type="switch"
           id="custom-switch"
-          label="Same Sizing Scale Applied?"
+          label="Scale Nodes By Group?"
         />
       </Form>
       <Form.Select defaultValue={100} value={numNodes} onChange={(d,e) => {setNumNodes(d.target.value)}} className="mb-4" aria-label="Node Count">

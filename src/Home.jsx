@@ -101,14 +101,14 @@ const usedWidth = useRef(null);
 		</Col>
 
 
-		<Col xs={0} md={10} usedwidth={usedWidth.current ? usedWidth.current.offsetWidth : 0} className="mx-0 px-0 d-none d-sm-block">
+		<Col xs={0} md={10} className="mx-0 px-0 pb-0 mb-0 d-none d-md-block">
 
 			<div id="switcher" className="position-absolute">
 			</div>
 
 		<Routes>
-			<Route path='/' element={<Snow/>}/>
-		    <Route path='/conway' element={<Conway/>}/>
+			<Route path='/' element={<Snow style={{"backgroundColor": "black"}}/>}/>
+		    <Route path='/conway' element={<Conway style={{"backgroundColor": "black"}}/>}/>
 			<Route path='/maps' element={<GraphController />}/>
 		</Routes>
 
