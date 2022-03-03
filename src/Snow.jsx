@@ -22,7 +22,7 @@ var body = document.body,
 // #302a31
 // #647443
 // #2a4b7e
-const colors = ["#9ebcda", "#90ee90", "#357360", "#CABDAF"
+const colors = ["#9ebcda", "#357360", "#CABDAF"
 , "#ececd9", "#4c8a63", "#1f5d77", "#302a31", "#647443" ,"#2a4b7e"]
 	
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
@@ -76,21 +76,21 @@ function Snow(props) {
 	}
 
 
-	let x = d3.scaleLinear()
-	.range([0,width+margin.left+margin.right])
-	.domain([0,width]);
+	// let x = d3.scaleLinear()
+	// .range([0,width+margin.left+margin.right])
+	// .domain([0,width]);
 
-	let y = d3.scaleLinear()
-	.range([height,0])
-	.domain([0,height]);
+	// let y = d3.scaleLinear()
+	// .range([height,0])
+	// .domain([0,height]);
 
-	let mX = d3.scaleLinear()
-	.range([0,width+margin.left+margin.right])
-	.domain([0,width/2]);
+	// let mX = d3.scaleLinear()
+	// .range([0,width+margin.left+margin.right])
+	// .domain([0,width/2]);
 
-	let mY = d3.scaleLinear()
-	.range([height/2,height])
-	.domain([0,width]);
+	// let mY = d3.scaleLinear()
+	// .range([height/2,height])
+	// .domain([0,width]);
 
 
 
@@ -102,7 +102,6 @@ function Snow(props) {
     .attr("viewBox", "0 0 " + (width) + " " + (height+margin.bottom+margin.top))
 	.attr("width", width)
 	.attr("height", document.documentElement.getBoundingClientRect().height)
-	//.attr("height", Math.max($(document).height(), $(window).height()))
 	.append("g")
 	.attr("class", "main");
 
@@ -146,36 +145,6 @@ function Snow(props) {
 	    .attr("width", "100%")
 	    .attr("height", "100%")
 	    .attr("fill", "url(#bg-gradient)");
-
-
-	// let negative = 1;
-	
-	// for(var j=0;j<sliderVal;j++) {
-		
-	// 	negative *= -1;
-
-	// 	let randW = (Math.random()*(width/2))+(width/2);
-	// 	let heightVar = (height/sliderVal)*(j+1);
-	// 	let eccentricity = (Math.random()*60)
-	// 	let data = [];
-
-	// 	for(var i=0;i<width;i+=10) {
-	// 		let randY = (Math.random()*eccentricity); // Variation per data point
-	// 		data.push({cX: i, cY: ((randY+i)%(heightVar))})
-	// 	}
-
-	// 	svg.append("path")
-	// 	.datum(data)
-	// 	.attr("d", d3.area()
-	// 		.x(d => x(d.cX))
-	// 		.y1(d => x(d.cY))
-	// 		.y0(height+margin.top+margin.bottom)
-	// 		)
-	// 	.attr("stroke", "black")
-	// 	.attr("fill", "black")
-	// 	.attr("opacity", 0.4);
-
-	// }
 
 
 	// Rain animation container
@@ -231,6 +200,122 @@ function Snow(props) {
 	// .attr("stroke", "black")
 	// .attr("fill", "black")
 	// .attr("opacity", 0.4);
+
+
+
+	let x = d3.scaleLinear()
+	.range([0,width+margin.left+margin.right])
+	.domain([0,width]);
+
+	let y = d3.scaleLinear()
+	.domain([0,height])
+	.range([0,height]);
+
+	let mtns = svg.append("g")
+	.attr("id", "mtns");
+
+	let negative = 1;
+
+
+
+		for(var j=1;j<=sliderVal;j++) {
+			
+			let grad = mtns.append("defs")
+			.append("linearGradient")
+			.attr("id", "grad#"+j)
+			.attr("x1", "0")
+			.attr("x2", "1")
+			.attr("y1", "0")
+			.attr("y2", "1.5")
+
+			let randClr1 = parseInt(Math.random()*colors.length);
+			let randClr2 = parseInt(Math.random()*colors.length);
+
+			// Define gradient starts and stops
+			grad.append("stop")
+				.attr("stop-color", colors[randClr1])
+				.attr("offset", "0")
+
+			grad.append("stop")
+				.attr("stop-color", colors[randClr2])
+				.attr("offset", "1")
+
+
+
+
+			let randW = (Math.random()*(width/2))+(width/2);
+
+			let slope = (Math.random()*2)+0.2;
+
+			let heightVar = (height/(sliderVal))*(sliderVal-j);
+			let variation = ((Math.random()+0.1)*60);
+			let data = [];
+
+			for(var i=0;i<width;i+=10) {
+				let randY = (Math.random()*variation); // Variation per data point
+				data.push({
+					cX: (negative > 0 ? i : (width-i)),
+					cY: ((slope*i)+randY)+heightVar
+					//cY: ((height)-((randY+i)))+(heightVar)
+				})
+			}
+			
+			mtns.selectAll("path")
+			.data(data)
+			.enter()
+			.append("path")
+			.attr("id", "mtn#" + j)
+			.attr("d", d3.area()
+				.x(d => x(d.cX))
+				.y1(d => x(d.cY))
+				.y0(height+margin.top+margin.bottom)
+				)
+			.attr("stroke", "black")
+			//.attr("fill", "url(#grad#" + j + ")")
+			.attr("fill", colors[randClr1])
+			.attr("opacity", 0.8);
+		
+			mtns
+			.datum(data)
+			.append("path")
+			.attr("id", "mtn#" + j)
+			.attr("d", d3.area()
+				.x(d => x(d.cX))
+				.y1(d => x(d.cY+20))
+				.y0(height+margin.top+margin.bottom)
+				)
+			.attr("stroke", "black")
+			.attr("fill", "url(#grad#" + j + ")")
+			//.attr("fill", colors[randClr1])
+			.attr("opacity", 0.5);
+
+			mtns
+			.datum(data)
+			.append("path")
+			.attr("id", "mtn#" + j)
+			.attr("d", d3.area()
+				.x(d => x(d.cX))
+				.y1(d => x(d.cY+80))
+				.y0(height+margin.top+margin.bottom)
+				)
+			.attr("stroke", "black")
+			.attr("fill", "url(#grad#" + j + ")")
+
+			.attr("opacity", 1);
+
+
+
+			negative *= -1;
+
+
+		}
+
+
+
+
+
+
+
 
 
 
@@ -294,87 +379,6 @@ function Snow(props) {
 
 
 
-		let x = d3.scaleLinear()
-		.range([0,width+margin.left+margin.right])
-		.domain([0,width]);
-	
-		let y = d3.scaleLinear()
-		.domain([0,height])
-		.range([0,height]);
-
-
-		let negative = 1;
-		console.log(sliderVal)
-
-		for(var j=1;j<=sliderVal;j++) {
-			
-
-			let grad = svg.append("defs")
-			.append("linearGradient")
-			.attr("id", "grad#"+j)
-			.attr("x1", "0")
-			.attr("x2", "1")
-			.attr("y1", "0")
-			.attr("y2", "1.5")
-	
-			let randClr1 = parseInt(Math.random()*colors.length);
-			let randClr2 = parseInt(Math.random()*colors.length);
-
-			// Define gradient starts and stops
-			grad.append("stop")
-				.attr("stop-color", colors[randClr1])
-				.attr("offset", "0")
-	
-			grad.append("stop")
-				.attr("stop-color", colors[randClr2])
-				.attr("offset", "1")
-
-
-
-	
-			let randW = (Math.random()*(width/2))+(width/2);
-			let heightVar = (height/(sliderVal))*(j);
-			let variation = (Math.random()*60);
-			let data = [];
-	
-			for(var i=0;i<width;i+=10) {
-				let randY = (Math.random()*variation); // Variation per data point
-				data.push({
-					cX: (negative > 0 ? i : (width-i)),
-					cY: ((height)-((randY+i)))+(heightVar)
-				})
-			}
-
-			svg
-			.datum(data)
-			.append("path")
-			.attr("id", "mtn#" + j)
-			.attr("d", d3.area()
-				.x(d => x(d.cX))
-				.y1(d => x(d.cY))
-				.y0(height+margin.top+margin.bottom)
-				)
-			.attr("stroke", "black")
-			.attr("fill", "url(#grad# + " + j + ")")
-			//.attr("fill", colors[randClr1])
-			.attr("opacity", 0.4);
-			
-			negative *= -1;
-
-			// svg.selectAll("path")
-			// .data(data)
-			// .join("path")
-			// .attr("id", "mtn#" + j)
-			// .attr("d", d3.area()
-			// 	.x(d => x(d.cX))
-			// 	.y1(d => x(d.cY))
-			// 	.y0(height+margin.top+margin.bottom)
-			// 	)
-			// .attr("stroke", "black")
-			// .attr("fill", "black")
-			// .attr("opacity", 0.4);
-	
-		}
 
 
 	}, [sliderVal])
