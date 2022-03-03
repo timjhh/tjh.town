@@ -25,6 +25,9 @@ var body = document.body,
 const colors = ["#9ebcda", "#357360", "#CABDAF"
 , "#ececd9", "#4c8a63", "#1f5d77", "#302a31", "#647443" ,"#2a4b7e"]
 	
+const minMtn = 1;
+const maxMtn = 8;
+
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
 width = window.innerWidth*(10/12),
 height = window.outerHeight;
@@ -203,125 +206,6 @@ function Snow(props) {
 
 
 
-	let x = d3.scaleLinear()
-	.range([0,width+margin.left+margin.right])
-	.domain([0,width]);
-
-	let y = d3.scaleLinear()
-	.domain([0,height])
-	.range([0,height]);
-
-	let mtns = svg.append("g")
-	.attr("id", "mtns");
-
-	let negative = 1;
-
-
-
-		for(var j=1;j<=sliderVal;j++) {
-			
-			let grad = mtns.append("defs")
-			.append("linearGradient")
-			.attr("id", "grad#"+j)
-			.attr("x1", "0")
-			.attr("x2", "1")
-			.attr("y1", "0")
-			.attr("y2", "1.5")
-
-			let randClr1 = parseInt(Math.random()*colors.length);
-			let randClr2 = parseInt(Math.random()*colors.length);
-
-			// Define gradient starts and stops
-			grad.append("stop")
-				.attr("stop-color", colors[randClr1])
-				.attr("offset", "0")
-
-			grad.append("stop")
-				.attr("stop-color", colors[randClr2])
-				.attr("offset", "1")
-
-
-
-
-			let randW = (Math.random()*(width/2))+(width/2);
-
-			let slope = (Math.random()*2)+0.2;
-
-			let heightVar = (height/(sliderVal))*(sliderVal-j);
-			let variation = ((Math.random()+0.1)*60);
-			let data = [];
-
-			for(var i=0;i<width;i+=10) {
-				let randY = (Math.random()*variation); // Variation per data point
-				data.push({
-					cX: (negative > 0 ? i : (width-i)),
-					cY: ((slope*i)+randY)+heightVar
-					//cY: ((height)-((randY+i)))+(heightVar)
-				})
-			}
-			
-			mtns.selectAll("path")
-			.data(data)
-			.enter()
-			.append("path")
-			.attr("id", "mtn#" + j)
-			.attr("d", d3.area()
-				.x(d => x(d.cX))
-				.y1(d => x(d.cY))
-				.y0(height+margin.top+margin.bottom)
-				)
-			.attr("stroke", "black")
-			//.attr("fill", "url(#grad#" + j + ")")
-			.attr("fill", colors[randClr1])
-			.attr("opacity", 0.8);
-		
-			mtns
-			.datum(data)
-			.append("path")
-			.attr("id", "mtn#" + j)
-			.attr("d", d3.area()
-				.x(d => x(d.cX))
-				.y1(d => x(d.cY+20))
-				.y0(height+margin.top+margin.bottom)
-				)
-			.attr("stroke", "black")
-			.attr("fill", "url(#grad#" + j + ")")
-			//.attr("fill", colors[randClr1])
-			.attr("opacity", 0.5);
-
-			mtns
-			.datum(data)
-			.append("path")
-			.attr("id", "mtn#" + j)
-			.attr("d", d3.area()
-				.x(d => x(d.cX))
-				.y1(d => x(d.cY+80))
-				.y0(height+margin.top+margin.bottom)
-				)
-			.attr("stroke", "black")
-			.attr("fill", "url(#grad#" + j + ")")
-
-			.attr("opacity", 1);
-
-
-
-			negative *= -1;
-
-
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	// Attempt at circle via areaRadial
@@ -376,13 +260,127 @@ function Snow(props) {
 		svg.selectAll("path").remove();
 
 
+		let x = d3.scaleLinear()
+		.range([0,width+margin.left+margin.right])
+		.domain([0,width]);
+	
+		let y = d3.scaleLinear()
+		.domain([0,height])
+		.range([height,0]);
+	
+		let mtns = svg.append("g")
+		.attr("id", "mtns");
+	
+		let negative = 1;
+	
+	
+	
+			for(var j=1;j<=maxMtn;j++) {
+				
+				let grad = mtns.append("defs")
+				.append("linearGradient")
+				.attr("id", "grad#"+j)
+				.attr("x1", "0")
+				.attr("x2", "1")
+				.attr("y1", "0")
+				.attr("y2", "1.5")
+	
+				let randClr1 = parseInt(Math.random()*colors.length);
+				let randClr2 = parseInt(Math.random()*colors.length);
+	
+				// Define gradient starts and stops
+				grad.append("stop")
+					.attr("stop-color", colors[randClr1])
+					.attr("offset", "0")
+	
+				grad.append("stop")
+					.attr("stop-color", colors[randClr2])
+					.attr("offset", "1")
+	
+	
+	
+	
+				let randW = (Math.random()*(width/2))+(width/2);
+	
+				let slope = (Math.random()*2)+0.2;
+	
+				let heightVar = (height/(sliderVal))*(sliderVal-j);
+				let variation = ((Math.random()+0.1)*60);
+				let data = [];
+	
+				for(var i=0;i<width;i+=10) {
+					let randY = (Math.random()*variation); // Variation per data point
+					data.push({
+						cX: (negative > 0 ? i : (width-i)),
+						cY: height-((slope*i)+randY)+heightVar
+						//cY: ((height)-((randY+i)))+(heightVar)
+					})
+				}
+				
+				// mtns.selectAll("path")
+				// .data(data)
+				// .enter()
+				// .append("path")
+				// .attr("id", "mtn" + j)
+				// .attr("d", d3.area()
+				// 	.x(d => x(d.cX))
+				// 	.y1(d => x(d.cY))
+				// 	.y0(height+margin.top+margin.bottom)
+				// 	)
+				// .attr("stroke", "black")
+				// //.attr("fill", "url(#grad#" + j + ")")
+				// .attr("fill", colors[randClr1])
+				// .attr("opacity", 0.8);
+			
+				// mtns
+				// .datum(data)
+				// .enter()
+				// .append("path")
+				// .attr("id", "mtn" + j)
+				// .attr("d", d3.area()
+				// 	.x(d => x(d.cX))
+				// 	.y1(d => x(d.cY+20))
+				// 	.y0(height+margin.top+margin.bottom)
+				// 	)
+				// .attr("stroke", "black")
+				// .attr("fill", "url(#grad#" + j + ")")
+				// //.attr("fill", colors[randClr1])
+				// .attr("opacity", 0.5);
+	
+				mtns
+				.datum(data)
+				.append("path")
+				.attr("id", "mtn" + j)
+				.attr("d", d3.area()
+					.x(d => x(d.cX))
+					.y1(d => y(d.cY))
+					.y0(height+margin.top+margin.bottom)
+					)
+				.attr("stroke", "black")
+				.attr("fill", "url(#grad#" + j + ")")
+				.attr("opacity", 1);
+	
+	
+	
+				negative *= -1;
+	
+	
+			}
 
 
 
+
+	}, [])
+	
+	useEffect(() => {
+
+		for(var i=minMtn;i<=maxMtn;i++) {
+			d3.select("#mtn" + i).attr("opacity", () => (i < sliderVal ? (i/maxMtn) : 0));
+		}
 
 
 	}, [sliderVal])
-	
+
   return (
 
 
@@ -391,7 +389,7 @@ function Snow(props) {
 	
 
 	<Form.Label>Mountain Count</Form.Label>
-  		<Form.Range className="mx-2" max={9} min={0} value={sliderVal-1} onChange={(event) => handleSlider(event)} />
+  		<Form.Range className="mx-2" max={maxMtn} min={minMtn} value={sliderVal-1} onChange={(event) => handleSlider(event)} />
 	<Button variant="dark" onClick={() => setSliderVal(3)}>Reset</Button>
 
   </div>
