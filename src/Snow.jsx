@@ -275,8 +275,9 @@ function Snow(props) {
 	
 	
 	
-			for(var j=1;j<=maxMtn;j++) {
-				
+			//for(var j=1;j<=maxMtn;j++) {
+			for(var j=maxMtn; j>=0;j--) {
+			
 				let grad = mtns.append("defs")
 				.append("linearGradient")
 				.attr("id", "grad#"+j)
@@ -304,7 +305,7 @@ function Snow(props) {
 	
 				let slope = (Math.random()*2)+0.2;
 	
-				let heightVar = (height/(sliderVal))*(sliderVal-j);
+				let heightVar = (height/(maxMtn))*(maxMtn-j);
 				let variation = ((Math.random()+0.1)*60);
 				let data = [];
 	
@@ -312,7 +313,8 @@ function Snow(props) {
 					let randY = (Math.random()*variation); // Variation per data point
 					data.push({
 						cX: (negative > 0 ? i : (width-i)),
-						cY: height-((slope*i)+randY)+heightVar
+						// cY: height-(((slope*i)+randY)+heightVar)
+						cY: height-(((slope*i)+randY)+heightVar)
 						//cY: ((height)-((randY+i)))+(heightVar)
 					})
 				}
@@ -357,8 +359,11 @@ function Snow(props) {
 					.y0(height+margin.top+margin.bottom)
 					)
 				.attr("stroke", "black")
-				.attr("fill", "url(#grad#" + j + ")")
+				//.attr("fill", "url(#grad#" + j + ")")
+				.attr("fill", colors[6])
 				.attr("opacity", 1);
+				// 0,5 ice
+				// 6 rock
 	
 	
 	
@@ -372,10 +377,104 @@ function Snow(props) {
 
 	}, [])
 	
+	function resetMountains() {
+
+		setSliderVal(3);
+		
+
+
+		let svg = d3.select("#mtns");
+
+		svg.selectAll("path").remove();
+
+
+		let x = d3.scaleLinear()
+		.range([0,width+margin.left+margin.right])
+		.domain([0,width]);
+	
+		let y = d3.scaleLinear()
+		.domain([0,height])
+		.range([height,0]);
+	
+		let mtns = svg.append("g")
+		.attr("id", "mtns");
+	
+		let negative = 1;
+
+
+
+		for(var j=maxMtn; j>=0;j--) {
+	
+			let grad = mtns.append("defs")
+			.append("linearGradient")
+			.attr("id", "grad#"+j)
+			.attr("x1", "0")
+			.attr("x2", "1")
+			.attr("y1", "0")
+			.attr("y2", "1.5")
+
+			let randClr1 = parseInt(Math.random()*colors.length);
+			let randClr2 = parseInt(Math.random()*colors.length);
+
+			// Define gradient starts and stops
+			grad.append("stop")
+				.attr("stop-color", colors[randClr1])
+				.attr("offset", "0")
+
+			grad.append("stop")
+				.attr("stop-color", colors[randClr2])
+				.attr("offset", "1")
+
+
+
+
+			let randW = (Math.random()*(width/2))+(width/2);
+
+			let slope = (Math.random()*2)+0.2;
+
+			let heightVar = (height/(maxMtn))*(maxMtn-j);
+			let variation = ((Math.random()+0.1)*60);
+			let data = [];
+
+			for(var i=0;i<width;i+=10) {
+				let randY = (Math.random()*variation); // Variation per data point
+				data.push({
+					cX: (negative > 0 ? i : (width-i)),
+					cY: height-(((slope*i)+randY)+heightVar)
+				})
+			}
+			
+
+			mtns
+			.datum(data)
+			.append("path")
+			.attr("id", "mtn" + j)
+			.attr("d", d3.area()
+				.x(d => x(d.cX))
+				.y1(d => y(d.cY))
+				.y0(height+margin.top+margin.bottom)
+				)
+			.attr("stroke", "black")
+			.attr("fill", colors[6])
+			.attr("opacity", j > (maxMtn/2) ? 0.6 : 0.2);
+			// 0,5 ice
+			// 6 rock
+
+
+
+			negative *= -1;
+
+
+		}
+
+
+
+	}
+
 	useEffect(() => {
 
 		for(var i=minMtn;i<=maxMtn;i++) {
-			d3.select("#mtn" + i).attr("opacity", () => (i < sliderVal ? (i/maxMtn) : 0));
+			d3.select("#mtn" + i).attr("opacity", () => (i < sliderVal ? (1-(i/maxMtn))+0.3 : 0));
 		}
 
 
@@ -390,7 +489,7 @@ function Snow(props) {
 
 	<Form.Label>Mountain Count</Form.Label>
   		<Form.Range className="mx-2" max={maxMtn} min={minMtn} value={sliderVal-1} onChange={(event) => handleSlider(event)} />
-	<Button variant="dark" onClick={() => setSliderVal(3)}>Reset</Button>
+	<Button variant="dark" onClick={() => resetMountains()}>Reset</Button>
 
   </div>
 <div style={{"backgroundColor": "black"}} id="snow" className="overflow-hidden">
