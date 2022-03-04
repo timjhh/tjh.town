@@ -167,7 +167,6 @@ function Snow(props) {
 	    .attr("height", "100%")
 	    .attr("fill", "url(#bg-gradient)");
 
-
 	// Rain animation container
 	svg.append("g")
 	.attr("id", "anim")
@@ -187,6 +186,8 @@ function Snow(props) {
 		)
 	.attr("fill", "#357360")
 	.attr("opacity", 0.6);
+
+	
 
 
 
@@ -211,6 +212,9 @@ function Snow(props) {
 	.attr("opacity", 0.8)
 	.attr("fill", "#353839");
 
+
+
+
 	// Black overlay in forefront
 	svg.append("path")
 	.datum(mData)
@@ -234,6 +238,8 @@ function Snow(props) {
 	.attr("stroke", "black")
 	.attr("fill", "black")
 	.attr("opacity", 0.4);
+
+
 
 	let stars = svg.append("g")
 	.attr("id", "stars")
@@ -288,7 +294,6 @@ function Snow(props) {
 	//console.log(document.documentElement.getBoundingClientRect().height);
 
 	timerRain = d3.timer(animate);
-	// timerStars = d3.timer(animateStars);
 	timerStars = d3.interval(animateStars, 60);
 
 	}, []);
