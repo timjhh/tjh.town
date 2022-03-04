@@ -49,11 +49,14 @@ const colorPairs = [
 const minMtn = 1;
 const maxMtn = 8;
 
+const starCount = 30;
+
 // Variation(rockiness) of mountain lines
 const variation = 50;
 
 // Rain box animation timer
-var timer;
+var timerRain;
+var timerStars;
 
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
 width = window.innerWidth*(10/12),
@@ -72,8 +75,8 @@ function Snow(props) {
 
 
 	const [sliderVal, setSliderVal] = useState(3);
-	const [rain, setRain] = useState(true);
-	const [day, setDay] = useState(true);
+	const [rain, setRain] = useState(false);
+	const [day, setDay] = useState(false);
 
 	function handleSlider(event) {
 		setSliderVal(parseInt(event.target.value)+1);
@@ -95,6 +98,21 @@ function Snow(props) {
 		mData.push({cX: j, cY: randY+j+(width/2)})
 	}
 
+	let x = d3.scaleLinear()
+	.range([0,width])
+	.domain([0,width]);
+
+	let y = d3.scaleLinear()
+	.range([height,0])
+	.domain([0,height]);
+
+	let mX = d3.scaleLinear()
+	.range([0,width])
+	.domain([0,width/2]);
+
+	let mY = d3.scaleLinear()
+	.range([height/2,height])
+	.domain([0,width]);
 
 
 	const svg = d3.select("#snow")
@@ -129,22 +147,29 @@ function Snow(props) {
 		
 
 
-	var pGrad = svg.append("defs")
-		.append("linearGradient")
-		.attr("id", "pGrad")
-		.attr("x1", "0")
-		.attr("x2", "1")
-		.attr("y1", "0")
-		.attr("y2", "1.5")
+	// Glowy filter
+	var glow = svg.append("defs").append("filter")
+		.attr("id","glow");
 
-	// Define gradient starts and stops
-	pGrad.append("stop")
-		.attr("stop-color", "#4F2168")
-		.attr("offset", "0")
+	glow.append("feGaussianBlur")
+		.attr("class", "blur")
+		.attr("stdDeviation","4.5")
+		.attr("result","coloredBlur");
 
-	pGrad.append("stop")
-		.attr("stop-color", "#EE3F6B")
-		.attr("offset", "1")
+	var feMerge = glow.append("feMerge");
+	feMerge.append("feMergeNode")
+		.attr("in","coloredBlur");
+	feMerge.append("feMergeNode")
+		.attr("in","SourceGraphic");
+
+
+
+
+
+
+
+
+
 
 
 
@@ -155,27 +180,34 @@ function Snow(props) {
 	    .attr("fill", "url(#bg-gradient)");
 
 
+
+	
 	// Rain animation container
 	svg.append("g")
 	.attr("id", "anim")
-	
+
 
 	svg.append("g")
 	.attr("id", "mtns")
 
-	// // Forefront hill area
-	// svg.append("path")
-	// .datum(hData)
-	// .attr("d", d3.area()
-	// 	.x(d => x(d.cX))
-	// 	.y1(d => y(d.cY))
-	// 	.y0(height+margin.top+margin.bottom)
-	// 	)
-	// .attr("fill", "#357360");
 
 
 
-	// // Black overlay on front left hill
+
+	// Forefront green hill
+	svg.append("path")
+	.datum(hData)
+	.attr("d", d3.area()
+		.x(d => x(d.cX))
+		.y1(d => y(d.cY))
+		.y0(height+margin.top+margin.bottom)
+		)
+	.attr("fill", "#357360")
+	.attr("opacity", 0.6);
+
+
+
+	// Black overlay on front left hill
 	// svg.append("path")
 	// .datum(mData)
 	// .attr("d", d3.area()
@@ -186,40 +218,112 @@ function Snow(props) {
 	// .attr("opacity", 0.9)
 	// .attr("fill", "#CABDAF");
 
+	svg.append("path")
+	.datum(mData)
+	.attr("d", d3.area()
+		.x(d => mX(d.cX))
+		.y1(d => mY(d.cY))
+		.y0(height+margin.top+margin.bottom)
+		)
+	.attr("opacity", 0.8)
+	.attr("fill", "#353839");
 
-	// // Black overlay in forefront
-	// svg.append("path")
-	// .datum(mData)
-	// .attr("d", d3.area()
-	// 	.x(d => mX(d.cX))
-	// 	.y1(d => mY(d.cY))
-	// 	.y0(height+margin.top+margin.bottom)
-	// 	)
-	// .attr("fill", "black")
-	// .attr("opacity", 0.8);
+	// Black overlay in forefront
+	svg.append("path")
+	.datum(mData)
+	.attr("d", d3.area()
+		.x(d => mX(d.cX))
+		.y1(d => mY(d.cY+0))
+		.y0(height+margin.top+margin.bottom)
+		)
+	.attr("fill", "#353839")
+	.attr("opacity", 0.8);
 
 
-	// // Big mountain in back
-	// svg.append("path")
-	// .datum(hData)
-	// .attr("d", d3.area()
-	// 	.x(d => x(d.cX))
-	// 	.y1(d => x(d.cY))
-	// 	.y0(height+margin.top+margin.bottom)
-	// 	)
-	// .attr("stroke", "black")
-	// .attr("fill", "black")
-	// .attr("opacity", 0.4);
+	// Big mountain in back
+	svg.append("path")
+	.datum(hData)
+	.attr("d", d3.area()
+		.x(d => x(d.cX))
+		.y1(d => x(d.cY))
+		.y0(height+margin.top+margin.bottom)
+		)
+	.attr("stroke", "black")
+	.attr("fill", "black")
+	.attr("opacity", 0.4);
 
+	let stars = svg.append("g")
+	.attr("id", "stars")
+
+	for(var z=0;z<starCount;z++) {
+
+		let maxY = hData[hData.length-2].cY;
+
+		let randX = (Math.random()*width)+80;
+
+		let randY = Math.random()*maxY;
+
+		let rounded = (Math.round(randX / 10) * 10);
+
+		let closest = hData.find(e => e.cX === rounded);
+		
+		if(closest) {
+			if(randY >= closest.cY) {
+				//continue;
+				
+				let newVal = hData.find(e => e.cY > randY);
+				randX = newVal ? newVal.cX : width-20;
+				randY = Math.random()*newVal.cY;
+				
+				//randY -= closest.cY;
+			}
+		}
+
+		stars.append("rect")
+		.attr('x', randX)
+		.attr('y', randY)
+		.attr("zIndex", 1)
+		.attr('width', 2)
+		.attr('height', 2)
+		.attr("stroke", 5)
+		.attr("filter","url(#glow)")
+		.attr("fill", "white");
+
+	}
 
 
 	//console.log(document.documentElement.getBoundingClientRect().height);
 
-	timer = d3.timer(animate);
+	timerRain = d3.timer(animate);
+	//timerStars = d3.timer(animateStars);
 
 	}, []);
 
 
+	function animateStars() {
+
+		let svg = d3.select("#stars");
+		let rX = Math.random()*width;
+		let rY = Math.random()*height;
+
+		let st = svg.append("rect")
+		.attr('x', rX)
+		.attr('y', -margin.top-rY)
+		.attr("zIndex", 1)
+		.attr('width', 3)
+		.attr('height', 3)
+		.attr("stroke", 5)
+		.attr("fill", "white");
+
+
+		st.transition()
+		.duration(5000)
+		//.ease(d3.easeLinear)
+		.ease(d3.easeQuadIn)
+		.attr('y', height+margin.top+margin.bottom)
+		.remove();	
+
+	}
 
 	function animate() {
 
@@ -234,32 +338,20 @@ function Snow(props) {
 		.attr('width', 2)
 		.attr('height', 5)
 		.attr("stroke", 5)
-		.attr("fill", "darkblue");
+		.attr("fill", "#53789E");
+		// .attr("fill", "darkblue");
 
 
 		sn.transition()
-		.duration(5000)
-		//.ease(d3.easeLinear)
-		.ease(d3.easeQuadIn)
+		.duration(1500)
+		.ease(d3.easeLinear)
+		//.ease(d3.easeQuadIn)
 		.attr('y', height+margin.top+margin.bottom)
 		.remove();		
 
 
 	}
-	useEffect(() => {
 
-		//let svg = d3.select(".main");
-
-		//svg.selectAll("path").remove();
-
-	
-		resetMountains();
-
-
-
-
-
-	}, [])
 	
 	function resetMountains() {
 
@@ -325,10 +417,6 @@ function Snow(props) {
 				.attr("offset", "1")
 
 
-
-
-			//let randW = (Math.random()*(width/2))+(width/2);
-
 			let slope = (Math.random()*1.5)+0.2;
 
 			let heightVar = (height/(maxMtn))*(maxMtn-j);
@@ -373,7 +461,8 @@ function Snow(props) {
 	useEffect(() => {
 
 		for(var i=minMtn;i<=maxMtn;i++) {
-			d3.select("#mtn" + i).attr("opacity", () => (i < sliderVal ? (1-(i/maxMtn))+0.3 : 0));
+			// d3.select("#mtn" + i).attr("opacity", () => (i < sliderVal ? (1-(i/maxMtn))+0.3 : 0));
+			d3.select("#mtn" + i).attr("opacity", () => (i < sliderVal ? 0.9 : 0));
 		}
 
 
@@ -384,9 +473,9 @@ function Snow(props) {
 		d3.select("#anim").selectAll("*").remove();
 
 		if(rain) {
-			timer.restart(animate);
+			timerRain.restart(animate);
 		} else {
-			timer.stop();
+			timerRain.stop();
 		}
 		
 
@@ -411,6 +500,8 @@ function Snow(props) {
 
 		if(day) {
 
+			d3.select("#stars").attr("opacity", 0);
+
 			grad
 			.attr("gradientTransform", "rotate(-90)");
 
@@ -424,6 +515,9 @@ function Snow(props) {
 
 		} else {
 	
+
+			d3.select("#stars").attr("opacity", 1);
+
 			//grad.attr("y2", "3")
 			grad
 			.attr("gradientTransform", "rotate(-90)");
@@ -455,9 +549,10 @@ function Snow(props) {
 <div className="position-absolute bg-light p-2" id="panel">
 	
 	<Container>
-	<Form.Label>Mountain Count</Form.Label>
+	{/* <Form.Label>Mountain Count</Form.Label>
   		<Form.Range className="mx-2" max={maxMtn} min={minMtn} value={sliderVal-1} onChange={(event) => handleSlider(event)} />
-	<Button variant="dark" onClick={() => resetMountains()}>Reset</Button>
+	<Button variant="dark" onClick={() => resetMountains()}>Reset</Button> */}
+
 	<Row className="px-3 mx-3">
 		<Form.Check 
 			type={"checkbox"}
