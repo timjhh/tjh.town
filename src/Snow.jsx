@@ -74,13 +74,8 @@ d3.select("#cgl")
 function Snow(props) {
 
 
-	const [sliderVal, setSliderVal] = useState(3);
 	const [rain, setRain] = useState(false);
 	const [day, setDay] = useState(false);
-
-	function handleSlider(event) {
-		setSliderVal(parseInt(event.target.value)+1);
-	}
 
 	useEffect(() => {
 
@@ -166,13 +161,6 @@ function Snow(props) {
 
 
 
-
-
-
-
-
-
-
 	svg.append("rect")
 		.attr("id", "background")
 	    .attr("width", "100%")
@@ -180,8 +168,6 @@ function Snow(props) {
 	    .attr("fill", "url(#bg-gradient)");
 
 
-
-	
 	// Rain animation container
 	svg.append("g")
 	.attr("id", "anim")
@@ -189,9 +175,6 @@ function Snow(props) {
 
 	svg.append("g")
 	.attr("id", "mtns")
-
-
-
 
 
 	// Forefront green hill
@@ -255,7 +238,66 @@ function Snow(props) {
 	let stars = svg.append("g")
 	.attr("id", "stars")
 
-	for(var z=0;z<starCount;z++) {
+	// for(var z=0;z<starCount;z++) {
+
+	// 	let maxY = hData[hData.length-2].cY;
+
+	// 	let randX = (Math.random()*width)+80;
+
+	// 	let randY = Math.random()*maxY;
+
+	// 	let rounded = (Math.round(randX / 10) * 10);
+
+	// 	let closest = hData.find(e => e.cX === rounded);
+		
+	// 	if(closest) {
+	// 		if(randY >= closest.cY) {
+	// 			//continue;
+				
+	// 			let newVal = hData.find(e => e.cY > randY);
+	// 			randX = newVal ? newVal.cX : width-20;
+	// 			randY = Math.random()*newVal.cY;
+				
+	// 			//randY -= closest.cY;
+	// 		}
+	// 	}
+
+	// 	// stars.append("rect")
+	// 	// .attr('x', randX)
+	// 	// .attr('y', randY)
+	// 	// .attr("zIndex", 1)
+	// 	// .attr('width', 2)
+	// 	// .attr('height', 2)
+	// 	// .attr("stroke", 5)
+	// 	// .attr("filter","url(#glow)")
+	// 	// .attr("fill", "white");
+
+	// 	stars.append("circle")
+	// 	.attr('cx', randX)
+	// 	.attr('cy', randY)
+	// 	.attr("zIndex", 1)
+	// 	.attr('r', 1)
+	// 	//.attr('height', 2)
+	// 	.attr("filter","url(#glow)")
+	// 	.attr("fill", "white");
+
+
+	// }
+
+
+	//console.log(document.documentElement.getBoundingClientRect().height);
+
+	timerRain = d3.timer(animate);
+	// timerStars = d3.timer(animateStars);
+	timerStars = d3.interval(animateStars, 60);
+
+	}, []);
+
+
+	function animateStars() {
+
+		let svg = d3.select("#stars");
+
 
 		let maxY = hData[hData.length-2].cY;
 
@@ -279,49 +321,48 @@ function Snow(props) {
 			}
 		}
 
-		stars.append("rect")
-		.attr('x', randX)
-		.attr('y', randY)
+		// stars.append("rect")
+		// .attr('x', randX)
+		// .attr('y', randY)
+		// .attr("zIndex", 1)
+		// .attr('width', 2)
+		// .attr('height', 2)
+		// .attr("stroke", 5)
+		// .attr("filter","url(#glow)")
+		// .attr("fill", "white");
+
+		let st = svg.append("circle")
+		.attr('cx', randX)
+		.attr('cy', randY)
 		.attr("zIndex", 1)
-		.attr('width', 2)
-		.attr('height', 2)
-		.attr("stroke", 5)
+		.attr('r', 0)
+		//.attr('height', 2)
 		.attr("filter","url(#glow)")
 		.attr("fill", "white");
 
-	}
 
 
-	//console.log(document.documentElement.getBoundingClientRect().height);
 
-	timerRain = d3.timer(animate);
-	//timerStars = d3.timer(animateStars);
-
-	}, []);
-
-
-	function animateStars() {
-
-		let svg = d3.select("#stars");
-		let rX = Math.random()*width;
-		let rY = Math.random()*height;
-
-		let st = svg.append("rect")
-		.attr('x', rX)
-		.attr('y', -margin.top-rY)
-		.attr("zIndex", 1)
-		.attr('width', 3)
-		.attr('height', 3)
-		.attr("stroke", 5)
-		.attr("fill", "white");
 
 
 		st.transition()
-		.duration(5000)
+		.duration(1000)
 		//.ease(d3.easeLinear)
 		.ease(d3.easeQuadIn)
-		.attr('y', height+margin.top+margin.bottom)
-		.remove();	
+		.attr("r", 1)
+		.transition()
+		.duration(1000)
+		//.ease(d3.easeLinear)
+		.ease(d3.easeQuadIn)
+		.attr("r", 0)
+		.remove();
+		// .transition()
+		// .duration(5000)
+		// //.ease(d3.easeLinear)
+		// .ease(d3.easeQuadIn)
+		// .attr("r", 1)
+		//.attr('y', height+margin.top+margin.bottom)
+
 
 	}
 
@@ -352,121 +393,7 @@ function Snow(props) {
 
 	}
 
-	
-	function resetMountains() {
 
-		setSliderVal(3);
-		
-		let mtns = d3.select("#mtns");
-
-		mtns.selectAll("*").remove();
-
-
-		// let grad = mtns.append("defs")
-		// .append("linearGradient")
-		// .attr("id", "grad#"+j)
-		// .attr("x1", "0")
-		// .attr("x2", "1")
-		// .attr("y1", "0")
-		// .attr("y2", "1.5")
-
-		// grad.append("stop")
-		// .attr("stop-color", colors[2])
-		// .attr("offset", "0")
-
-		// grad.append("stop")
-		// .attr("stop-color", colors[6])
-		// .attr("offset", "1")
-
-
-		let x = d3.scaleLinear()
-		.range([0,width+margin.left+margin.right])
-		.domain([0,width]);
-	
-		let y = d3.scaleLinear()
-		.domain([0,height])
-		.range([height,0]);
-	
-
-		let negative = 1;
-
-
-
-		for(var j=maxMtn; j>=0;j--) {
-	
-			let grad = mtns.append("defs")
-			.append("linearGradient")
-			.attr("id", "grad"+j)
-			.attr("x1", "0")
-			.attr("x2", "1")
-			.attr("y1", "0")
-			.attr("y2", "1.5")
-
-			let randClr1 = parseInt(Math.random()*colors.length);
-			let randClr2 = parseInt(Math.random()*colors.length);
-
-			let randPair = parseInt(Math.random()*colorPairs.length);
-
-			// Define gradient starts and stops
-			grad.append("stop")
-				.attr("stop-color", colorPairs[randPair][0]) // colors[randClr1]
-				.attr("offset", "0")
-
-			grad.append("stop")
-				.attr("stop-color", colorPairs[randPair][1]) // colors[randClr2]
-				.attr("offset", "1")
-
-
-			let slope = (Math.random()*1.5)+0.2;
-
-			let heightVar = (height/(maxMtn))*(maxMtn-j);
-			let variate = ((Math.random()+0.1)*variation);
-			let data = [];
-
-			for(var i=0;i<width;i+=10) {
-				let randY = (Math.random()*variate); // Variation per data point
-				data.push({
-					cX: (negative > 0 ? i : (width-i)),
-					cY: height-(((slope*i)+randY)+heightVar)
-				})
-			}
-			
-
-			mtns
-			.datum(data)
-			.append("path")
-			.attr("id", "mtn" + j)
-			.attr("d", d3.area()
-				.x(d => x(d.cX))
-				.y1(d => y(d.cY))
-				.y0(height+margin.top+margin.bottom)
-				)
-			//.attr("stroke", "black")
-			.attr("fill", "url(#grad" + j + ")")
-			.attr("opacity", j <= (sliderVal) ? 1 : 0);
-			// 0,5 ice
-			// 6 rock
-
-
-
-			negative *= -1;
-
-
-		}
-
-
-
-	}
-
-	useEffect(() => {
-
-		for(var i=minMtn;i<=maxMtn;i++) {
-			// d3.select("#mtn" + i).attr("opacity", () => (i < sliderVal ? (1-(i/maxMtn))+0.3 : 0));
-			d3.select("#mtn" + i).attr("opacity", () => (i < sliderVal ? 0.9 : 0));
-		}
-
-
-	}, [sliderVal])
 
 	useEffect(() => {
 
@@ -549,33 +476,24 @@ function Snow(props) {
 <div className="position-absolute bg-light p-2" id="panel">
 	
 	<Container>
-	{/* <Form.Label>Mountain Count</Form.Label>
-  		<Form.Range className="mx-2" max={maxMtn} min={minMtn} value={sliderVal-1} onChange={(event) => handleSlider(event)} />
-	<Button variant="dark" onClick={() => resetMountains()}>Reset</Button> */}
 
-	<Row className="px-3 mx-3">
-		<Form.Check 
-			type={"checkbox"}
-			id={"rainCheck"} // lol
-			label={"Toggle Rain"}
-			checked={rain}
-			onChange={() => setRain(!rain)} />
-		<Form.Check 
-			className="mx-3"
-			type={"checkbox"}
-			id={"nightCheck"}
-			label={"Toggle Day"}
-			checked={day}
-			onChange={() => setDay(!day)} />
-	</Row>
+		<Row className="px-3 mx-3">
+			<Form.Check 
+				type={"checkbox"}
+				id={"rainCheck"} // lol
+				label={"Toggle Rain"}
+				checked={rain}
+				onChange={() => setRain(!rain)} />
+			<Form.Check 
+				className="mx-3"
+				type={"checkbox"}
+				id={"nightCheck"}
+				label={"Toggle Day"}
+				checked={day}
+				onChange={() => setDay(!day)} />
+		</Row>
+
 	</Container>
-
-
-	{/* <Form.Check 
-        type={"checkbox"}
-        id={"rainCheck"}
-        label={"Toggle Rain"} /> */}
-
 
   </div>
 <div style={{"backgroundColor": "black"}} id="snow" className="overflow-hidden">
