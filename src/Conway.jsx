@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Dropdown, Button, Form } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { Button, Form } from 'react-bootstrap';
 import './App.css';
 import * as d3 from "d3";
 

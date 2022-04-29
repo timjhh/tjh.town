@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as d3 from "d3";
-import { Table } from 'react-bootstrap';
+import { Table, Accordion, Card  } from 'react-bootstrap';
 
 
 
@@ -11,6 +11,8 @@ const radius = 2;
 const nutrients = ["Calories", "Protein", "Fat", "Carbohydrates", "Vitamin.C", "Vitamin.A", "Folate", "Calcium", "Iron", "Zinc", "Potassium", 
             "Dietary.Fiber", "Copper", "Sodium", "Phosphorus", "Thiamin", "Riboflavin", "Niacin", "B6", "Choline",
             "Magnesium", "Manganese", "Saturated.FA", "Monounsaturated.FA", "Polyunsaturated.FA", "Omega.3..USDA.only.", "B12..USDA.only."];
+
+const legendLabels = ["OTC", "Prescription"]
 
 
 // Update margin once size ref is created
@@ -130,6 +132,48 @@ useEffect(() => {
     .force("y", forceY);
 
 
+    // var legend = g.append("g")
+    // .attr("id", "legend")
+    // .attr("x", 100)
+    // .selectAll("circle")
+    // .data(legendLabels)
+    // .join("circle")
+    // .attr("r", 2)
+    // .attr("x", 100)
+    // .attr("y", (d,idx) => (100) + ((1+idx)*50))
+    // .attr("fill", d => d === "OTC" ? "red" : "rgba(70,130,180,0.8)")
+
+
+    const legendX = parseFloat(margin.left/2);
+    const legendY = parseFloat(margin.top/2);
+
+    const legend = svg.append("g")
+    .attr("class", "legend");
+
+    legend.selectAll("path")
+    .data(legendLabels)
+    .join("circle")
+      // Manually add offset based on index of year
+      // Oh boy is this some spaghetti
+      // Note - 20 is the offset in this case, as each index is multiplied by 20
+      .attr("transform", (d,idx) => "translate(" + parseFloat(legendX-5) + "," + parseFloat((legendY-2) + (idx * 10)) + ")")
+      .attr("r", 2)
+      .attr("fill", (d,idx) => d === "OTC" ? "red" : "rgba(70,130,180,0.8)");
+
+    // Add legend text
+    legend.selectAll("text")
+    .data(legendLabels)
+    .join("text")
+      .text(d => d)
+      .attr("font-size", "0.5em")
+      .attr("font-weight", "lighter")
+      .attr("x", legendX)
+      // Manually added text offset - see above comment
+      .attr("y", (d,idx) => parseFloat((legendY) + (idx * 10)));
+
+
+
+
     var node = g.append("g")
     .attr("class", "nodes")
     .selectAll("g")
@@ -234,31 +278,40 @@ useEffect(() => {
     <div id={"graph"}>
       
     </div>
-    <Table className="mt-5" striped bordered hover>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Description</th>
-          <th>Price Per Unit</th>
-          <th>Unit</th>
-          <th>OTC?</th>
-        </tr>
-      </thead>
-      <tbody>
+    <Accordion as={Card} className='my-5' flush>
+    <Accordion.Item eventKey="0">
+      <Accordion.Header as={Card.Title}>Price Table(Click to Open)</Accordion.Header>
+      <Accordion.Body>
+        <div>
+        <Table className="mt-5" striped bordered hover>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Description</th>
+              <th>Price Per Unit</th>
+              <th>Unit</th>
+              <th>OTC?</th>
+            </tr>
+          </thead>
+          <tbody>
 
-      {props.current.map((d,idx) => (
+          {props.current.map((d,idx) => (
 
-        <tr className={idx}>
-          <td>{idx+1}</td>
-          <td>{d.ndc_description}</td>
-          <td>{d.nadac_per_unit}</td>
-          <td>{d.pricing_unit}</td>
-          <td>{d.otc}</td>
-        </tr>
+            <tr className={idx}>
+              <td>{idx+1}</td>
+              <td>{d.ndc_description}</td>
+              <td>{d.nadac_per_unit}</td>
+              <td>{d.pricing_unit}</td>
+              <td>{d.otc}</td>
+            </tr>
 
-        ))}
-      </tbody>
-    </Table>
+            ))}
+          </tbody>
+        </Table>
+        </div>
+      </Accordion.Body>
+    </Accordion.Item>
+    </Accordion>
     </>
 
   );

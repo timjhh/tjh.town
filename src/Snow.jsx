@@ -57,15 +57,15 @@ const variation = 50;
 // Rain box animation timer
 var timerRain;
 var timerStars;
+var timerComet;
 
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
 width = window.innerWidth*(10/12),
 height = window.outerHeight;
 
 
-let hData = [{cX: 0, cY: 70}]; // Horizontal front-facing line
-let mData = []; // Background mountain
-
+let hData = [{cX: 0, cY: 100}]; // Horizontal front-facing line
+let mData = []; // Forefront mountain data
 
 d3.select("#cgl")
 .selectAll("svg")
@@ -83,12 +83,12 @@ function Snow(props) {
 	height = Math.max($(document).height(), $(window).height());
 
 
-	for(var i=80;i<width;i+=10) {
+	for(var i=80;i<width+10;i+=10) {
 		let randY = (Math.random()*10)+(i/4);
-		hData.push({cX:i, cY:randY});
+		hData.push({cX:i, cY:randY+40});
 
 	}
-	for(var j=0;j<width/2;j+=10) {
+	for(var j=0;j<(width/2)+10;j+=10) {
 		let randY = (Math.random()*60);
 		mData.push({cX: j, cY: randY+j+(width/2)})
 	}
@@ -115,6 +115,7 @@ function Snow(props) {
 	.attr("position", "absolute")
 	.attr("className", "svg-content-responsive svg-container")
     .attr("preserveAspectRatio", "xMinYMin meet")
+	.attr("class", "svg-content-responsive svg-container")
     .attr("viewBox", "0 0 " + (width) + " " + (height+margin.bottom+margin.top))
 	.attr("width", width)
 	.attr("height", document.documentElement.getBoundingClientRect().height)
@@ -187,21 +188,8 @@ function Snow(props) {
 	.attr("fill", "#357360")
 	.attr("opacity", 0.6);
 
-	
 
-
-
-	// Black overlay on front left hill
-	// svg.append("path")
-	// .datum(mData)
-	// .attr("d", d3.area()
-	// 	.x(d => mX(d.cX))
-	// 	.y1(d => mY(d.cY))
-	// 	.y0(height+margin.top+margin.bottom)
-	// 	)
-	// .attr("opacity", 0.9)
-	// .attr("fill", "#CABDAF");
-
+	// Front small hill
 	svg.append("path")
 	.datum(mData)
 	.attr("d", d3.area()
@@ -227,6 +215,9 @@ function Snow(props) {
 	.attr("opacity", 0.8);
 
 
+	let comet = svg.append("g")
+	.attr("id", "comet");
+
 	// Big mountain in back
 	svg.append("path")
 	.datum(hData)
@@ -242,7 +233,25 @@ function Snow(props) {
 
 
 	let stars = svg.append("g")
-	.attr("id", "stars")
+	.attr("id", "stars");
+
+
+	svg.append("circle")
+	.attr("cx", width-150)
+	//.attr("cy", last.cY/2)
+	.attr("cy", 75)
+	.attr("r", 24)
+	.attr("fill", "white")
+	.attr("opacity", 0.7);
+
+	svg.append("circle")
+	.attr("cx", width-150)
+	//.attr("cy", last.cY/2)
+	.attr("cy", 75)
+	.attr("r", 24)
+	.attr("fill", "url(#bg-gradient)")
+	.attr("opacity", 0.3);
+
 
 	// for(var z=0;z<starCount;z++) {
 
@@ -293,10 +302,49 @@ function Snow(props) {
 
 	//console.log(document.documentElement.getBoundingClientRect().height);
 
+
 	timerRain = d3.timer(animate);
 	timerStars = d3.interval(animateStars, 60);
+	//timerComet = d3.interval(animateComet, 2000);
 
 	}, []);
+
+	function animateComet() {
+
+		let svg = d3.select("#comet");
+
+		let last = hData[hData.length-1];
+
+		let middle = hData[parseInt(hData.length/2)];
+
+		// Random value [-3,3]
+		let randIdx = parseInt((Math.random()*20)-30);
+
+		let randVal = hData[parseInt((hData.length/2)+randIdx)];
+
+		console.log((hData.length/2)+randIdx)
+
+		let comet = svg.append("circle")
+		.attr("cx", width)
+		//.attr("cy", last.cY/2)
+		.attr("cy", last.cY/5)
+		.attr("r", 10)
+		.attr("fill", "white")
+		.attr("opacity", 0.7);
+	
+		comet.transition()
+		.duration(2000)
+		.ease(d3.easeQuadIn)
+		.attr("cx", randVal.cX)
+		.attr("cy", randVal.cY)
+
+		.remove();
+
+
+		
+
+
+	}
 
 
 	function animateStars() {
@@ -326,15 +374,6 @@ function Snow(props) {
 			}
 		}
 
-		// stars.append("rect")
-		// .attr('x', randX)
-		// .attr('y', randY)
-		// .attr("zIndex", 1)
-		// .attr('width', 2)
-		// .attr('height', 2)
-		// .attr("stroke", 5)
-		// .attr("filter","url(#glow)")
-		// .attr("fill", "white");
 
 		let st = svg.append("circle")
 		.attr('cx', randX)
@@ -344,11 +383,6 @@ function Snow(props) {
 		//.attr('height', 2)
 		.attr("filter","url(#glow)")
 		.attr("fill", "white");
-
-
-
-
-
 
 		st.transition()
 		.duration(1000)
@@ -420,15 +454,6 @@ function Snow(props) {
 
 		grad.selectAll("stop").remove();
 
-
-
-		// var gradient = svg.append("defs")
-		// .append("linearGradient")
-		// .attr("id", "bg-gradient")
-		// .attr("x1", "0")
-		// .attr("x2", "1")
-		// .attr("y1", "0")
-		// .attr("y2", "1.5")
 
 		if(day) {
 

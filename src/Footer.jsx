@@ -9,7 +9,7 @@ function Footer() {
 //className="position-absolute bottom-0"
 // className="d-flex flex-column  flex-nowrap" 
 
-		<div className="transparent mx-auto">
+		<div className="transparent mx-auto w-75">
 			<h6 className="card-title text-center">What am I listening to?</h6>
 				<Music />
 		</div>

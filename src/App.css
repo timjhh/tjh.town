@@ -12,3 +12,22 @@
 .transparent {
   background-color: #DCDCDC;
 }
+
+.accordion-button {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+
+  color: #069;
+  cursor: pointer;
+}
+
+.svg-content-responsive {
+  vertical-align: top;
+  overflow: hidden;
+  width: 100%;
+  display: inline-block;
+  top: 0px;
+
+
+}
