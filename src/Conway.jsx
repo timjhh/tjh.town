@@ -214,6 +214,7 @@ pt.forEach((row,y) => {
 
 }
 
+console.log(Conway.toString());
 
 
 function Conway(props) {
@@ -403,37 +404,6 @@ function Conway(props) {
 
 		return parseInt(count);
 	}
-
-
-	// // Given custom array, return # of neighbors
-	// function nCountCustom(d,arr) {
-
-	// 	if(!arr) return;
-	// 	let count = 0;
-	// 	let x = parseInt(d.x);
-	// 	let y = parseInt(d.y);
-
-	// 	let height = arr.length
-	// 	let width = arr[0].length
-
-	// 	try {
-
-	// 		if(y > 0 && arr[y-1][x] === 1) count++;
-	// 		if(y < height-1 && arr[y+1][x] === 1) count++;
-	// 		if(y > 0 && x > 0 && arr[y-1][x-1] === 1) count++;
-	// 		if(y > 0 && x < width-1 && arr[y-1][x+1] === 1) count++;
-	// 		if(x > 0 && arr[y][x-1] === 1) count++;
-	// 		if(x < width-1 && arr[y][x+1] === 1) count++;
-	// 		if(y < height-1 && x > 0 && arr[y+1][x-1] === 1) count++;
-	// 		if(x < width-1 && y < height-1 && arr[y+1][x+1] === 1) count++;		
-
-	// 	} catch(e) {
-
-	// 		console.log(e);
-
-	// 	}
-	// 	return parseInt(count);
-	// }
 
 
 
