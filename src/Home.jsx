@@ -8,6 +8,7 @@ import Footer from "./Footer.jsx";
 // import Dvd from "./Dvd.jsx";
 import Snow from "./Snow.jsx";
 import Conway from "./Conway.jsx";
+import GHStats from "./visuals/coolviz/GHStats.jsx"
 // import MusicGraph from "./MusicGraph.jsx";
 //import * as d3 from "d3";
 
@@ -85,6 +86,9 @@ const usedWidth = useRef(null);
 	    <ListGroup.Item action href="/maps">
 	      Neat Visuals
 	    </ListGroup.Item>
+		<ListGroup.Item action href="/stats">
+	      Github User Stats
+	    </ListGroup.Item>
 	  </ListGroup>
 
 
@@ -110,6 +114,7 @@ const usedWidth = useRef(null);
 			<Route path='/' element={<Snow style={{"backgroundColor": "black"}}/>}/>
 		    <Route path='/conway' element={<Conway style={{"backgroundColor": "black"}}/>}/>
 			<Route path='/maps' element={<GraphController />}/>
+			<Route path='/stats' element={<GHStats />}/>
 		</Routes>
 
 

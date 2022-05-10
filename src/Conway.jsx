@@ -214,7 +214,7 @@ pt.forEach((row,y) => {
 
 }
 
-console.log(Conway.toString());
+// console.log(Conway.toString());
 
 
 function Conway(props) {
