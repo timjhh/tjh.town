@@ -64,6 +64,7 @@ function GHStats(props) {
           }
           if(fn === "r") { // r for repos
             setRepos(JSON.parse(text));
+            console.log(JSON.parse(text))
             let langs = scrapeLangs(JSON.parse(text));
             genChart(langs.filter(d => d[0] !== null).sort((a,b) => b[1] - a[1]));
           }
@@ -126,6 +127,13 @@ function GHStats(props) {
         .attr("transform",
           "translate(" + (margin.left*2+margin.right) + "," + margin.top + ")");
 
+        svg.append("text")
+        .style("font-weight", "lighter")
+        .style("font-size", "3em")
+        .attr("x", (width/3)-margin.right-margin.left)
+        .attr("y", margin.top)
+        .text("Top Languages")
+
         let x = d3.scaleLinear()
           .domain([0,(d3.max(data, d => d[1])*1.125)])
           .range([0,width-margin.left-margin.right])
@@ -147,6 +155,7 @@ function GHStats(props) {
           .call(d3.axisLeft(y))
           .selectAll("text")
             .style("font-size", "2em")
+            .style("font-weight", "lighter")
 
         svg.select("g").selectAll("rect")
         .data(data)
