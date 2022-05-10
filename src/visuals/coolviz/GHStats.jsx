@@ -65,7 +65,7 @@ function GHStats(props) {
           if(fn === "r") { // r for repos
             setRepos(JSON.parse(text));
             let langs = scrapeLangs(JSON.parse(text));
-            genChart(langs.filter(d => d[0] !== null));
+            genChart(langs.filter(d => d[0] !== null).sort((a,b) => b[1] - a[1]));
           }
         }
       )
@@ -102,10 +102,9 @@ function GHStats(props) {
 
         return 0;
       }
-    
+
       function genChart(data) {
 
-        console.log(data)
 
         d3.select("#d3lang")
         .selectAll("*")
@@ -115,25 +114,27 @@ function GHStats(props) {
         var height = 800
         var margin = {top: 20, left: 60, right: 20, bottom: 20}
 
+        var colors = (d) => (d3.schemeCategory10[d%10])
+
         const svg = d3.select("#d3lang")
         .append("svg")
         .attr("class", "svg-content-responsive svg-container")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 " + (width+(margin.left*2)) + " " + (height+margin.bottom))
+        .attr("viewBox", "0 0 " + (width+(margin.left*2)) + " " + (height+margin.bottom+margin.top))
         .append("g")
         .attr("class", "main")
         .attr("transform",
           "translate(" + (margin.left*2+margin.right) + "," + margin.top + ")");
 
         let x = d3.scaleLinear()
-          .domain([0,d3.max(data, d => d[1])])
+          .domain([0,(d3.max(data, d => d[1])*1.125)])
           .range([0,width-margin.left-margin.right])
       
         let names = data.map(d => d[0])
 
         let y = d3.scaleBand()
           .domain(data.map(d => d[0]))
-          .range([0, height-margin.top-margin.bottom])
+          .range([(height-margin.top-margin.bottom), 0])
 
         svg.append("g")
         .attr("transform", "translate(0," + (height - margin.bottom - margin.top) + ")")
@@ -147,19 +148,24 @@ function GHStats(props) {
           .selectAll("text")
             .style("font-size", "2em")
 
-        data.forEach(d => console.log(d[0]))
-
         svg.select("g").selectAll("rect")
         .data(data)
         .join("rect")
         .attr("class", "bar")
         .attr("x", function(d) { return x(0); })
-        .attr("width", function(d) { return x(d[1]); })
-        .attr("y", function(d) { return y(d[0]); }) 
-        .attr("height", y.bandwidth())
-        .attr("stroke", "green")
-        .attr("fill", "lightgreen");
+        .attr("width", 0)
+        .attr("y", d => y(d[0])-(height - margin.bottom - margin.top-(y.bandwidth()/4))) 
+        .attr("height", y.bandwidth()/2)
+        .attr("fill", (d,idx) => colors(idx))
+        .attr("opacity", 0.75);
 
+
+        svg.selectAll("rect")
+        .transition()
+        .duration(600)
+        .attr("x", d => x(0))
+        .attr("width", d => x(d[1]))
+        .delay((d,i) => (i*200))
 
       }
 
@@ -185,10 +191,11 @@ function GHStats(props) {
       </Button>
       </Form>
       </Paper>
+      {uData && 
       <Paper elevation={12} className="p-4 mx-3">
         <Row>
         <Col xs={4}>
-        {uData && 
+
 
           <Image 
             fluid
@@ -196,7 +203,7 @@ function GHStats(props) {
             src={uData.avatar_url}
           />
         
-        }
+
         </Col>
         <Col xs={8}>
         {uData &&
@@ -211,14 +218,17 @@ function GHStats(props) {
         </Col>
         </Row>
       </Paper>
+      }
       </Row>
       <Row>
         <Col xs={8}>
-        <Paper elevation={12} className="p-4 mt-3">
         {uData &&
+        <Paper elevation={12} className="p-4 mt-3">
+
           <div id="d3lang"></div>
-        }
+
         </Paper>
+        }
         </Col>
       </Row>
       </Container>
