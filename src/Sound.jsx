@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import { Container, Button } from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import { Container, Button, Form } from 'react-bootstrap';
 import * as Tone from 'tone';
 import './App.css';
 
@@ -53,17 +53,13 @@ function Home() {
 	height = window.outerHeight;
 	
 
-	async function initAudio() {
+	async function initAudio(value) {
 
-		if(startRef.current) {
-		  startRef.current = startRef.current;
-		} else {
-		await Tone.start();
-		startRef.current = true;
-		console.log("Audio initialized");
-		
-		d3.interval(presentData, 3000)
+		startRef.current = value
 
+		if(value) {
+			await Tone.start();
+			console.log("Audio initialized");
 		}
 	  }
 
@@ -82,7 +78,7 @@ function Home() {
 	async function presentData() {
 
 		var data = await getRedditData(before);
-		console.log(data)
+
 		before = data.length > 0
 		? data[data.length-1].data.name
 		: null
@@ -104,7 +100,7 @@ function Home() {
 
 			node.append("text")
 			.attr("fill", "white")
-			.attr("dx", -50)
+			.attr("dx", -70)
 			.attr("dy", "0em")
 			.text(d => d.data.subreddit_name_prefixed)
 
@@ -113,6 +109,7 @@ function Home() {
 			.attr("dx", -50)
 			.attr("dy", "1em")
 			.text(d => d.data.title)
+			// .call(wrap, 200)
 
 			node
 			.transition()
@@ -140,17 +137,20 @@ function Home() {
 
 		// +before?("&before="+before):""
 		const link = "https://www.reddit.com/r/all/new/.json?sort=new"+(before?("&before="+before):"")
-		console.log(link)
-		const res = await fetch(`https://api.allorigins.win/get?url=${link}`);
-		const { contents } = await res.json();
-		const feed = JSON.parse(contents)
+		const res = await fetch(`https://api.allorigins.win/get?url=${link}`)
+		if(res) {
+			const { contents } = await res.json();
+			const feed = JSON.parse(contents)
 
-		if(feed) {
-			return feed.data.children
+			if(feed) {
+				return feed.data.children
+			}
 		}
 	}
 
 	function startTone() {
+
+		if(!startRef.current) return;
 
 		// Chords in D minor temporarily hardcoded in
 		const chords = [["D","F","A"],["E","G","A#"],["F","A","C"],["G","A#","D"]["A","C","E"],["A#","D","F"],["C","E","G"]]
@@ -174,7 +174,7 @@ function Home() {
 
 		//let num = Math.floor(Math.random()*chords.length)
 		
-		let note = scale[Math.floor(Math.random()*scale.length)] + (Math.random() >= 0.5 ? "4" : "3")
+		let note = scale[Math.floor(Math.random()*scale.length)] + (Math.floor(Math.random() * 3)+2)
 		//let notes = chords[num]
 		//notes.forEach((d,idx) => notes[idx] += (Math.random() >= 0.5 ? "4" : "3"))
 		
@@ -205,16 +205,48 @@ function Home() {
 		.append("g")
 		.attr("class", "main");
 
+
+		d3.interval(presentData, 3000)
+
 		
 	}, [])
 
-
-
+	// Mike Bostock's text wrap method
+	function wrap(text, width) {
+		text.each(function() {
+		  var text = d3.select(this),
+			  words = text.text().split(/\s+/).reverse(),
+			  word,
+			  line = [],
+			  lineNumber = 0,
+			  lineHeight = 1.1, // ems
+			  y = text.attr("y"),
+			  dy = parseFloat(text.attr("dy")),
+			  tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em")
+		  while (word = words.pop()) {
+			line.push(word)
+			tspan.text(line.join(" "))
+			if (tspan.node().getComputedTextLength() > width) {
+			  line.pop()
+			  tspan.text(line.join(" "))
+			  line = [word]
+			  tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", `${++lineNumber * lineHeight + dy}em`).text(word)
+			}
+		  }
+		})
+	  }
 
   return (
 
 <>
-<Button style={{'position': 'absolute'}} variant="primary" onClick={initAudio}>Start</Button>
+<Form>
+      <Form.Check 
+        type="switch"
+        id="custom-switch"
+        label="Enable Sound"
+		onChange={(e) => initAudio(e.target.checked)}
+      />
+</Form>
 <hr/>	
 <Container className="h-100 pr-0 bg-dark" id="sound" fluid>
 
