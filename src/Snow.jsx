@@ -4,55 +4,7 @@ import './App.css';
 //import { Link } from 'react-router-dom';
 import * as d3 from "d3";
 import $ from 'jquery';
-import { color } from 'd3';
 
-// var body = document.body,
-//     html = document.documentElement;
-
-
-// Starting Colors
-// #9ebcda
-// #90ee90
-// #357360
-// #CABDAF
-
-// AI Generated Colors
-// #ececd9
-// #4c8a63
-// #1f5d77
-// #302a31
-// #647443
-// #2a4b7e
-const colors = ["#9ebcda", "#357360", "#CABDAF", "#ececd9", "#4c8a63", "#1f5d77", "#302a31", "#647443" ,"#2a4b7e"];
-// Light blue #9ebcda
-// sage green #357360
-// tan #CABDAF
-// yellow-ish-tan #ececd9
-// green #4c8a63
-// deeper blue #1f5d77
-// plum #302a31
-// green #647443
-// deep blue #2a4b7e
-const colorPairs = [
-	//["#2a4b7e", "#9ebcda"],
-	["#ececd9", "#CABDAF"],
-	["#4c8a63", "#357360"],
-	["#302a31", "#647443"]
-]
-// sage green 
-
-// green 
-// deeper blue #1f5d77
-// plum 
-// green 
-
-const minMtn = 1;
-const maxMtn = 8;
-
-const starCount = 30;
-
-// Variation(rockiness) of mountain lines
-const variation = 50;
 
 // Rain box animation timer
 var timerRain;
@@ -70,6 +22,9 @@ let mData = []; // Forefront mountain data
 d3.select("#cgl")
 .selectAll("svg")
 .remove();
+
+
+var parentDiv = document.getElementById("contain");
 
 function Snow(props) {
 
@@ -117,8 +72,8 @@ function Snow(props) {
     .attr("preserveAspectRatio", "xMinYMin meet")
 	.attr("class", "svg-content-responsive svg-container")
     .attr("viewBox", "0 0 " + (width) + " " + (height+margin.bottom+margin.top))
-	.attr("width", width)
-	.attr("height", document.documentElement.getBoundingClientRect().height)
+	//.attr("width", width)
+	//.attr("height", document.documentElement.getBoundingClientRect().height)
 	.append("g")
 	.attr("class", "main");
 
@@ -232,7 +187,7 @@ function Snow(props) {
 
 
 
-	let stars = svg.append("g")
+	svg.append("g")
 	.attr("id", "stars");
 
 
@@ -252,105 +207,16 @@ function Snow(props) {
 	.attr("fill", "url(#bg-gradient)")
 	.attr("opacity", 0.3);
 
-
-	// for(var z=0;z<starCount;z++) {
-
-	// 	let maxY = hData[hData.length-2].cY;
-
-	// 	let randX = (Math.random()*width)+80;
-
-	// 	let randY = Math.random()*maxY;
-
-	// 	let rounded = (Math.round(randX / 10) * 10);
-
-	// 	let closest = hData.find(e => e.cX === rounded);
-		
-	// 	if(closest) {
-	// 		if(randY >= closest.cY) {
-	// 			//continue;
-				
-	// 			let newVal = hData.find(e => e.cY > randY);
-	// 			randX = newVal ? newVal.cX : width-20;
-	// 			randY = Math.random()*newVal.cY;
-				
-	// 			//randY -= closest.cY;
-	// 		}
-	// 	}
-
-	// 	// stars.append("rect")
-	// 	// .attr('x', randX)
-	// 	// .attr('y', randY)
-	// 	// .attr("zIndex", 1)
-	// 	// .attr('width', 2)
-	// 	// .attr('height', 2)
-	// 	// .attr("stroke", 5)
-	// 	// .attr("filter","url(#glow)")
-	// 	// .attr("fill", "white");
-
-	// 	stars.append("circle")
-	// 	.attr('cx', randX)
-	// 	.attr('cy', randY)
-	// 	.attr("zIndex", 1)
-	// 	.attr('r', 1)
-	// 	//.attr('height', 2)
-	// 	.attr("filter","url(#glow)")
-	// 	.attr("fill", "white");
-
-
-	// }
-
-
-	//console.log(document.documentElement.getBoundingClientRect().height);
-
-
 	timerRain = d3.timer(animate);
 	timerStars = d3.interval(animateStars, 60);
-	//timerComet = d3.interval(animateComet, 2000);
 
 	}, []);
 
-	function animateComet() {
-
-		let svg = d3.select("#comet");
-
-		let last = hData[hData.length-1];
-
-		let middle = hData[parseInt(hData.length/2)];
-
-		// Random value [-3,3]
-		let randIdx = parseInt((Math.random()*20)-30);
-
-		let randVal = hData[parseInt((hData.length/2)+randIdx)];
-
-		console.log((hData.length/2)+randIdx)
-
-		let comet = svg.append("circle")
-		.attr("cx", width)
-		//.attr("cy", last.cY/2)
-		.attr("cy", last.cY/5)
-		.attr("r", 10)
-		.attr("fill", "white")
-		.attr("opacity", 0.7);
-	
-		comet.transition()
-		.duration(2000)
-		.ease(d3.easeQuadIn)
-		.attr("cx", randVal.cX)
-		.attr("cy", randVal.cY)
-
-		.remove();
-
-
-		
-
-
-	}
 
 
 	function animateStars() {
 
 		let svg = d3.select("#stars");
-
 
 		let maxY = hData[hData.length-2].cY;
 
@@ -364,13 +230,11 @@ function Snow(props) {
 		
 		if(closest) {
 			if(randY >= closest.cY) {
-				//continue;
 				
 				let newVal = hData.find(e => e.cY > randY);
 				randX = newVal ? newVal.cX : width-20;
 				randY = Math.random()*newVal.cY;
-				
-				//randY -= closest.cY;
+			
 			}
 		}
 

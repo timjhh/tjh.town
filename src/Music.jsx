@@ -14,7 +14,6 @@ function Music() {
 	// var album;
 	// var diff;
 	var cover;
-	var fmBox;
 
 
 	function forceUpdate() {
@@ -25,33 +24,81 @@ function Music() {
 	useEffect(() => {
 		fmArtists("chiefton117").then(d => {
 
+		// Code for top track
 		if(d) {
 
 
-		let curr = d.recenttracks.track[0];
-		let timestamp = d.recenttracks.track.find(e => e.date != null).date.uts;
-
-		let currSong = {
-			title: curr.name,
-			artist: curr.artist["#text"],
-			album: curr.album["#text"],
-			diff: getTime(Math.floor(((Date.now()/1000) - parseInt(timestamp))))
-		}
-		setSong(currSong);
+			let curr = d.toptracks.track[0];
+			//let timestamp = d.toptracks.track.find(e => e.date != null).date.uts;
+	
+			// getTrackByMBID(curr.mbid).then(e => {
 
 
 
+			// 	let currSong = {
+			// 		title: curr.name,
+			// 		playcount: curr.playcount,
+			// 		artist: curr.artist.name,
+			// 		album: curr.album["#text"]
+			// 		//diff: getTime(Math.floor(((Date.now()/1000) - parseInt(timestamp))))
+			// 	}
+
+			// 	setSong(currSong);
+
+			// 	forceUpdate();
+
+			// })
+
+			getTrackByNames(curr.artist.name, curr.name).then(e => {
+
+				if(e) {
 
 
-		// Time difference in seconds
-		
+					let currSong = {
+						title: curr.name,
+						playcount: curr.playcount,
+						artist: curr.artist.name,
+						album: e.track.album.title,
+						link: e.track.url
+						//diff: getTime(Math.floor(((Date.now()/1000) - parseInt(timestamp))))
+					}
 
-		fmBox = $(".music");
-		$(".cover").attr("src", cover);
+					setSong(currSong);
 
-		cover = song.image.find(d => d.size === "large")["#text"];
+				} else { // Track not found
 
-		forceUpdate();
+					setSong({
+						title:"Error: Track Not Found",playcount:0,artist:"",album:""
+					})
+
+
+				}
+
+
+
+				forceUpdate();
+
+			})
+
+
+
+		// Code for most recent track
+		// if(d) {
+
+		// let curr = d.recenttracks.track[0];
+		// let timestamp = d.recenttracks.track.find(e => e.date != null).date.uts;
+
+		// let currSong = {
+		// 	title: curr.name,
+		// 	artist: curr.artist["#text"],
+		// 	album: curr.album["#text"],
+		// 	diff: getTime(Math.floor(((Date.now()/1000) - parseInt(timestamp))))
+		// }
+
+
+
+
+
 		}
 
 
@@ -65,13 +112,22 @@ function Music() {
 
 	return (
 			<>
-			<Card>
+			<Card style={{"background-color": "rgba(83,60,112,1)"}} className='text-white'>
+				<Card.Header className='my-0 py-1'>Top Track This Week</Card.Header>
 				<Image src="" className="img-responsive mr-0"/>
 				<Card.Body>
 				{song ? (
 					<>
-					<p>Song: {song.title}<br/>Artist: {song.artist}<br/>Album: {song.album}</p>
-					<p className="card-text" id="when">Logged {song.diff} ago</p>
+					<span className='my-0 py-0'>
+					<p className='my-0 py-0'>Name: {song.title}</p>
+					<p className='my-0 py-0'>Artist: {song.artist}</p>
+					<p className='my-0 py-0'>Album: {song.album}</p>
+					<p className='my-0 py-0'>Playcount: {song.playcount}</p>
+					[<a className='small text-info' rel="noreferrer" target="_blank" href={song.link}>Link</a>]
+					</span>
+					
+					
+					{/* <p className="card-text" id="when">Logged {song.diff} ago</p> */}
 					</>
 					) : (
 					<>
@@ -123,28 +179,42 @@ function Music() {
 		return time;
 
 	}
+	async function getTrackByMBID(mbid) {
+		const response = await axios("https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&mbid="+ mbid +"&format=json")
+		return await response.data;
+	}
+	async function getTrackByNames(artist,track) {
+		const response = await axios("https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&track=" + track + "&artist="+ artist +"&format=json")
+		return await response.data;	
+	}
 	async function fmArtists(username) {
 
-		const response = await axios("https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=" + username + "&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json");
+		// Most recent track
+		// const response = await axios("https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=" + username + "&api_key=943bdddf5707846447a81b95edae1537&limit=1&format=json");
+		
+		// Top track(adjustable date - 7 day chosen)
+		const response = await axios("https://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user=" + username + "&period=7day&api_key=943bdddf5707846447a81b95edae1537&format=json");
+
+		
 
 		return await response.data;
 
 	}
-	function fmTrack(tmbid, ambid) {
-		return $.ajax({
-			dataType: 'json',
-			async: false,
-			//url : 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&artist=' + ambid + '&track=' + tmbid + '&format=json'
+	// function fmTrack(tmbid, ambid) {
+	// 	return $.ajax({
+	// 		dataType: 'json',
+	// 		async: false,
+	// 		//url : 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&artist=' + ambid + '&track=' + tmbid + '&format=json'
 			
-			url: 'https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&format=json&mbid=' + tmbid
+	// 		url: 'https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&format=json&mbid=' + tmbid
 
-			//url : 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&artist=' + ambid + '&track=' + tmbid + '&format=json'
-		});
-	}
-	function mbTrack(mbid) {
-		return $.ajax({
-			async: false,
-			url: 'https://musicbrainz.org/ws/2/recording/' + mbid + '?inc=aliases+artist-credits+releases&fmt=json'
-		});
-	}
+	// 		//url : 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&artist=' + ambid + '&track=' + tmbid + '&format=json'
+	// 	});
+	// }
+	// function mbTrack(mbid) {
+	// 	return $.ajax({
+	// 		async: false,
+	// 		url: 'https://musicbrainz.org/ws/2/recording/' + mbid + '?inc=aliases+artist-credits+releases&fmt=json'
+	// 	});
+	// }
 export default Music;

@@ -22,12 +22,17 @@
   cursor: pointer;
 }
 
+.maxH {
+  min-height: 100vh;
+}
+
 .svg-content-responsive {
   vertical-align: top;
   overflow: hidden;
   width: 100%;
   display: inline-block;
   top: 0px;
+  background-size: cover;
 
 
 }

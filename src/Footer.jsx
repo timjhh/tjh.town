@@ -1,18 +1,16 @@
 import React from 'react';
-import {Container, Row, Col, Button, Navbar} from 'react-bootstrap';
+
 import './App.css';
 import Music from "./Music.jsx";
 
 function Footer() {
   return (
-//	<Row  style={{position: "absolute", bottom: "0px", top: "100%", flexWrap: "nowrap"}}>
-//className="position-absolute bottom-0"
-// className="d-flex flex-column  flex-nowrap" 
 
-		<div className="transparent mx-auto w-75">
-			<h6 className="card-title text-center">What am I listening to?</h6>
+	<div className='position-absolute mr-2' style={{ right: 0, bottom: 0 }}>
+		<div className="mh-100">
 				<Music />
 		</div>
+	</div>
 
   );
 }
