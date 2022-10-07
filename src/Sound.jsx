@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Container, Button, Form } from 'react-bootstrap';
+import { Container, Button, Form, Row } from 'react-bootstrap';
 import * as Tone from 'tone';
 import './App.css';
 
@@ -14,9 +14,21 @@ function Home() {
 
 	// Correctly start the simulation/audio
 	const startRef = React.useRef(start);
+	var isStarted = false;
 
 	var now;
 	var distinct = [];
+
+	var postTypes = ["Cross-post", "Text", "Video", "Image", "Other"]
+	var postScale = d3.scaleOrdinal()
+	.domain(postTypes)
+	.range(["#519872", "#F17300", "#81A4CD", "#EFA8B8", "#ACFCD9"])
+
+	// #519872 Green
+	// #F17300 Orange
+	// #81A4CD Blue
+	// #EFA8B8 Pink
+	// #ACFCD9 Mint
 
 	const synth = new Tone.PolySynth()
 
@@ -76,8 +88,8 @@ function Home() {
 
 		startRef.current = value
 
-		if(value) {
-			await Tone.start();
+		if(value && !isStarted) {
+			await Tone.start().then(() => isStarted = true);
 			console.log("Audio initialized");
 		}
 	  }
@@ -93,20 +105,34 @@ function Home() {
 		return Math.random()*10000
 	}
 
+	function getPostType(post) {
+		if(post.data.post_hint) {
+			if(post.data.post_hint === "image") return "Image"
+			if(post.data.post_hint === "link") return "Cross-post"
+			if(post.data.post_hint.includes("video")) return "Video"
+		}
+		if(post.data.is_video) return "Video"
+		if(post.data.crosspost_parent) return "Cross-post"
+		if(post.data.is_self) return "Text"
+		return "Other"
+	}
+
 	async function presentData() {
 
 		var data = await getRedditData(before);
 
-		before = data[0].data.name
+		before = data[d3.maxIndex(data.map(d => d.data.created_utc))].data.name
 
+		console.log(data[0].data.created_utc)
+		console.log(now)
+		
 		// Filter out any posts that are older than the newest post from the last query
 		data = data.filter(d => d.data.created_utc >= now)
 
 		if(data.length === 0) return;
 
-
 		var counter = 0;
-		console.log(data)
+
 
 		// Filter out any posts that are not distinct, prepend to distinct array and cut off older elements
 		data = data.filter(d => !distinct.includes(d.data.name))
@@ -117,8 +143,9 @@ function Home() {
 
 		// console.log("new distinct: " + counter + "\ntotal: " + distinct.length)
 		// console.log("----")
-		
+		console.log(data)
 		// Update time frame to filter posts with the latest from this batch
+		//data[d3.maxIndex(data.map(d => d.data.created_utc))]
 		now = data[0].data.created_utc
 
 		var svg = d3.select(".main");
@@ -134,7 +161,7 @@ function Home() {
 			
 			node.append("circle")
 			.attr("r", 80)
-			.attr("fill", "#519872")
+			.attr("fill", d => postScale(getPostType(d)))
 
 			node.append("text")
 			.attr("fill", "white")
@@ -163,27 +190,32 @@ function Home() {
 			.remove();
 
 		})	
-
-		// #519872 Green
-		// #F17300 Orange
-		// #81A4CD Blue
-
 	}
 
 
+	function handleErrors(response) {
+		if (!response.ok) throw new Error(response.status);
+		return response;
+	}
+
 	async function getRedditData(before) {
 
+
+		// https://www.reddit.com/r/funny/comments.json?limit=1
+		
 		// +before?("&before="+before):""
 		const link = "https://www.reddit.com/r/all/new.json?sort=new"+(before?("&before="+before):"")
-		const res = await fetch(`https://api.allorigins.win/get?url=${link}`)
-		if(res) {
-			const { contents } = await res.json();
+		return await fetch(`https://api.allorigins.win/get?url=${link}`)
+		.then(handleErrors)
+		.then(async response => {
+			const { contents } = await response.json();
 			const feed = JSON.parse(contents)
 
 			if(feed) {
 				return feed.data.children
 			}
-		}
+		})
+		.catch(error => console.log(error) );
 	}
 
 	function startTone() {
@@ -194,24 +226,10 @@ function Home() {
 		const chords = [["D","F","A"],["E","G","A#"],["F","A","C"],["G","A#","D"]["A","C","E"],["A#","D","F"],["C","E","G"]]
 
 		//const scale = ["D","E","F","G#","A","A#","C"]
-		const scale = ["C","D","E","F","G","A","B"]
+		//const scale = ["C","D","E","F","G","A","B"]
+		const scale = ["C", "E", "G", "F", "A"]
 
 
-		// let svg = d3.select("#sound").select("g")
-
-		// let rX = Math.random()*width;
-		// let rY = Math.random()*height;
-
-
-		// let sn = svg.append("rect")
-		// .attr('x', rX)
-		// .attr('y', -margin.top-rY)
-		// .attr('width', 40)
-		// .attr('height', 40)
-		// .attr("fill", "red");
-
-		//let num = Math.floor(Math.random()*chords.length)
-		
 		let note = scale[Math.floor(Math.random()*scale.length)] + (Math.floor(Math.random() * 3)+2)
 		//let notes = chords[num]
 		//notes.forEach((d,idx) => notes[idx] += (Math.random() >= 0.5 ? "4" : "3"))
@@ -219,14 +237,6 @@ function Home() {
 		let note_len = "4n"
 		
 		synth.triggerAttackRelease(note, note_len)
-
-		// sn.transition()
-		// .duration(2500)
-		// .ease(d3.easeLinear)
-		// .on("end", () => synth.triggerAttackRelease(notes, note_len))
-		// .attr('y', height+margin.top+margin.bottom)
-		// .remove();	
-
 
 	}
 
@@ -243,7 +253,7 @@ function Home() {
 		.append("g")
 		.attr("class", "main");
 
-		now = new Date().getTime() / 1000
+		now = (new Date().getTime() / 1000) - 120
 
 		d3.interval(presentData, 3000)
 
@@ -279,15 +289,33 @@ function Home() {
 
 <>
 <Form>
-      <Form.Check 
-	  	className="mt-2"
-        type="switch"
-        id="custom-switch"
-        label="Enable Sound"
-		onChange={(e) => initAudio(e.target.checked)}
-      />
+      
 </Form>
-<hr/>	
+<div className="position-absolute bg-light p-2" id="panel">
+		<Form.Label>Data</Form.Label>
+		<Form.Select id="cptrns" size="sm" className="mx-2">
+			<option value="posts">Posts</option>
+			<option value="comments">Comments</option>
+		</Form.Select>
+		<Form.Check 
+		className="mt-2"
+		type="switch"
+		id="custom-switch"
+		label="Enable Sound"
+		onChange={(e) => initAudio(e.target.checked)}
+		/>
+
+		<Button className="mr-2" variant="dark">Randomize</Button>
+		<Button variant="dark">Reset</Button>
+		{postTypes.map((d,idx) => (
+			<Row key={"legend"+idx} className='mt-2'>
+				<div className="ml-3 mr-1" style={{"width": "10%"}}>
+				<div className="px-1 w-100" style={{"paddingBottom": "100%", "height": "0", "backgroundColor": postScale(d)}}><p>&nbsp;</p></div>
+				</div>
+				{d}
+			</Row>
+		))}
+  </div>
 <Container className="h-100 px-0 bg-dark" id="sound" fluid>
 
 </Container>

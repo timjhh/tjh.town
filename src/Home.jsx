@@ -71,7 +71,7 @@ const usedHeight = useRef(null);
 			<div className="px-3">
 				
 			<Col xs={12}>
-			<p><br/>My name is Tim Harrold(he/them), and i'm an aspiring programmer / human being. Here are some of my projects, interests and hobbies</p>
+			<p><br/>My name is Tim Harrold, and i'm a programmer / human being. Here are some of my projects, interests and hobbies</p>
 			<hr/>
 
 
