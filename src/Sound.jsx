@@ -15,22 +15,41 @@ function Home() {
 	// Correctly start the simulation/audio
 	const startRef = React.useRef(start);
 
+	var now;
+	var distinct = [];
 
 	const synth = new Tone.PolySynth()
 
+	const synthJSON = {
+		"volume": 0,
+		"detune": 0,
+		"portamento": 60,
+		"envelope": {
+			"attack": 0.1,
+			"attackCurve": "linear",
+			"decay": 0.4,
+			"decayCurve": "linear",
+			"release": 1,
+			"releaseCurve": "exponential",
+			"sustain": 0.3
+		},
+		"oscillator": {
+			"partialCount": 0,
+			"partials": [],
+			"phase": 0,
+			"type": "sine"
+		}
+	}
+
+	synth.set(synthJSON)
+
 	const reverb = new Tone.Reverb(2);
-	const delay = new Tone.PingPongDelay("8n", 0.2);
-	const env = new Tone.Envelope(0.4);
 	const vibrato = new Tone.Vibrato();
 	const tremolo = new Tone.Tremolo(9,0.75).toDestination().start()
 	const compressor = new Tone.Compressor(-30, 2);
 
 
-	//let synth = new Tone.MembraneSynth()
-	
-
-
-	synth.chain(tremolo,reverb, Tone.Destination)
+	synth.chain(reverb,vibrato,compressor, Tone.Destination)
 
 
 	var before;
@@ -50,7 +69,7 @@ function Home() {
 
 	var margin = {top: 20, right: 20, bottom: 20, left: 20},
 	width = window.innerWidth*(10/12),
-	height = window.outerHeight;
+	height = window.innerHeight;
 	
 
 	async function initAudio(value) {
@@ -62,7 +81,6 @@ function Home() {
 			console.log("Audio initialized");
 		}
 	  }
-
 
 
 	function randX() {
@@ -79,9 +97,29 @@ function Home() {
 
 		var data = await getRedditData(before);
 
-		before = data.length > 0
-		? data[data.length-1].data.name
-		: null
+		before = data[0].data.name
+
+		// Filter out any posts that are older than the newest post from the last query
+		data = data.filter(d => d.data.created_utc >= now)
+
+		if(data.length === 0) return;
+
+
+		var counter = 0;
+		console.log(data)
+
+		// Filter out any posts that are not distinct, prepend to distinct array and cut off older elements
+		data = data.filter(d => !distinct.includes(d.data.name))
+		distinct = [...data,...distinct]
+		distinct.length = Math.min(100, distinct.length)
+
+		counter += data.length
+
+		// console.log("new distinct: " + counter + "\ntotal: " + distinct.length)
+		// console.log("----")
+		
+		// Update time frame to filter posts with the latest from this batch
+		now = data[0].data.created_utc
 
 		var svg = d3.select(".main");
 		svg.selectAll("circle")
@@ -136,7 +174,7 @@ function Home() {
 	async function getRedditData(before) {
 
 		// +before?("&before="+before):""
-		const link = "https://www.reddit.com/r/all/new/.json?sort=new"+(before?("&before="+before):"")
+		const link = "https://www.reddit.com/r/all/new.json?sort=new"+(before?("&before="+before):"")
 		const res = await fetch(`https://api.allorigins.win/get?url=${link}`)
 		if(res) {
 			const { contents } = await res.json();
@@ -201,10 +239,11 @@ function Home() {
 		.attr("position", "absolute")
 		.attr("preserveAspectRatio", "xMinYMin meet")
 		.attr("class", "svg-content-responsive svg-container")
-		.attr("viewBox", "0 0 " + (width) + " " + (height+margin.bottom+margin.top))	
+		.attr("viewBox", "0 0 " + (width) + " " + (height))	
 		.append("g")
 		.attr("class", "main");
 
+		now = new Date().getTime() / 1000
 
 		d3.interval(presentData, 3000)
 
@@ -241,6 +280,7 @@ function Home() {
 <>
 <Form>
       <Form.Check 
+	  	className="mt-2"
         type="switch"
         id="custom-switch"
         label="Enable Sound"
@@ -248,7 +288,7 @@ function Home() {
       />
 </Form>
 <hr/>	
-<Container className="h-100 pr-0 bg-dark" id="sound" fluid>
+<Container className="h-100 px-0 bg-dark" id="sound" fluid>
 
 </Container>
 </>
