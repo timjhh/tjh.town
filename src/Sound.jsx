@@ -22,6 +22,7 @@ function Home() {
 	const subRef = React.useRef("all")
 
 	const [subTemp, setSubTemp] = React.useState("all")
+	const [subReddit, setSubReddit] = React.useState("all")
 
 	var postTypes = ["Cross-post", "Text", "Video", "Image", "Other"]
 	var postScale = d3.scaleOrdinal()
@@ -111,6 +112,7 @@ function Home() {
 
 	function handleSubChange() {
 		subRef.current = subTemp
+		setSubReddit(subTemp)
 	}
 
 	function getPostType(post) {
@@ -129,7 +131,6 @@ function Home() {
 
 		var data = await getRedditData(before);
 
-
 		if(data.length === 0) return;
 
 		before = data[d3.maxIndex(data.map(d => d.data.created_utc))].data.name
@@ -138,12 +139,11 @@ function Home() {
 		console.log(now)
 		
 		// Filter out any posts that are older than the newest post from the last query
-		// data = data.filter(d => d.data.created_utc >= now)
+		data = data.filter(d => d.data.created_utc >= now)
 
 		if(data.length === 0) return;
 
 		var counter = 0;
-
 
 		// Filter out any posts that are not distinct, prepend to distinct array and cut off older elements
 		data = data.filter(d => !distinct.includes(d.data.name))
@@ -216,8 +216,7 @@ function Home() {
 		
 		// +before?("&before="+before):""
 		var link = "https://www.reddit.com/r/"+subRef.current+"/new.json?sort=new"+(before?("&before="+before):"")
-		console.log(link)
-		console.log(subRef.current)
+
 		return await fetch(`https://api.allorigins.win/get?url=${link}`)
 		.then(handleErrors)
 		.then(async response => {
@@ -240,8 +239,8 @@ function Home() {
 		const chords = [["D","F","A"],["E","G","A#"],["F","A","C"],["G","A#","D"]["A","C","E"],["A#","D","F"],["C","E","G"]]
 
 		//const scale = ["D","E","F","G#","A","A#","C"]
-		//const scale = ["C","D","E","F","G","A","B"]
-		const scale = ["C", "E", "G", "F", "A"]
+		const scale = ["C","D","E","F","G","A","B"]
+		//const scale = ["C", "E", "G", "F", "A"]
 
 
 		let note = scale[Math.floor(Math.random()*scale.length)] + (Math.floor(Math.random() * 3)+2)
@@ -274,31 +273,6 @@ function Home() {
 		
 	}, [])
 
-	// Mike Bostock's text wrap method
-	function wrap(text, width) {
-		text.each(function() {
-		  var text = d3.select(this),
-			  words = text.text().split(/\s+/).reverse(),
-			  word,
-			  line = [],
-			  lineNumber = 0,
-			  lineHeight = 1.1, // ems
-			  y = text.attr("y"),
-			  dy = parseFloat(text.attr("dy")),
-			  tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em")
-		  while (word = words.pop()) {
-			line.push(word)
-			tspan.text(line.join(" "))
-			if (tspan.node().getComputedTextLength() > width) {
-			  line.pop()
-			  tspan.text(line.join(" "))
-			  line = [word]
-			  tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", `${++lineNumber * lineHeight + dy}em`).text(word)
-			}
-		  }
-		})
-	  }
-
   return (
 
 <>
@@ -306,7 +280,7 @@ function Home() {
       
 </Form>
 <div className="position-absolute bg-light p-2" id="panel">
-		<h2>Listen to Reddit</h2>
+		<h2 className="pb-0 mb-0">Listen to Reddit</h2>
 		{/* <Form.Label>Data</Form.Label>
 		<Form.Select id="cptrns" size="sm" className="mx-2">
 			<option value="posts">Posts</option>
@@ -320,7 +294,7 @@ function Home() {
 		onChange={(e) => initAudio(e.target.checked)}
 		/>
 
-		<InputGroup className="mb-3">
+		<InputGroup>
 			<Form.Control
 			placeholder="subreddit"
 			aria-label="all"
@@ -332,6 +306,7 @@ function Home() {
 			Submit
 			</Button>
       </InputGroup>
+	  <small>Current: r/{subReddit}</small>
 	<Row>
 		{postTypes.map((d,idx) => (
 			<Col xs={6} key={"legend"+idx} className='mt-2'>
