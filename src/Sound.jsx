@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Container, Button, Form, Row } from 'react-bootstrap';
+import { Container, Button, Form, Row, InputGroup, Col } from 'react-bootstrap';
 import * as Tone from 'tone';
 import './App.css';
 
@@ -18,6 +18,10 @@ function Home() {
 
 	var now;
 	var distinct = [];
+
+	const subRef = React.useRef("all")
+
+	const [subTemp, setSubTemp] = React.useState("all")
 
 	var postTypes = ["Cross-post", "Text", "Video", "Image", "Other"]
 	var postScale = d3.scaleOrdinal()
@@ -105,6 +109,10 @@ function Home() {
 		return Math.random()*10000
 	}
 
+	function handleSubChange() {
+		subRef.current = subTemp
+	}
+
 	function getPostType(post) {
 		if(post.data.post_hint) {
 			if(post.data.post_hint === "image") return "Image"
@@ -121,13 +129,16 @@ function Home() {
 
 		var data = await getRedditData(before);
 
+
+		if(data.length === 0) return;
+
 		before = data[d3.maxIndex(data.map(d => d.data.created_utc))].data.name
 
 		console.log(data[0].data.created_utc)
 		console.log(now)
 		
 		// Filter out any posts that are older than the newest post from the last query
-		data = data.filter(d => d.data.created_utc >= now)
+		// data = data.filter(d => d.data.created_utc >= now)
 
 		if(data.length === 0) return;
 
@@ -160,19 +171,19 @@ function Home() {
 			.attr("opacity", 0)
 			
 			node.append("circle")
-			.attr("r", 80)
+			.attr("r", 20)
 			.attr("fill", d => postScale(getPostType(d)))
 
 			node.append("text")
 			.attr("fill", "white")
-			.attr("dx", -70)
-			.attr("dy", "0em")
+			.attr("dx", 12)
+			.attr("dy", -17)
 			.text(d => d.data.subreddit_name_prefixed)
 
 			node.append("text")
 			.attr("fill", "white")
-			.attr("dx", -50)
-			.attr("dy", "1em")
+			.attr("dx", 22)
+			.attr("dy", 0)
 			.text(d => d.data.title)
 			// .call(wrap, 200)
 
@@ -204,10 +215,13 @@ function Home() {
 		// https://www.reddit.com/r/funny/comments.json?limit=1
 		
 		// +before?("&before="+before):""
-		const link = "https://www.reddit.com/r/all/new.json?sort=new"+(before?("&before="+before):"")
+		var link = "https://www.reddit.com/r/"+subRef.current+"/new.json?sort=new"+(before?("&before="+before):"")
+		console.log(link)
+		console.log(subRef.current)
 		return await fetch(`https://api.allorigins.win/get?url=${link}`)
 		.then(handleErrors)
 		.then(async response => {
+
 			const { contents } = await response.json();
 			const feed = JSON.parse(contents)
 
@@ -292,11 +306,12 @@ function Home() {
       
 </Form>
 <div className="position-absolute bg-light p-2" id="panel">
-		<Form.Label>Data</Form.Label>
+		<h2>Listen to Reddit</h2>
+		{/* <Form.Label>Data</Form.Label>
 		<Form.Select id="cptrns" size="sm" className="mx-2">
 			<option value="posts">Posts</option>
 			<option value="comments">Comments</option>
-		</Form.Select>
+		</Form.Select> */}
 		<Form.Check 
 		className="mt-2"
 		type="switch"
@@ -305,16 +320,30 @@ function Home() {
 		onChange={(e) => initAudio(e.target.checked)}
 		/>
 
-		<Button className="mr-2" variant="dark">Randomize</Button>
-		<Button variant="dark">Reset</Button>
+		<InputGroup className="mb-3">
+			<Form.Control
+			placeholder="subreddit"
+			aria-label="all"
+			aria-describedby="sub-input"
+			value={subTemp}
+			onChange={(e) => setSubTemp(e.target.value)}
+			/>
+			<Button onClick={handleSubChange} variant="dark" id="sub-submit">
+			Submit
+			</Button>
+      </InputGroup>
+	<Row>
 		{postTypes.map((d,idx) => (
-			<Row key={"legend"+idx} className='mt-2'>
+			<Col xs={6} key={"legend"+idx} className='mt-2'>
+				<Row>
 				<div className="ml-3 mr-1" style={{"width": "10%"}}>
-				<div className="px-1 w-100" style={{"paddingBottom": "100%", "height": "0", "backgroundColor": postScale(d)}}><p>&nbsp;</p></div>
+				<div className="px-1 w-100" style={{"paddingBottom": "100%", "height": "0", "backgroundColor": postScale(d)}}><p className='m-0'>&nbsp;</p></div>
 				</div>
 				{d}
-			</Row>
+				</Row>
+			</Col>
 		))}
+	</Row>
   </div>
 <Container className="h-100 px-0 bg-dark" id="sound" fluid>
 
