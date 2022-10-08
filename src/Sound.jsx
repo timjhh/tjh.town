@@ -135,8 +135,8 @@ function Home() {
 
 		before = data[d3.maxIndex(data.map(d => d.data.created_utc))].data.name
 
-		console.log(data[0].data.created_utc)
-		console.log(now)
+		// console.log(data[0].data.created_utc)
+		// console.log(now)
 		
 		// Filter out any posts that are older than the newest post from the last query
 		data = data.filter(d => d.data.created_utc >= now)
@@ -154,7 +154,7 @@ function Home() {
 
 		// console.log("new distinct: " + counter + "\ntotal: " + distinct.length)
 		// console.log("----")
-		console.log(data)
+		// console.log(data)
 		// Update time frame to filter posts with the latest from this batch
 		//data[d3.maxIndex(data.map(d => d.data.created_utc))]
 		now = data[0].data.created_utc
@@ -263,6 +263,8 @@ function Home() {
 		.attr("preserveAspectRatio", "xMinYMin meet")
 		.attr("class", "svg-content-responsive svg-container")
 		.attr("viewBox", "0 0 " + (width) + " " + (height))	
+		.attr("width", width)
+		.attr("height", height+margin.top+margin.bottom)
 		.append("g")
 		.attr("class", "main");
 
@@ -279,7 +281,7 @@ function Home() {
 <Form>
       
 </Form>
-<div className="position-absolute bg-light p-2" id="panel">
+<div className="position-absolute bg-custom p-2" id="panel">
 		<h2 className="pb-0 mb-0">Listen to Reddit</h2>
 		{/* <Form.Label>Data</Form.Label>
 		<Form.Select id="cptrns" size="sm" className="mx-2">

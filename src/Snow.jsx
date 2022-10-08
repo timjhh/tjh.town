@@ -367,7 +367,7 @@ function Snow(props) {
 
 
 <>
-<div className="position-absolute bg-light p-2" id="panel">
+<div className="position-absolute bg-custom p-2" id="panel">
 	
 	<Container>
 

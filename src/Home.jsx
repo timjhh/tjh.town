@@ -97,9 +97,9 @@ const usedHeight = useRef(null);
 			{/* <ListGroup.Item action href="/maps">
 			Neat Visuals
 			</ListGroup.Item> */}
-			<ListGroup.Item action href="/stats">
+			{/* <ListGroup.Item action href="/stats">
 			Github User Stats
-			</ListGroup.Item>
+			</ListGroup.Item> */}
 	  	</ListGroup>
 
 		</div>
@@ -123,7 +123,7 @@ const usedHeight = useRef(null);
 		    <Route path='/conway' element={<Conway style={{"backgroundColor": "black"}}/>}/>
 			<Route path='/sound' element={<Sound style={{"backgroundColor": "black"}}/>}/>
 			<Route path='/maps' element={<GraphController />}/>
-			<Route path='/stats' element={<GHStats />}/>
+			{/* <Route path='/stats' element={<GHStats />}/> */}
 		</Routes>
 
 
