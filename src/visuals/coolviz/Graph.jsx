@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as d3 from "d3";
 import { Table, Accordion, Card  } from 'react-bootstrap';
 
@@ -7,10 +7,6 @@ import { Table, Accordion, Card  } from 'react-bootstrap';
 function Graph(props) {
 
 const radius = 2;
-
-const nutrients = ["Calories", "Protein", "Fat", "Carbohydrates", "Vitamin.C", "Vitamin.A", "Folate", "Calcium", "Iron", "Zinc", "Potassium", 
-            "Dietary.Fiber", "Copper", "Sodium", "Phosphorus", "Thiamin", "Riboflavin", "Niacin", "B6", "Choline",
-            "Magnesium", "Manganese", "Saturated.FA", "Monounsaturated.FA", "Polyunsaturated.FA", "Omega.3..USDA.only.", "B12..USDA.only."];
 
 const legendLabels = ["OTC", "Prescription"]
 
@@ -22,12 +18,6 @@ height = 400 - (margin.top+margin.bottom);
 
 const MIN_RADIUS = 1;
 const MAX_RADIUS = 30;
-
-
-
-const [parsedData, setParsedData] = useState([]);
-//const [nodes, setNodes] = useState([]);
-//const [links, setLinks] = useState([]);
 
 
 useEffect(() => {
@@ -48,7 +38,7 @@ useEffect(() => {
 
 
     //let svg = d3.select("#graph").select("svg").select("g");
-    let svg = d3.selectAll(".nodes").selectAll("circle")
+    d3.selectAll(".nodes").selectAll("circle")
     .attr("r", function(d) {
       if(props.sameScale) {
         let max = d3.max(props.current, d => parseFloat(d.nadac_per_unit));
@@ -63,8 +53,6 @@ useEffect(() => {
       }
     });
 
-
-//.attr("r", d =>  ((d.nadac_per_unit / max) * MAX_RADIUS) + MIN_RADIUS)
 }, [props.sameScale]);
 
 
@@ -186,7 +174,7 @@ useEffect(() => {
     let max = d3.max(props.current, d => parseFloat(d.nadac_per_unit));
 
 
-    var circles = node.append("circle")
+    node.append("circle")
     .attr("r", function(d) {
         if(props.sameScale) {
         let max = d3.max(props.current, d => parseFloat(d.nadac_per_unit));
@@ -217,7 +205,7 @@ useEffect(() => {
 
 
 
-    var labels = node.append("text")
+    node.append("text")
     .text((d) => d.ndc_description)
         .attr('x', 2)
         .style("cursor", "pointer")

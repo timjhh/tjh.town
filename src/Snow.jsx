@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Row, Container } from 'react-bootstrap';
+import { Form, Row, Container } from 'react-bootstrap';
 import './App.css';
 //import { Link } from 'react-router-dom';
 import * as d3 from "d3";
@@ -9,7 +9,6 @@ import $ from 'jquery';
 // Rain box animation timer
 var timerRain;
 var timerStars;
-var timerComet;
 
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
 width = window.innerWidth*(10/12),
@@ -22,9 +21,6 @@ let mData = []; // Forefront mountain data
 d3.select("#cgl")
 .selectAll("svg")
 .remove();
-
-
-var parentDiv = document.getElementById("contain");
 
 function Snow(props) {
 
@@ -168,10 +164,6 @@ function Snow(props) {
 		)
 	.attr("fill", "#353839")
 	.attr("opacity", 0.8);
-
-
-	let comet = svg.append("g")
-	.attr("id", "comet");
 
 	// Big mountain in back
 	svg.append("path")

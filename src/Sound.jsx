@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect } from 'react';
 import { Container, Button, Form, Row, InputGroup, Col } from 'react-bootstrap';
 import * as Tone from 'tone';
 import './App.css';
@@ -62,7 +62,7 @@ function Home() {
 
 	const reverb = new Tone.Reverb(2);
 	const vibrato = new Tone.Vibrato();
-	const tremolo = new Tone.Tremolo(9,0.75).toDestination().start()
+	// const tremolo = new Tone.Tremolo(9,0.75).toDestination().start()
 	const compressor = new Tone.Compressor(-30, 2);
 
 
@@ -71,18 +71,18 @@ function Home() {
 
 	var before;
 
-	const modes = ['Major', 'Minor'];
-	const notes = ['A','A#','B','C','C#','D','D#','E','F','F#','G','G#'];
+	//const modes = ['Major', 'Minor'];
+	//const notes = ['A','A#','B','C','C#','D','D#','E','F','F#','G','G#'];
   
 	// W - Whole step
 	// H - Half step
 	// 'Final' notes are omitted to avoid duplicates i.e. C major ends at B, not C
   
 	// Major scales follow the pattern of W-W-H-W-W-W-H
-	const major = [0,2,4,5,7,9,11];
+	//const major = [0,2,4,5,7,9,11];
   
 	// Minor scales follow the pattern of W-H-W-W-H-W-W
-	const minor = [0,2,3,5,7,8,10]; 
+	//const minor = [0,2,3,5,7,8,10]; 
 
 	var margin = {top: 20, right: 20, bottom: 20, left: 20},
 	width = window.innerWidth*(10/12),
@@ -131,26 +131,22 @@ function Home() {
 
 		var data = await getRedditData(before);
 
+		if(!data) return
 		if(data.length === 0) return;
 
 		before = data[d3.maxIndex(data.map(d => d.data.created_utc))].data.name
-
-		// console.log(data[0].data.created_utc)
-		// console.log(now)
 		
 		// Filter out any posts that are older than the newest post from the last query
 		data = data.filter(d => d.data.created_utc >= now)
 
 		if(data.length === 0) return;
 
-		var counter = 0;
+
 
 		// Filter out any posts that are not distinct, prepend to distinct array and cut off older elements
 		data = data.filter(d => !distinct.includes(d.data.name))
 		distinct = [...data,...distinct]
 		distinct.length = Math.min(100, distinct.length)
-
-		counter += data.length
 
 		// console.log("new distinct: " + counter + "\ntotal: " + distinct.length)
 		// console.log("----")
@@ -185,7 +181,6 @@ function Home() {
 			.attr("dx", 22)
 			.attr("dy", 0)
 			.text(d => d.data.title)
-			// .call(wrap, 200)
 
 			node
 			.transition()
@@ -236,7 +231,7 @@ function Home() {
 		if(!startRef.current) return;
 
 		// Chords in D minor temporarily hardcoded in
-		const chords = [["D","F","A"],["E","G","A#"],["F","A","C"],["G","A#","D"]["A","C","E"],["A#","D","F"],["C","E","G"]]
+		//const chords = [["D","F","A"],["E","G","A#"],["F","A","C"],["G","A#","D"]["A","C","E"],["A#","D","F"],["C","E","G"]]
 
 		//const scale = ["D","E","F","G#","A","A#","C"]
 		const scale = ["C","D","E","F","G","A","B"]
@@ -257,7 +252,7 @@ function Home() {
 	useEffect(() => {
 
 
-		const svg = d3.select("#sound")
+		d3.select("#sound")
 		.append("svg")
 		.attr("position", "absolute")
 		.attr("preserveAspectRatio", "xMinYMin meet")
@@ -270,7 +265,7 @@ function Home() {
 
 		now = (new Date().getTime() / 1000) - 120
 
-		d3.interval(presentData, 3000)
+		d3.interval(presentData, 2000)
 
 		
 	}, [])

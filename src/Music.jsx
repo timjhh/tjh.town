@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import $ from 'jquery';
 import {Image, Placeholder, Card} from 'react-bootstrap';
 import axios from 'axios';
 
@@ -9,11 +8,6 @@ function Music() {
 	const [reRender, setReRender] = useState(0);
 	const [song, setSong] = useState(null);
 
-	// var timestamp;
-	// var artist;
-	// var album;
-	// var diff;
-	var cover;
 
 
 	function forceUpdate() {
@@ -163,26 +157,26 @@ function Music() {
 
 	
 	// Converts seconds to a string of days + hours + minutes
-	function getTime(utc) {
+	// function getTime(utc) {
 		
-		var minutes = Math.floor(utc/60) % 60;
-		var hours = Math.floor(utc/3600) % 24;
-		var days = Math.floor(utc/86400);
+	// 	var minutes = Math.floor(utc/60) % 60;
+	// 	var hours = Math.floor(utc/3600) % 24;
+	// 	var days = Math.floor(utc/86400);
 
-		var time = "";
+	// 	var time = "";
 		
-		time = time + 
-		(days > 0 ? days + " d, " : "") +
-		(hours > 0 ? hours + " h, " : "") + 
-		(minutes > 0 ? minutes + " m" : "");
+	// 	time = time + 
+	// 	(days > 0 ? days + " d, " : "") +
+	// 	(hours > 0 ? hours + " h, " : "") + 
+	// 	(minutes > 0 ? minutes + " m" : "");
 
-		return time;
+	// 	return time;
 
-	}
-	async function getTrackByMBID(mbid) {
-		const response = await axios("https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&mbid="+ mbid +"&format=json")
-		return await response.data;
-	}
+	// }
+	// async function getTrackByMBID(mbid) {
+	// 	const response = await axios("https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&mbid="+ mbid +"&format=json")
+	// 	return await response.data;
+	// }
 	async function getTrackByNames(artist,track) {
 		const response = await axios("https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=943bdddf5707846447a81b95edae1537&track=" + track + "&artist="+ artist +"&format=json")
 		return await response.data;	

@@ -14,17 +14,9 @@ function GraphController(props) {
 
   // How to apply sizing scale
   const [sameScale, setSameScale] = useState(true);
-
-  const [nutrient, setNutrient] = useState("Calories");
-
-  const [nutrientTwo, setNutrientTwo] = useState("Zinc");
-
-  const [bipartite, setBipartite] = useState(true);
   const [current, setCurrent] = useState([]);
   const [data, setData] = useState([]); // Raw data
 
-
-  const [range, setRange] = useState([0,0]);
   const [label, setLabel] = useState("Click on a node for more information");
 
   //const [method, setMethod] = useState(props.methods[0]);
@@ -89,16 +81,7 @@ function GraphController(props) {
 
     <div className="mx-5">
 
-      {/* <NutriSelect
-        methods={props.methods} 
-        nutrients={props.nutrients}
-        nutrient={nutrient}
-        setNutrient={setNutrient}
-        nutrientTwo={nutrientTwo}
-        setNutrientTwo={setNutrientTwo}  
-        method={method}
-        setMethod={setMethod}
-        {...props} /> */}
+
 
 
 
@@ -124,7 +107,7 @@ function GraphController(props) {
 
       </Form.Select>
 
-      <Graph sameScale={sameScale} current={current} setLabel={setLabel} switch={bipartite} />
+      <Graph sameScale={sameScale} current={current} setLabel={setLabel} />
 
 
 

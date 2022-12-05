@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Graph from './Graph.jsx';
-
-import axios from 'axios';
 
 import { Form, Button, Row, Container, Col, Image } from 'react-bootstrap';
 import * as d3 from "d3";
 import { Paper } from '@mui/material'
+import * as d3Chromatic from 'd3-scale-chromatic';
 
 var user;
 
@@ -17,7 +15,7 @@ function GHStats(props) {
   const [uData, setUData] = useState(null);
   const [age, setAge] = useState(null);
   const [repos, setRepos] = useState(null);
-  const [lange, setLangs] = useState([])
+  //const [langs, setLangs] = useState([])
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -115,7 +113,8 @@ function GHStats(props) {
         var height = 800
         var margin = {top: 20, left: 60, right: 20, bottom: 20}
 
-        var colors = (d) => (d3.schemeCategory10[d%10])
+        var colors = (d) => (d3Chromatic.schemeCategory10[d%10])
+        
 
         const svg = d3.select("#d3lang")
         .append("svg")

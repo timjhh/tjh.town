@@ -56,8 +56,6 @@ var q1 = 0;
           // 75th q1 of data, to remove extraneous value
           q1 = d3.quantile(props.current, .80, d => d[2])
 
-          let magmaClr = (d) => d3.interpolateMagma( d/q1 );
-
 
 
           // bivariateColorScale = values => {

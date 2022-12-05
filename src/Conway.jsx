@@ -62,17 +62,17 @@ function randomize() {
 
 
 
-function reset() {
+// function reset() {
 
-		field.forEach((d,idx) => {
-			field[idx] = new Array(aWidth);
-		});
-		for(var i=0;i<startCount;i++) {
-			let randX = Math.floor((Math.random()*aWidth));
-			let randY = Math.floor((Math.random()*aHeight));
-			field[randY][randX] = 1;
-		}
-}
+// 		field.forEach((d,idx) => {
+// 			field[idx] = new Array(aWidth);
+// 		});
+// 		for(var i=0;i<startCount;i++) {
+// 			let randX = Math.floor((Math.random()*aWidth));
+// 			let randY = Math.floor((Math.random()*aHeight));
+// 			field[randY][randX] = 1;
+// 		}
+// }
 
 
 function pattern(val) {
@@ -488,7 +488,7 @@ function Conway(props) {
   return (
 
 <>
-  <div className="position-absolute bg-light p-2" id="panel">
+  <div className="position-absolute bg-custom p-2" id="panel">
       <Form.Label>Patterns</Form.Label>
       <Form.Select onChange={(e) => pattern(e.target.value)} id="cptrns" size="sm" className="mx-2">
           <option value="none">None</option>
