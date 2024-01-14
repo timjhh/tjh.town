@@ -32,12 +32,18 @@ function Snow(props) {
 
 
 	height = Math.max($(document).height(), $(window).height());
+	let granularity = 100;
 
+	let four = height*(1/4);
+	let three = [];
 
-	for(var i=80;i<width+10;i+=10) {
-		let randY = (Math.random()*10)+(i/4);
-		hData.push({cX:i, cY:randY+40});
-
+	// for(var i=80;i<width+10;i+=10) {
+	// 	let randY = (Math.random()*10)+(i/4);
+	// 	hData.push({cX:i, cY:randY+40});
+	// }
+	for(var i=0;i<width*2;i+=granularity) {
+		let randY = (Math.random()*100)+four;
+		hData.push({cX:i, cY:(Math.sin(i)*10)+four});
 	}
 	for(var j=0;j<(width/2)+10;j+=10) {
 		let randY = (Math.random()*60);
@@ -129,15 +135,15 @@ function Snow(props) {
 
 
 	// Forefront green hill
-	svg.append("path")
-	.datum(hData)
-	.attr("d", d3.area()
-		.x(d => x(d.cX))
-		.y1(d => y(d.cY))
-		.y0(height+margin.top+margin.bottom)
-		)
-	.attr("fill", "#357360")
-	.attr("opacity", 0.6);
+	// svg.append("path")
+	// .datum(hData)
+	// .attr("d", d3.area()
+	// 	.x(d => x(d.cX))
+	// 	.y1(d => y(d.cY))
+	// 	.y0(height+margin.top+margin.bottom)
+	// 	)
+	// .attr("fill", "#357360")
+	// .attr("opacity", 0.6);
 
 
 	// Front small hill
@@ -166,6 +172,17 @@ function Snow(props) {
 	.attr("opacity", 0.8);
 
 	// Big mountain in back
+	// svg.append("path")
+	// .datum(hData)
+	// .attr("d", d3.area()
+	// 	.x(d => x(d.cX))
+	// 	.y1(d => x(d.cY))
+	// 	.y0(height+margin.top+margin.bottom)
+	// 	)
+	// .attr("stroke", "black")
+	// .attr("fill", "black")
+	// .attr("opacity", 0.4);
+		
 	svg.append("path")
 	.datum(hData)
 	.attr("d", d3.area()
@@ -182,10 +199,8 @@ function Snow(props) {
 	svg.append("g")
 	.attr("id", "stars");
 
-
 	svg.append("circle")
 	.attr("cx", width-150)
-	//.attr("cy", last.cY/2)
 	.attr("cy", 75)
 	.attr("r", 24)
 	.attr("fill", "white")
@@ -193,7 +208,6 @@ function Snow(props) {
 
 	svg.append("circle")
 	.attr("cx", width-150)
-	//.attr("cy", last.cY/2)
 	.attr("cy", 75)
 	.attr("r", 24)
 	.attr("fill", "url(#bg-gradient)")
@@ -360,9 +374,7 @@ function Snow(props) {
 
 <>
 <div className="position-absolute bg-custom p-2" id="panel">
-	
 	<Container>
-
 		<Row className="px-3 mx-3">
 			<Form.Check 
 				type={"checkbox"}
@@ -378,12 +390,9 @@ function Snow(props) {
 				checked={day}
 				onChange={() => setDay(!day)} />
 		</Row>
-
 	</Container>
-
   </div>
 <div style={{"backgroundColor": "black"}} id="snow" className="overflow-hidden">
-
 </div>
 </>
   );

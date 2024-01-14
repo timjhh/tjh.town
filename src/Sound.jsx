@@ -24,6 +24,9 @@ function Home() {
 	const [subTemp, setSubTemp] = React.useState("all")
 	const [subReddit, setSubReddit] = React.useState("all")
 
+	// How long at most until we should fetch new posts
+	const maxRefreshTime = 10000
+
 	var postTypes = ["Cross-post", "Text", "Video", "Image", "Other"]
 	var postScale = d3.scaleOrdinal()
 	.domain(postTypes)
@@ -62,12 +65,8 @@ function Home() {
 
 	const reverb = new Tone.Reverb(2);
 	const vibrato = new Tone.Vibrato();
-	// const tremolo = new Tone.Tremolo(9,0.75).toDestination().start()
 	const compressor = new Tone.Compressor(-30, 2);
-
-
 	synth.chain(reverb,vibrato,compressor, Tone.Destination)
-
 
 	var before;
 
@@ -107,8 +106,9 @@ function Home() {
 		return Math.random()*height
 	}
 	function randTime() {
-		return Math.random()*10000
+		return Math.random()*maxRefreshTime
 	}
+
 
 	function handleSubChange() {
 		subRef.current = subTemp
@@ -168,6 +168,7 @@ function Home() {
 			
 			node.append("circle")
 			.attr("r", 20)
+			.attr("fill", "white")
 			.attr("fill", d => postScale(getPostType(d)))
 
 			node.append("text")
@@ -194,7 +195,6 @@ function Home() {
 			.ease(d3.easeLinear)
 			.attr('opacity', 0)
 			.remove();
-
 		})	
 	}
 
@@ -205,10 +205,7 @@ function Home() {
 	}
 
 	async function getRedditData(before) {
-
-
 		// https://www.reddit.com/r/funny/comments.json?limit=1
-		
 		// +before?("&before="+before):""
 		var link = "https://www.reddit.com/r/"+subRef.current+"/new.json?sort=new"+(before?("&before="+before):"")
 
@@ -227,16 +224,13 @@ function Home() {
 	}
 
 	function startTone() {
-
 		if(!startRef.current) return;
-
 		// Chords in D minor temporarily hardcoded in
 		//const chords = [["D","F","A"],["E","G","A#"],["F","A","C"],["G","A#","D"]["A","C","E"],["A#","D","F"],["C","E","G"]]
 
 		//const scale = ["D","E","F","G#","A","A#","C"]
 		const scale = ["C","D","E","F","G","A","B"]
 		//const scale = ["C", "E", "G", "F", "A"]
-
 
 		let note = scale[Math.floor(Math.random()*scale.length)] + (Math.floor(Math.random() * 3)+2)
 		//let notes = chords[num]
@@ -250,8 +244,6 @@ function Home() {
 
 
 	useEffect(() => {
-
-
 		d3.select("#sound")
 		.append("svg")
 		.attr("position", "absolute")
@@ -265,24 +257,13 @@ function Home() {
 
 		now = (new Date().getTime() / 1000) - 120
 
-		d3.interval(presentData, 2000)
-
-		
-	}, [])
-
+		d3.interval(presentData, 8000)
+	}, [subReddit])
   return (
-
 <>
-<Form>
-      
-</Form>
+
 <div className="position-absolute bg-custom p-2" id="panel">
 		<h2 className="pb-0 mb-0">Listen to Reddit</h2>
-		{/* <Form.Label>Data</Form.Label>
-		<Form.Select id="cptrns" size="sm" className="mx-2">
-			<option value="posts">Posts</option>
-			<option value="comments">Comments</option>
-		</Form.Select> */}
 		<Form.Check 
 		className="mt-2"
 		type="switch"
@@ -290,7 +271,6 @@ function Home() {
 		label="Enable Sound"
 		onChange={(e) => initAudio(e.target.checked)}
 		/>
-
 		<InputGroup>
 			<Form.Control
 			placeholder="subreddit"
